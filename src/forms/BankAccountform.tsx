@@ -16,7 +16,7 @@ const formSchema = z.object({
   clabe: z.string().min(10)
 })
 
-export type IndividualFormData = z.infer<typeof formSchema>
+export type BankAccountFormData = z.infer<typeof formSchema>
 
 type Props = {
   onSave: (data: any) => Promise<any>
@@ -24,7 +24,7 @@ type Props = {
 }
 
 export const BankAccountForm = ({ onSave, isLoading }: Props) => {
-  const form = useForm<IndividualFormData>({
+  const form = useForm<BankAccountFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       clabe: ''

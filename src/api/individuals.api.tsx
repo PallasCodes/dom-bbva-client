@@ -92,3 +92,57 @@ export const useValidateCut = () => {
     error
   }
 }
+
+export interface LoanInfo {
+  folioInterno: string
+  fechaFirma: Date
+  prestamo: number
+  totalPagar: number
+  idOrden: number
+}
+
+export const getLoanInfo = (folioOrden: string) => {
+  const [data, setData] = useState<LoanInfo | null>(null)
+  const [loading, setLoading] = useState<boolean>(true)
+  const [error, setError] = useState<string | null>(null)
+  const cancelTokenRef = useRef<CancelTokenSource | null>(null)
+
+  useEffect(() => {
+    const fetchLoanInfo = async (folioOrden: string) => {
+      setLoading(true)
+      setError(null)
+
+      if (cancelTokenRef.current) {
+        cancelTokenRef.current.cancel('Petición cancelada por una nueva solicitud.')
+      }
+
+      cancelTokenRef.current = axios.CancelToken.source()
+
+      try {
+        const response = await api.get<LoanInfo>(`${PREFIX}/loan/${folioOrden}`, {
+          cancelToken: cancelTokenRef.current.token
+        })
+        setData(response.data)
+      } catch (err) {
+        if (axios.isCancel(err)) {
+          console.warn('Petición cancelada:', err.message)
+        } else {
+          const axiosError = err as AxiosError
+          setError(axiosError.message || 'Ocurrió un error al obtener los datos.')
+        }
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchLoanInfo(folioOrden)
+
+    return () => {
+      if (cancelTokenRef.current) {
+        cancelTokenRef.current.cancel('Componente desmontado.')
+      }
+    }
+  }, [])
+
+  return { data, loading, error }
+}
