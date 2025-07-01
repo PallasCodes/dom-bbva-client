@@ -5,6 +5,7 @@ import { getIndividualInfo } from '@/api/individuals.api'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { IndividualInfoForm } from '@/forms/IndividualInfoForm'
 import { BankAccountForm } from '@/forms/BankAccountForm'
+import { dataURLtoBlob } from '@/utils'
 
 export default function HomePage() {
   const [params] = useSearchParams()
@@ -14,6 +15,11 @@ export default function HomePage() {
 
   const saveStep1 = async () => {
     setStep(2)
+  }
+
+  const saveStep2 = async (args: any) => {
+    const blob = dataURLtoBlob(args.signature)
+    console.log('🚀 ~ saveStep2 ~ blob:', blob)
   }
 
   return (
@@ -33,7 +39,7 @@ export default function HomePage() {
           />
         )}
 
-        {step === 2 && <BankAccountForm isLoading={loading} onSave={saveStep1} />}
+        {step === 2 && <BankAccountForm isLoading={loading} onSave={saveStep2} />}
       </CardContent>
     </Card>
   )

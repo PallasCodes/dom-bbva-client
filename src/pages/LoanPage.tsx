@@ -1,3 +1,5 @@
+import { useNavigate, useSearchParams } from 'react-router-dom'
+
 import { getLoanInfo } from '@/api/individuals.api'
 import { Button } from '@/components/ui/button'
 import {
@@ -8,7 +10,6 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card'
-import { useSearchParams } from 'react-router-dom'
 
 export default function LoanPage() {
   const [params] = useSearchParams()
@@ -17,6 +18,7 @@ export default function LoanPage() {
   if (!folioOrden) {
     return <h1>Error</h1>
   }
+  const navigate = useNavigate()
 
   const { data: credit } = getLoanInfo(folioOrden)
 
@@ -49,7 +51,7 @@ export default function LoanPage() {
           </p>
           <p>{credit?.prestamo}</p>
         </div>
-        <div className="mb-4">
+        <div>
           <p>
             <b>Total a pagar</b>
           </p>
@@ -58,7 +60,12 @@ export default function LoanPage() {
       </CardContent>
       <CardFooter className="flex gap-3 mt-0">
         <Button className="grow bg-red-700">Incorrecta</Button>
-        <Button className="grow bg-green-700">Correcta</Button>
+        <Button
+          className="grow bg-green-700"
+          onClick={() => navigate(`/cambiar-domicialiacion?folio=${folioOrden}`)}
+        >
+          Correcta
+        </Button>
       </CardFooter>
     </Card>
   )
