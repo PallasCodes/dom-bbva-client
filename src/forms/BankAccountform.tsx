@@ -16,7 +16,10 @@ import { Input } from '@/components/ui/input'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 const formSchema = z.object({
-  clabe: z.string().min(10, 'La CLABE debe tener al menos 10 dígitos'),
+  clabe: z
+    .string()
+    .min(18, 'La CLABE debe tener 18 dígitos')
+    .regex(/^012[0-9]{7,}$/, 'La CLABE debe iniciar con 012 y contener solo números'),
   signature: z.string().min(1, 'La firma es obligatoria')
 })
 

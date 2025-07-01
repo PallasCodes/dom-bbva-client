@@ -26,8 +26,17 @@ const formSchema = z.object({
   nombre2: z.string().min(1).max(100).optional(),
   apellidoPaterno: z.string().min(1).max(100),
   apellidoMaterno: z.string().min(1).max(100).optional(),
-  rfc: z.string().min(1).max(100),
-  curp: z.string().min(1).max(100),
+  rfc: z
+    .string()
+    .regex(/^[A-ZÑ&]{3,4}\d{6}[A-Z0-9]{3}$/, 'El RFC no es válido')
+    .min(12)
+    .max(13)
+    .toUpperCase(),
+  curp: z
+    .string()
+    .regex(/^[A-Z][AEIOUX][A-Z]{2}\d{6}[HM][A-Z]{5}[A-Z0-9]\d$/, 'El CURP no es válido')
+    .length(18)
+    .toUpperCase(),
   idNacionalidad: z.number(),
   idEstadoCivil: z.number(),
   dependientes: z.number().min(0),
