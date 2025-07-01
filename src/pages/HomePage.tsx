@@ -26,7 +26,7 @@ export default function HomePage() {
     <Card className="max-w-2xl md:mx-auto m-4 max-h-[95vh] overflow-y-auto">
       <CardHeader className="">
         <CardTitle className="text-center font-bold text-xl w-full">
-          {step === 1 && 'Autentícate'}
+          {step === 1 && 'Información personal'}
           {step === 2 && 'Nueva cuenta bancaria'}
         </CardTitle>
       </CardHeader>
