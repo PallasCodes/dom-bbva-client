@@ -8,6 +8,7 @@ import {
   FormMessage
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import {
   Select,
   SelectContent,
@@ -16,7 +17,7 @@ import {
   SelectValue
 } from '@/components/ui/select'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -25,11 +26,10 @@ const formSchema = z.object({
   nombre2: z.string().min(1).max(100).optional(),
   apellidoPaterno: z.string().min(1).max(100),
   apellidoMaterno: z.string().min(1).max(100).optional(),
-  // TODO: ADD regex for curp and rfc
   rfc: z.string().min(1).max(100),
   curp: z.string().min(1).max(100),
-  idNacionalidad: z.string(),
-  idEstadoCivil: z.number().positive(),
+  idNacionalidad: z.number(),
+  idEstadoCivil: z.number(),
   dependientes: z.number().min(0),
   sexo: z.string().min(1)
 })
@@ -37,12 +37,14 @@ const formSchema = z.object({
 export type IndividualFormData = z.infer<typeof formSchema>
 
 type Props = {
-  onSave: (data: any) => Promise<any>
+  onSave: (data: IndividualFormData) => Promise<any>
   isLoading: boolean
   formData: IndividualFormData
 }
 
 export const IndividualInfoForm = ({ onSave, isLoading, formData }: Props) => {
+  const [disabledForm, setDisabledForm] = useState(true)
+
   const form = useForm<IndividualFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -52,7 +54,7 @@ export const IndividualInfoForm = ({ onSave, isLoading, formData }: Props) => {
       apellidoMaterno: '',
       rfc: '',
       curp: '',
-      idNacionalidad: '',
+      idNacionalidad: 0,
       idEstadoCivil: 0,
       dependientes: 0,
       sexo: ''
@@ -63,18 +65,17 @@ export const IndividualInfoForm = ({ onSave, isLoading, formData }: Props) => {
 
   useEffect(() => {
     if (formData) {
-      console.log('🚀 ~ useEffect ~ formData:', formData)
       const safeData: IndividualFormData = {
         ...formData,
         nombre1: formData.nombre1 ?? '',
-        nombre2: formData.nombre2 ?? '',
+        nombre2: formData.nombre2 ?? undefined,
         apellidoPaterno: formData.apellidoPaterno ?? '',
-        apellidoMaterno: formData.apellidoMaterno ?? '',
+        apellidoMaterno: formData.apellidoMaterno ?? undefined,
         rfc: formData.rfc ?? '',
         curp: formData.curp ?? '',
         sexo: formData.sexo ?? '',
-        idNacionalidad: formData.idNacionalidad.toString() ?? 0,
-        idEstadoCivil: formData.idEstadoCivil ?? 0,
+        idNacionalidad: Number(formData.idNacionalidad ?? 0),
+        idEstadoCivil: Number(formData.idEstadoCivil ?? 0),
         dependientes: formData.dependientes ?? 0
       }
       form.reset(safeData)
@@ -85,7 +86,7 @@ export const IndividualInfoForm = ({ onSave, isLoading, formData }: Props) => {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSave)} className="space-y-4">
         <FormField
-          disabled
+          disabled={disabledForm}
           control={form.control}
           name="nombre1"
           render={({ field }) => (
@@ -100,7 +101,7 @@ export const IndividualInfoForm = ({ onSave, isLoading, formData }: Props) => {
         />
 
         <FormField
-          disabled
+          disabled={disabledForm}
           control={form.control}
           name="nombre2"
           render={({ field }) => (
@@ -115,7 +116,7 @@ export const IndividualInfoForm = ({ onSave, isLoading, formData }: Props) => {
         />
 
         <FormField
-          disabled
+          disabled={disabledForm}
           control={form.control}
           name="apellidoPaterno"
           render={({ field }) => (
@@ -130,7 +131,7 @@ export const IndividualInfoForm = ({ onSave, isLoading, formData }: Props) => {
         />
 
         <FormField
-          disabled
+          disabled={disabledForm}
           control={form.control}
           name="apellidoMaterno"
           render={({ field }) => (
@@ -145,7 +146,7 @@ export const IndividualInfoForm = ({ onSave, isLoading, formData }: Props) => {
         />
 
         <FormField
-          disabled
+          disabled={disabledForm}
           control={form.control}
           name="rfc"
           render={({ field }) => (
@@ -160,7 +161,7 @@ export const IndividualInfoForm = ({ onSave, isLoading, formData }: Props) => {
         />
 
         <FormField
-          disabled
+          disabled={disabledForm}
           control={form.control}
           name="curp"
           render={({ field }) => (
@@ -175,16 +176,15 @@ export const IndividualInfoForm = ({ onSave, isLoading, formData }: Props) => {
         />
 
         <FormField
-          disabled
+          disabled={disabledForm}
           control={form.control}
           name="idNacionalidad"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Nacionalidad</FormLabel>
               <Select
-                disabled
-                onValueChange={(value) => field.onChange(Number(value))} // 👈 convierte a number
-                // defaultValue={String(field.value)} // 👈 asegura string
+                disabled={disabledForm}
+                onValueChange={(value) => field.onChange(Number(value))}
                 value={String(field.value)}
               >
                 <FormControl className="w-full">
@@ -204,27 +204,26 @@ export const IndividualInfoForm = ({ onSave, isLoading, formData }: Props) => {
         />
 
         <FormField
-          disabled
+          disabled={disabledForm}
           control={form.control}
           name="idEstadoCivil"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Estado Cívil</FormLabel>
+              <FormLabel>Estado Civil</FormLabel>
               <Select
-                disabled
-                onValueChange={(value) => field.onChange(Number(value))} // 👈 convierte a number
-                // defaultValue={String(field.value)} // 👈 asegura string
+                disabled={disabledForm}
+                onValueChange={(value) => field.onChange(Number(value))}
                 value={String(field.value)}
               >
                 <FormControl className="w-full">
                   <SelectTrigger>
-                    <SelectValue placeholder="Selecciona tu estado cívil" />
+                    <SelectValue placeholder="Selecciona tu estado civil" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="1">Mexicana</SelectItem>
-                  <SelectItem value="2">Estadounidense</SelectItem>
-                  <SelectItem value="700">Otra</SelectItem>
+                  <SelectItem value="1">Soltero</SelectItem>
+                  <SelectItem value="2">Casado</SelectItem>
+                  <SelectItem value="3">Divorciado</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -233,23 +232,82 @@ export const IndividualInfoForm = ({ onSave, isLoading, formData }: Props) => {
         />
 
         <FormField
-          disabled
+          disabled={disabledForm}
           control={form.control}
           name="dependientes"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Dependientes</FormLabel>
               <FormControl>
-                <Input {...field} type="number" />
+                <Input
+                  type="number"
+                  {...field}
+                  onChange={(e) => field.onChange(Number(e.target.value))}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        <Button type="submit" className="w-full uppercase" disabled={isLoading}>
-          {isLoading}
-          Siguiente
+        <FormField
+          control={form.control}
+          name="sexo"
+          render={({ field }) => (
+            <FormItem className="space-y-3">
+              <FormLabel>Sexo</FormLabel>
+              <FormControl>
+                <RadioGroup
+                  className="flex"
+                  onValueChange={field.onChange}
+                  value={field.value}
+                >
+                  <FormItem className="flex items-center gap-3 mr-4">
+                    <FormControl>
+                      <RadioGroupItem value="M" />
+                    </FormControl>
+                    <FormLabel className="font-normal">Masculino</FormLabel>
+                  </FormItem>
+                  <FormItem className="flex items-center gap-3">
+                    <FormControl>
+                      <RadioGroupItem value="F" />
+                    </FormControl>
+                    <FormLabel className="font-normal">Femenino</FormLabel>
+                  </FormItem>
+                </RadioGroup>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormItem className="space-y-3">
+          <FormLabel>¿Estos datos coinciden con tu información personal?</FormLabel>
+          <FormControl>
+            <RadioGroup
+              value={disabledForm.toString()}
+              onValueChange={(val) => setDisabledForm(val === 'true')}
+              className="flex"
+            >
+              <FormItem className="flex items-center gap-3 mr-4">
+                <FormControl>
+                  <RadioGroupItem value="true" />
+                </FormControl>
+                <FormLabel className="font-normal">Sí</FormLabel>
+              </FormItem>
+              <FormItem className="flex items-center gap-3">
+                <FormControl>
+                  <RadioGroupItem value="false" />
+                </FormControl>
+                <FormLabel className="font-normal">No</FormLabel>
+              </FormItem>
+            </RadioGroup>
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+
+        <Button type="submit" className="w-full uppercase mt-2" disabled={isLoading}>
+          {isLoading ? 'Cargando...' : 'Siguiente'}
         </Button>
       </form>
     </Form>

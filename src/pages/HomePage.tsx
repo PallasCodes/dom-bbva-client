@@ -1,33 +1,39 @@
+import { useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
-import { getIndividualInfo } from '@/api/individuals'
+import { getIndividualInfo } from '@/api/individuals.api'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { IndividualInfoForm } from '@/forms/IndividualInfoForm'
+import { BankAccountForm } from '@/forms/BankAccountForm'
 
 export default function HomePage() {
   const [params] = useSearchParams()
+  const [step, setStep] = useState(1)
 
   const { data, error, loading } = getIndividualInfo(params.get('folio') ?? '')
 
-  const onNext = async () => {
-    console.log('next')
+  const saveStep1 = async () => {
+    setStep(2)
   }
 
   return (
     <Card className="max-w-2xl md:mx-auto m-4 max-h-[95vh] overflow-y-auto">
-      <CardHeader className="sticky top-0 left-0 right-0 bg-white w-full ">
+      <CardHeader className="">
         <CardTitle className="text-center font-bold text-xl w-full">
-          Autentícate
+          {step === 1 && 'Autentícate'}
+          {step === 2 && 'Nueva cuenta bancaria'}
         </CardTitle>
       </CardHeader>
       <CardContent>
-        {!loading && (
+        {step === 1 && (
           <IndividualInfoForm
             formData={data as any}
             isLoading={loading}
-            onSave={onNext}
+            onSave={saveStep1}
           />
         )}
+
+        {step === 2 && <BankAccountForm isLoading={loading} onSave={saveStep1} />}
       </CardContent>
     </Card>
   )
