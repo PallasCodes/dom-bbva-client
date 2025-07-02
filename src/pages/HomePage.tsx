@@ -7,6 +7,7 @@ import { BankAccountForm } from '@/forms/BankAccountForm'
 import { IndividualInfoForm } from '@/forms/IndividualInfoForm'
 import { useSocket } from '@/hooks/useSocket'
 import { dataURLtoBlob } from '@/utils'
+import { useValidateClabe } from '@/api/direct-debits.api'
 
 export default function HomePage() {
   const location = useLocation()
@@ -16,8 +17,13 @@ export default function HomePage() {
     return <h1>Error</h1>
   }
 
+  // Hooks
   const socketRef = useSocket('http://localhost:3000')
+  const { validateClabe } = useValidateClabe()
+
+  // State
   const [step, setStep] = useState(1)
+  const [idSocketIo, setIdSocketIo] = useState('')
 
   const { data, error, loading } = getIndividualInfo(folioOrden)
 
@@ -25,8 +31,13 @@ export default function HomePage() {
     setStep(2)
   }
 
-  const saveStep2 = async (args: any) => {
+  const saveStep2 = async (args: { signature: string; clabe: string }) => {
     const blob = dataURLtoBlob(args.signature)
+    try {
+      await validateClabe({ clabe: args.clabe, rfc: 'TOMB971024UW4', idSocketIo })
+    } catch (e) {
+      console.error(e)
+    }
   }
 
   useEffect(() => {
@@ -34,7 +45,7 @@ export default function HomePage() {
     if (!socket) return
 
     socket.on('connect', () => {
-      console.log('Conectado al servidor:', socket.id)
+      setIdSocketIo(socket.id as string)
     })
 
     socket.on('clabe_verification_result', (data) => {

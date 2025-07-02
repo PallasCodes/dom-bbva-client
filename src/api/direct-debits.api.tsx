@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import type { IndividualFormData } from '@/forms/IndividualInfoForm'
 import { api } from '.'
 import type { Catalog } from '@/types/catalog.interface'
+import type { ValidateClabeRequest } from '@/types/requests/validate-clabe.interface'
 
 const PREFIX = '/direct-debits'
 
@@ -54,4 +55,38 @@ export const useGetCatalog = (catalogCode: number) => {
   }, [])
 
   return { data, loading, error }
+}
+
+export const useValidateClabe = () => {
+  const [data, setData] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const validateClabe = async (payload: ValidateClabeRequest) => {
+    setLoading(true)
+    setError(null)
+
+    try {
+      const response = await api.post(`${PREFIX}/validate-clabe`, payload)
+      setData(response.data)
+      return response.data
+    } catch (err) {
+      if (axios.isCancel(err)) {
+        console.warn('POST cancelado:', err.message)
+      } else {
+        const axiosError = err as AxiosError
+        setError(axiosError.message || 'Error al enviar el formulario.')
+        throw axiosError
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return {
+    validateClabe,
+    data,
+    loading,
+    error
+  }
 }
