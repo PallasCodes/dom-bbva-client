@@ -27,7 +27,7 @@ export default function CUTValidationPage() {
     }
     try {
       await validateCut(apiPayload)
-      navigate(`/info-credito?folio=${folioOrden}`)
+      navigate('/info-credito', { state: { folioOrden } })
     } catch (error) {
       console.error(error)
     }

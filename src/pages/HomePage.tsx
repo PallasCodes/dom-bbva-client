@@ -1,17 +1,23 @@
 import { useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 
 import { getIndividualInfo } from '@/api/individuals.api'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { IndividualInfoForm } from '@/forms/IndividualInfoForm'
 import { BankAccountForm } from '@/forms/BankAccountForm'
+import { IndividualInfoForm } from '@/forms/IndividualInfoForm'
 import { dataURLtoBlob } from '@/utils'
 
 export default function HomePage() {
-  const [params] = useSearchParams()
+  const location = useLocation()
+  const { folioOrden } = location.state ?? null
+
+  if (!folioOrden) {
+    return <h1>Error</h1>
+  }
+
   const [step, setStep] = useState(1)
 
-  const { data, error, loading } = getIndividualInfo(params.get('folio') ?? '')
+  const { data, error, loading } = getIndividualInfo(folioOrden)
 
   const saveStep1 = async () => {
     setStep(2)
