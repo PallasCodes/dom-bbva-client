@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 
 import { getIndividualInfo } from '@/api/individuals.api'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { BankAccountForm } from '@/forms/BankAccountForm'
 import { IndividualInfoForm } from '@/forms/IndividualInfoForm'
+import { useSocket } from '@/hooks/useSocket'
 import { dataURLtoBlob } from '@/utils'
 
 export default function HomePage() {
@@ -15,6 +16,7 @@ export default function HomePage() {
     return <h1>Error</h1>
   }
 
+  const socketRef = useSocket('http://localhost:3000')
   const [step, setStep] = useState(1)
 
   const { data, error, loading } = getIndividualInfo(folioOrden)
@@ -25,8 +27,24 @@ export default function HomePage() {
 
   const saveStep2 = async (args: any) => {
     const blob = dataURLtoBlob(args.signature)
-    console.log('🚀 ~ saveStep2 ~ blob:', blob)
   }
+
+  useEffect(() => {
+    const socket = socketRef.current
+    if (!socket) return
+
+    socket.on('connect', () => {
+      console.log('Conectado al servidor:', socket.id)
+    })
+
+    socket.on('clabe_verification_result', (data) => {
+      console.log('Recibido:', data)
+    })
+
+    return () => {
+      socket.off('clabe_verification_result')
+    }
+  }, [socketRef])
 
   return (
     <Card className="max-w-2xl md:mx-auto m-4 max-h-[95vh] overflow-y-auto">
