@@ -9,6 +9,6 @@ import { router } from './router'
 createRoot(document.getElementById('root')!).render(
   <LoadingProvider>
     <RouterProvider router={router} />
-    <Toaster visibleToasts={1} position="top-right" richColors />
+    <Toaster visibleToasts={3} position="top-right" richColors duration={3500} />
   </LoadingProvider>
 )

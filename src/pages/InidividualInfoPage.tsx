@@ -9,6 +9,7 @@ import { BankAccountForm } from '@/forms/BankAccountForm'
 import { IndividualInfoForm } from '@/forms/IndividualInfoForm'
 import { useSocket } from '@/hooks/useSocket'
 import { dataURLtoBlob } from '@/utils'
+import { toast } from 'sonner'
 
 export default function HomePage() {
   const location = useLocation()
@@ -52,6 +53,8 @@ export default function HomePage() {
 
     socket.on('clabe_verification_result', (data) => {
       hideLoader()
+      const msg = data.message as string
+      data.valid ? toast.success(msg) : toast.error(msg)
       console.log('Recibido:', data)
     })
 

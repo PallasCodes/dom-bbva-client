@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react'
 import { useLoading } from '@/context/LoadingContext'
 import type { IndividualFormData } from '@/forms/IndividualInfoForm'
 import { api } from '.'
+import { AxiosError } from 'axios'
+import { toast } from 'sonner'
 
 const PREFIX = '/individuals'
 
@@ -45,6 +47,9 @@ export const useValidateCut = () => {
       const response = await api.post(`${PREFIX}/validate`, payload)
       return response.data
     } catch (err) {
+      if (err instanceof AxiosError && err.response?.status === 401) {
+        toast.error('Los datos son erroneos, verifica que el código CUT sea correcto')
+      }
       throw err
     } finally {
       hideLoader()
