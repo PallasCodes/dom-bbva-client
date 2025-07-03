@@ -8,6 +8,7 @@ import { IndividualInfoForm } from '@/forms/IndividualInfoForm'
 import { useSocket } from '@/hooks/useSocket'
 import { dataURLtoBlob } from '@/utils'
 import { useValidateClabe } from '@/api/direct-debits.api'
+import { useLoading } from '@/context/LoadingContext'
 
 export default function HomePage() {
   const location = useLocation()
@@ -20,6 +21,7 @@ export default function HomePage() {
   // Hooks
   const socketRef = useSocket('http://localhost:3000')
   const { validateClabe } = useValidateClabe()
+  const { setIsLoading } = useLoading()
 
   // State
   const [step, setStep] = useState(1)
@@ -32,11 +34,13 @@ export default function HomePage() {
   }
 
   const saveStep2 = async (args: { signature: string; clabe: string }) => {
-    const blob = dataURLtoBlob(args.signature)
+    setIsLoading(true)
     try {
+      const blob = dataURLtoBlob(args.signature)
       await validateClabe({ clabe: args.clabe, rfc: 'TOMB971024UW4', idSocketIo })
     } catch (e) {
       console.error(e)
+      setIsLoading(false)
     }
   }
 
@@ -49,6 +53,7 @@ export default function HomePage() {
     })
 
     socket.on('clabe_verification_result', (data) => {
+      setIsLoading(false)
       console.log('Recibido:', data)
     })
 

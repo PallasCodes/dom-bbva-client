@@ -1,7 +1,7 @@
 import CUTValidationPage from '@/pages/CUTValidationPage'
 import LoanPage from '@/pages/LoanPage'
 import { createBrowserRouter } from 'react-router-dom'
-import HomePage from '../pages/HomePage'
+import HomePage from '../pages/InidividualInfoPage'
 import { Layout } from '@/Layout'
 
 export const router = createBrowserRouter([
