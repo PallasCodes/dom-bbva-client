@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 
+import { useValidateClabe } from '@/api/direct-debits.api'
 import { getIndividualInfo } from '@/api/individuals.api'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { useLoading } from '@/context/LoadingContext'
 import { BankAccountForm } from '@/forms/BankAccountForm'
 import { IndividualInfoForm } from '@/forms/IndividualInfoForm'
 import { useSocket } from '@/hooks/useSocket'
 import { dataURLtoBlob } from '@/utils'
-import { useValidateClabe } from '@/api/direct-debits.api'
-import { useLoading } from '@/context/LoadingContext'
 
 export default function HomePage() {
   const location = useLocation()
@@ -21,26 +21,24 @@ export default function HomePage() {
   // Hooks
   const socketRef = useSocket('http://localhost:3000')
   const { validateClabe } = useValidateClabe()
-  const { setIsLoading } = useLoading()
+  const { hideLoader, isLoading } = useLoading()
 
   // State
   const [step, setStep] = useState(1)
   const [idSocketIo, setIdSocketIo] = useState('')
 
-  const { data, error, loading } = getIndividualInfo(folioOrden)
+  const { data } = getIndividualInfo(folioOrden)
 
   const saveStep1 = async () => {
     setStep(2)
   }
 
   const saveStep2 = async (args: { signature: string; clabe: string }) => {
-    setIsLoading(true)
     try {
       const blob = dataURLtoBlob(args.signature)
       await validateClabe({ clabe: args.clabe, rfc: 'TOMB971024UW4', idSocketIo })
     } catch (e) {
       console.error(e)
-      setIsLoading(false)
     }
   }
 
@@ -53,7 +51,7 @@ export default function HomePage() {
     })
 
     socket.on('clabe_verification_result', (data) => {
-      setIsLoading(false)
+      hideLoader()
       console.log('Recibido:', data)
     })
 
@@ -74,12 +72,12 @@ export default function HomePage() {
         {step === 1 && (
           <IndividualInfoForm
             formData={data as any}
-            isLoading={loading}
+            isLoading={isLoading}
             onSave={saveStep1}
           />
         )}
 
-        {step === 2 && <BankAccountForm isLoading={loading} onSave={saveStep2} />}
+        {step === 2 && <BankAccountForm isLoading={isLoading} onSave={saveStep2} />}
       </CardContent>
     </Card>
   )

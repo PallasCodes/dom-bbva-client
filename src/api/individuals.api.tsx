@@ -1,55 +1,32 @@
-import axios, { type CancelTokenSource, AxiosError } from 'axios'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 
+import { useLoading } from '@/context/LoadingContext'
 import type { IndividualFormData } from '@/forms/IndividualInfoForm'
 import { api } from '.'
 
 const PREFIX = '/individuals'
 
 export const getIndividualInfo = (folioOrden: string) => {
+  const { showLoader, hideLoader } = useLoading()
   const [data, setData] = useState<IndividualFormData | null>(null)
-  const [loading, setLoading] = useState<boolean>(true)
-  const [error, setError] = useState<string | null>(null)
-  const cancelTokenRef = useRef<CancelTokenSource | null>(null)
 
   useEffect(() => {
     const fetchIndividuals = async (folioOrden: string) => {
-      setLoading(true)
-      setError(null)
-
-      if (cancelTokenRef.current) {
-        cancelTokenRef.current.cancel('Petición cancelada por una nueva solicitud.')
-      }
-
-      cancelTokenRef.current = axios.CancelToken.source()
-
+      showLoader()
       try {
-        const response = await api.get<IndividualFormData>(`${PREFIX}/${folioOrden}`, {
-          cancelToken: cancelTokenRef.current.token
-        })
+        const response = await api.get<IndividualFormData>(`${PREFIX}/${folioOrden}`)
         setData(response.data)
       } catch (err) {
-        if (axios.isCancel(err)) {
-          console.warn('Petición cancelada:', err.message)
-        } else {
-          const axiosError = err as AxiosError
-          setError(axiosError.message || 'Ocurrió un error al obtener los datos.')
-        }
+        throw err
       } finally {
-        setLoading(false)
+        hideLoader()
       }
     }
 
     fetchIndividuals(folioOrden)
-
-    return () => {
-      if (cancelTokenRef.current) {
-        cancelTokenRef.current.cancel('Componente desmontado.')
-      }
-    }
   }, [])
 
-  return { data, loading, error }
+  return { data }
 }
 
 export interface ValidateCutPayload {
@@ -60,36 +37,22 @@ export interface ValidateCutPayload {
 }
 
 export const useValidateCut = () => {
-  const [data, setData] = useState(null)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const { showLoader, hideLoader } = useLoading()
 
   const validateCut = async (payload: ValidateCutPayload) => {
-    setLoading(true)
-    setError(null)
-
+    showLoader()
     try {
       const response = await api.post(`${PREFIX}/validate`, payload)
-      setData(response.data)
       return response.data
     } catch (err) {
-      if (axios.isCancel(err)) {
-        console.warn('POST cancelado:', err.message)
-      } else {
-        const axiosError = err as AxiosError
-        setError(axiosError.message || 'Error al enviar el formulario.')
-        throw axiosError // opcional, para manejo externo
-      }
+      throw err
     } finally {
-      setLoading(false)
+      hideLoader()
     }
   }
 
   return {
-    validateCut,
-    data,
-    loading,
-    error
+    validateCut
   }
 }
 
@@ -102,47 +65,24 @@ export interface LoanInfo {
 }
 
 export const getLoanInfo = (folioOrden: string) => {
+  const { showLoader, hideLoader } = useLoading()
   const [data, setData] = useState<LoanInfo | null>(null)
-  const [loading, setLoading] = useState<boolean>(true)
-  const [error, setError] = useState<string | null>(null)
-  const cancelTokenRef = useRef<CancelTokenSource | null>(null)
 
   useEffect(() => {
+    showLoader()
     const fetchLoanInfo = async (folioOrden: string) => {
-      setLoading(true)
-      setError(null)
-
-      if (cancelTokenRef.current) {
-        cancelTokenRef.current.cancel('Petición cancelada por una nueva solicitud.')
-      }
-
-      cancelTokenRef.current = axios.CancelToken.source()
-
       try {
-        const response = await api.get<LoanInfo>(`${PREFIX}/loan/${folioOrden}`, {
-          cancelToken: cancelTokenRef.current.token
-        })
+        const response = await api.get<LoanInfo>(`${PREFIX}/loan/${folioOrden}`)
         setData(response.data)
       } catch (err) {
-        if (axios.isCancel(err)) {
-          console.warn('Petición cancelada:', err.message)
-        } else {
-          const axiosError = err as AxiosError
-          setError(axiosError.message || 'Ocurrió un error al obtener los datos.')
-        }
+        throw err
       } finally {
-        setLoading(false)
+        hideLoader()
       }
     }
 
     fetchLoanInfo(folioOrden)
-
-    return () => {
-      if (cancelTokenRef.current) {
-        cancelTokenRef.current.cancel('Componente desmontado.')
-      }
-    }
   }, [])
 
-  return { data, loading, error }
+  return { data }
 }

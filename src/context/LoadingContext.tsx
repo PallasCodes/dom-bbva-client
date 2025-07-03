@@ -2,16 +2,35 @@ import { createContext, useContext, useState, type ReactNode } from 'react'
 
 type LoadingContextType = {
   isLoading: boolean
-  setIsLoading: (value: boolean) => void
+  title: string | undefined
+  description: string | undefined
+  showLoader: (title?: string, description?: string) => void
+  hideLoader: () => void
 }
 
 const LoadingContext = createContext<LoadingContextType | undefined>(undefined)
 
 export const LoadingProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(false)
+  const [title, setTitle] = useState<string | undefined>(undefined)
+  const [description, setDescription] = useState<string | undefined>(undefined)
+
+  const showLoader = (title?: string, description?: string) => {
+    setIsLoading(true)
+    setTitle(title)
+    setDescription(description)
+  }
+
+  const hideLoader = () => {
+    setIsLoading(false)
+    setTitle(undefined)
+    setDescription(undefined)
+  }
 
   return (
-    <LoadingContext.Provider value={{ isLoading, setIsLoading }}>
+    <LoadingContext.Provider
+      value={{ isLoading, showLoader, hideLoader, title, description }}
+    >
       {children}
     </LoadingContext.Provider>
   )

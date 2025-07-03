@@ -1,92 +1,48 @@
-import axios, { type CancelTokenSource, AxiosError } from 'axios'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 
-import type { IndividualFormData } from '@/forms/IndividualInfoForm'
-import { api } from '.'
+import { useLoading } from '@/context/LoadingContext'
 import type { Catalog } from '@/types/catalog.interface'
 import type { ValidateClabeRequest } from '@/types/requests/validate-clabe.interface'
+import { api } from '.'
 
 const PREFIX = '/direct-debits'
 
 export const useGetCatalog = (catalogCode: number) => {
   const [data, setData] = useState<Catalog[] | null>(null)
-  const [loading, setLoading] = useState<boolean>(true)
-  const [error, setError] = useState<string | null>(null)
-  const cancelTokenRef = useRef<CancelTokenSource | null>(null)
 
   useEffect(() => {
     const getCatalog = async (catalogCode: number) => {
-      setLoading(true)
-      setError(null)
-
-      if (cancelTokenRef.current) {
-        cancelTokenRef.current.cancel('Petición cancelada por una nueva solicitud.')
-      }
-
-      cancelTokenRef.current = axios.CancelToken.source()
-
       try {
         const response = await api.get<{ elementos: Catalog[] }>(
-          `https://auth.intermercado.com.mx/api/catalogos/get-elementos-varios-por-codigo?codigo=${catalogCode}`,
-          {
-            cancelToken: cancelTokenRef.current.token
-          }
+          `https://auth.intermercado.com.mx/api/catalogos/get-elementos-varios-por-codigo?codigo=${catalogCode}`
         )
         setData(response.data.elementos)
       } catch (err) {
-        if (axios.isCancel(err)) {
-          console.warn('Petición cancelada:', err.message)
-        } else {
-          const axiosError = err as AxiosError
-          setError(axiosError.message || 'Ocurrió un error al obtener los datos.')
-        }
-      } finally {
-        setLoading(false)
+        throw err
       }
     }
 
     getCatalog(catalogCode)
-
-    return () => {
-      if (cancelTokenRef.current) {
-        cancelTokenRef.current.cancel('Componente desmontado.')
-      }
-    }
   }, [])
 
-  return { data, loading, error }
+  return { data }
 }
 
 export const useValidateClabe = () => {
-  const [data, setData] = useState(null)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const { showLoader, hideLoader } = useLoading()
 
   const validateClabe = async (payload: ValidateClabeRequest) => {
-    setLoading(true)
-    setError(null)
-
+    showLoader('Estamos validando tu cuenta', 'Podría tardar entre 1 o 2 minutos')
     try {
       const response = await api.post(`${PREFIX}/validate-clabe`, payload)
-      setData(response.data)
       return response.data
     } catch (err) {
-      if (axios.isCancel(err)) {
-        console.warn('POST cancelado:', err.message)
-      } else {
-        const axiosError = err as AxiosError
-        setError(axiosError.message || 'Error al enviar el formulario.')
-        throw axiosError
-      }
-    } finally {
-      setLoading(false)
+      hideLoader()
+      throw err
     }
   }
 
   return {
-    validateClabe,
-    data,
-    loading,
-    error
+    validateClabe
   }
 }

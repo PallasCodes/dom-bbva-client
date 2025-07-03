@@ -4,7 +4,7 @@ import { Loader } from './components/Loader'
 import { useLoading } from './context/LoadingContext'
 
 export const Layout = () => {
-  const { isLoading } = useLoading()
+  const { isLoading, title, description } = useLoading()
 
   return (
     <>
@@ -25,7 +25,7 @@ export const Layout = () => {
       <main>
         <Outlet />
       </main>
-      <Loader loading={isLoading} />
+      <Loader loading={isLoading} title={title} description={description} />
     </>
   )
 }
