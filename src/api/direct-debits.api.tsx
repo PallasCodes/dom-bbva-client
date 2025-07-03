@@ -9,9 +9,11 @@ const PREFIX = '/direct-debits'
 
 export const useGetCatalog = (catalogCode: number) => {
   const [data, setData] = useState<Catalog[] | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     const getCatalog = async (catalogCode: number) => {
+      setIsLoading(true)
       try {
         const response = await api.get<{ elementos: Catalog[] }>(
           `https://auth.intermercado.com.mx/api/catalogos/get-elementos-varios-por-codigo?codigo=${catalogCode}`
@@ -19,13 +21,15 @@ export const useGetCatalog = (catalogCode: number) => {
         setData(response.data.elementos)
       } catch (err) {
         throw err
+      } finally {
+        setIsLoading(false)
       }
     }
 
     getCatalog(catalogCode)
   }, [])
 
-  return { data }
+  return { data, isLoading }
 }
 
 export const useValidateClabe = () => {

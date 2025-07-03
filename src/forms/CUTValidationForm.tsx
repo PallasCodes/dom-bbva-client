@@ -31,7 +31,7 @@ export type CUTValidationFormData = z.infer<typeof formSchema>
 
 type Props = {
   onSave: (data: any) => Promise<any>
-  isLoading: boolean
+  catalogIsLoading: boolean
   stateCatalog: { id: number; nombre: string }[] | null
 }
 
@@ -41,7 +41,7 @@ const currentYear = new Date().getFullYear()
 const lastValidYear = currentYear - 17
 const years = Array.from({ length: lastValidYear - 1920 }, (_, i) => i + 1920).reverse()
 
-export const CUTValidationForm = ({ onSave, isLoading, stateCatalog }: Props) => {
+export const CUTValidationForm = ({ onSave, catalogIsLoading, stateCatalog }: Props) => {
   const form = useForm<CUTValidationFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -67,6 +67,7 @@ export const CUTValidationForm = ({ onSave, isLoading, stateCatalog }: Props) =>
               <Select
                 onValueChange={(value) => field.onChange(Number(value))}
                 value={String(field.value)}
+                disabled={catalogIsLoading} // opcional: bloquear el select
               >
                 <FormControl className="w-full">
                   <SelectTrigger>
@@ -74,11 +75,15 @@ export const CUTValidationForm = ({ onSave, isLoading, stateCatalog }: Props) =>
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {stateCatalog?.map((state) => (
-                    <SelectItem value={state.id.toString()} key={state.id}>
-                      {state.nombre}
-                    </SelectItem>
-                  ))}
+                  {catalogIsLoading ? (
+                    <div className="p-4 text-sm text-muted-foreground">Cargando...</div>
+                  ) : (
+                    stateCatalog?.map((state) => (
+                      <SelectItem value={state.id.toString()} key={state.id}>
+                        {state.nombre}
+                      </SelectItem>
+                    ))
+                  )}
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -182,8 +187,11 @@ export const CUTValidationForm = ({ onSave, isLoading, stateCatalog }: Props) =>
           )}
         />
 
-        <Button type="submit" className="w-full uppercase mt-2" disabled={isLoading}>
-          {isLoading}
+        <Button
+          type="submit"
+          className="w-full uppercase mt-2"
+          disabled={catalogIsLoading}
+        >
           Siguiente
         </Button>
       </form>

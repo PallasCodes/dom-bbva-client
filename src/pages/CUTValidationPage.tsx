@@ -15,7 +15,7 @@ export default function CUTValidationPage() {
 
   const navigate = useNavigate()
 
-  const { data: stateCatalog } = useGetCatalog(1003)
+  const { data: stateCatalog, isLoading: catalogIsLoading } = useGetCatalog(1003)
   const { validateCut } = useValidateCut()
 
   const handleForm = async (payload: CUTValidationFormData) => {
@@ -42,7 +42,7 @@ export default function CUTValidationPage() {
       </CardHeader>
       <CardContent>
         <CUTValidationForm
-          isLoading={false}
+          catalogIsLoading={catalogIsLoading}
           onSave={handleForm}
           stateCatalog={stateCatalog}
         />
