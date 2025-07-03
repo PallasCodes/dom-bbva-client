@@ -11,6 +11,7 @@ import {
   CardTitle
 } from '@/components/ui/card'
 import { Check, X } from 'lucide-react'
+import { formatDate, numberToCurrency } from '@/utils'
 
 export default function LoanPage() {
   const location = useLocation()
@@ -44,19 +45,19 @@ export default function LoanPage() {
           <p>
             <b>Fecha de firma</b>
           </p>
-          <p>{credit?.fechaFirma.toLocaleString()}</p>
+          <p>{formatDate(credit?.fechaFirma as string | Date)}</p>
         </div>
         <div className="mb-4">
           <p>
             <b>Prestamo</b>
           </p>
-          <p>{credit?.prestamo}</p>
+          <p>{numberToCurrency(credit?.prestamo as number)}</p>
         </div>
         <div>
           <p>
             <b>Total a pagar</b>
           </p>
-          <p>{credit?.totalPagar}</p>
+          <p>{numberToCurrency(credit?.totalPagar as number)}</p>
         </div>
       </CardContent>
       <CardFooter className="flex gap-3 mt-0">
