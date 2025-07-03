@@ -1,5 +1,6 @@
 import { FacebookIcon, Mail, PhoneIcon, Twitter } from 'lucide-react'
 import { Outlet } from 'react-router-dom'
+import { Loader } from './components/Loader'
 
 export const Layout = () => {
   return (
@@ -18,10 +19,10 @@ export const Layout = () => {
           </div>
         </div>
       </div>
-
       <main>
         <Outlet />
       </main>
+      <Loader />
     </>
   )
 }
