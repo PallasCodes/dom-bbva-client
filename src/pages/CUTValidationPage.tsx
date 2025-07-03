@@ -37,7 +37,7 @@ export default function CUTValidationPage() {
     <Card className="max-w-2xl md:mx-auto m-4 max-h-[95vh] overflow-y-auto">
       <CardHeader className="">
         <CardTitle className="text-center font-bold text-xl w-full">
-          Autenticate
+          Autentícate
         </CardTitle>
       </CardHeader>
       <CardContent>

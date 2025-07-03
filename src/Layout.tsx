@@ -13,13 +13,30 @@ export const Layout = () => {
           <img src="/logo-intermercado.png" alt="Logo de Intermercado" />
         </div>
         <div className="flex mt-2 gap-3 items-center">
-          <FacebookIcon />
-          <Twitter />
-          <Mail />
-          <div className="flex gap-2 items-center">
-            <PhoneIcon />
-            <span className="text-sm font-semibold antialiased">800 500 9195</span>
-          </div>
+          <a
+            href=""
+            className="bg-slate-100 text-indigo-700 size-7 flex items-center justify-center rounded-full"
+          >
+            <FacebookIcon size={18} />
+          </a>
+          <a
+            href=""
+            className="bg-slate-100 text-indigo-700 size-7 flex items-center justify-center rounded-full"
+          >
+            <Twitter size={18} />
+          </a>
+          <a
+            href=""
+            className="bg-slate-100 text-indigo-700 size-7 flex items-center justify-center rounded-full"
+          >
+            <Mail size={18} />
+          </a>
+          <a href="" className="flex gap-2 items-center">
+            <span className="bg-slate-100 text-indigo-700 size-7 flex items-center justify-center rounded-full">
+              <PhoneIcon size={18} />
+            </span>
+            <span className="text-sm font-medium  text-gray-600">800 500 9195</span>
+          </a>
         </div>
       </div>
       <main>

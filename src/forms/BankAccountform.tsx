@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { ChevronRight } from 'lucide-react'
 
 const formSchema = z.object({
   clabe: z
@@ -112,6 +113,7 @@ export const BankAccountForm = ({ onSave, isLoading }: Props) => {
 
         <Button type="submit" className="w-full uppercase mt-2" disabled={isLoading}>
           {isLoading ? 'Guardando...' : 'Siguiente'}
+          <ChevronRight />
         </Button>
       </form>
     </Form>

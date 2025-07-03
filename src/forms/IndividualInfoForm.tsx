@@ -17,6 +17,7 @@ import {
   SelectValue
 } from '@/components/ui/select'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { ChevronRight } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -262,6 +263,7 @@ export const IndividualInfoForm = ({ onSave, isLoading, formData }: Props) => {
         <FormField
           control={form.control}
           name="sexo"
+          disabled={disabledForm}
           render={({ field }) => (
             <FormItem className="space-y-3">
               <FormLabel>Sexo</FormLabel>
@@ -273,13 +275,13 @@ export const IndividualInfoForm = ({ onSave, isLoading, formData }: Props) => {
                 >
                   <FormItem className="flex items-center gap-3 mr-4">
                     <FormControl>
-                      <RadioGroupItem value="M" />
+                      <RadioGroupItem value="M" disabled={disabledForm} />
                     </FormControl>
                     <FormLabel className="font-normal">Masculino</FormLabel>
                   </FormItem>
                   <FormItem className="flex items-center gap-3">
                     <FormControl>
-                      <RadioGroupItem value="F" />
+                      <RadioGroupItem value="F" disabled={disabledForm} />
                     </FormControl>
                     <FormLabel className="font-normal">Femenino</FormLabel>
                   </FormItem>
@@ -317,6 +319,7 @@ export const IndividualInfoForm = ({ onSave, isLoading, formData }: Props) => {
 
         <Button type="submit" className="w-full uppercase mt-2" disabled={isLoading}>
           {isLoading ? 'Cargando...' : 'Siguiente'}
+          <ChevronRight />
         </Button>
       </form>
     </Form>

@@ -10,6 +10,7 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card'
+import { Check, X } from 'lucide-react'
 
 export default function LoanPage() {
   const location = useLocation()
@@ -59,11 +60,15 @@ export default function LoanPage() {
         </div>
       </CardContent>
       <CardFooter className="flex gap-3 mt-0">
-        <Button className="grow bg-red-700">Incorrecta</Button>
+        <Button className="grow bg-red-700">
+          <X />
+          Incorrecta
+        </Button>
         <Button
           className="grow bg-green-700"
           onClick={() => navigate('/cambiar-domicialiacion', { state: { folioOrden } })}
         >
+          <Check />
           Correcta
         </Button>
       </CardFooter>

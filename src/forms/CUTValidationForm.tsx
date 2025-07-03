@@ -16,6 +16,7 @@ import {
   SelectValue
 } from '@/components/ui/select'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { ChevronRight } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -52,7 +53,7 @@ export const CUTValidationForm = ({ onSave, catalogIsLoading, stateCatalog }: Pr
       codigo: ''
     },
     mode: 'onBlur',
-    reValidateMode: 'onBlur'
+    reValidateMode: 'onChange'
   })
 
   return (
@@ -63,7 +64,7 @@ export const CUTValidationForm = ({ onSave, catalogIsLoading, stateCatalog }: Pr
           name="idEstadoNacimiento"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Estado de nacimiento</FormLabel>
+              <FormLabel>Estado de nacimiento*</FormLabel>
               <Select
                 onValueChange={(value) => field.onChange(Number(value))}
                 value={String(field.value)}
@@ -178,7 +179,7 @@ export const CUTValidationForm = ({ onSave, catalogIsLoading, stateCatalog }: Pr
           name="codigo"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Confirmación de Código Único de Trámite</FormLabel>
+              <FormLabel>Confirmación de Código Único de Trámite*</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -193,6 +194,7 @@ export const CUTValidationForm = ({ onSave, catalogIsLoading, stateCatalog }: Pr
           disabled={catalogIsLoading}
         >
           Siguiente
+          <ChevronRight />
         </Button>
       </form>
     </Form>
