@@ -14,24 +14,26 @@ export const Layout = () => {
         </div>
         <div className="flex mt-2 gap-3 items-center">
           <a
-            href=""
+            href="https://www.facebook.com/IntermercadoMx/"
+            target="_blank"
             className="bg-slate-100 text-blue-950 size-7 flex items-center justify-center rounded-full"
           >
             <FacebookIcon size={18} />
           </a>
           <a
-            href=""
+            href="https://x.com/intermercado"
+            target="_blank"
             className="bg-slate-100 text-blue-950 size-7 flex items-center justify-center rounded-full"
           >
             <Twitter size={18} />
           </a>
           <a
-            href=""
+            href="mailto:micredito@intermercado.com.mx"
             className="bg-slate-100 text-blue-950 size-7 flex items-center justify-center rounded-full"
           >
             <Mail size={18} />
           </a>
-          <a href="" className="flex gap-2 items-center">
+          <a href="tel:+528005009195" className="flex gap-2 items-center">
             <span className="bg-slate-100 text-blue-950 size-7 flex items-center justify-center rounded-full">
               <PhoneIcon size={18} />
             </span>
