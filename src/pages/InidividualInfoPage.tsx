@@ -3,7 +3,13 @@ import { useLocation } from 'react-router-dom'
 
 import { useValidateClabe } from '@/api/direct-debits.api'
 import { getIndividualInfo } from '@/api/individuals.api'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle
+} from '@/components/ui/card'
 import { useLoading } from '@/context/LoadingContext'
 import { BankAccountForm } from '@/forms/BankAccountForm'
 import { IndividualInfoForm } from '@/forms/IndividualInfoForm'
@@ -64,12 +70,17 @@ export default function HomePage() {
   }, [socketRef])
 
   return (
-    <Card className="max-w-2xl md:mx-auto m-4 max-h-[95vh] overflow-y-auto">
+    <Card className="max-w-2xl md:mx-auto m-4 ">
       <CardHeader className="">
         <CardTitle className="text-center font-bold text-xl w-full">
           {step === 1 && 'Información personal'}
           {step === 2 && 'Nueva cuenta bancaria'}
         </CardTitle>
+        {step === 2 && (
+          <CardDescription>
+            Registra la CLABE bancaria de BBVA a la que se domiciliará tu pago
+          </CardDescription>
+        )}
       </CardHeader>
       <CardContent>
         {step === 1 && (

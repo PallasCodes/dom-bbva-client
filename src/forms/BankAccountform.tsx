@@ -67,7 +67,7 @@ export const BankAccountForm = ({ onSave, isLoading }: Props) => {
           name="clabe"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>CLABE Bancaria</FormLabel>
+              <FormLabel>CLABE Bancaria*</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -81,7 +81,7 @@ export const BankAccountForm = ({ onSave, isLoading }: Props) => {
           name="signature"
           render={() => (
             <FormItem>
-              <FormLabel>Firma</FormLabel>
+              <FormLabel>Firma*</FormLabel>
               <FormControl>
                 <div>
                   <SignaturePad

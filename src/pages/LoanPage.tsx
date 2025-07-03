@@ -25,7 +25,7 @@ export default function LoanPage() {
   const { data: credit } = getLoanInfo(folioOrden)
 
   return (
-    <Card className="max-w-2xl md:mx-auto m-4 max-h-[95vh] overflow-y-auto">
+    <Card className="max-w-2xl md:mx-auto m-4 ">
       <CardHeader className="">
         <CardTitle className="text-center font-bold text-xl w-full">
           Datos de tu crédito
@@ -49,7 +49,7 @@ export default function LoanPage() {
         </div>
         <div className="mb-4">
           <p>
-            <b>Prestamo</b>
+            <b>Monto que solicitaste</b>
           </p>
           <p>{numberToCurrency(credit?.prestamo as number)}</p>
         </div>
@@ -61,12 +61,12 @@ export default function LoanPage() {
         </div>
       </CardContent>
       <CardFooter className="flex gap-3 mt-0">
-        <Button className="grow bg-red-700">
+        <Button className="grow text-red-600 bg-red-50 shadow-sm">
           <X />
           Incorrecta
         </Button>
         <Button
-          className="grow bg-green-700"
+          className="grow  text-green-600 bg-green-50 shadow-sm"
           onClick={() => navigate('/cambiar-domicialiacion', { state: { folioOrden } })}
         >
           <Check />

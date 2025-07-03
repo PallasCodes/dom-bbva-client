@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -183,6 +184,9 @@ export const CUTValidationForm = ({ onSave, catalogIsLoading, stateCatalog }: Pr
               <FormControl>
                 <Input {...field} />
               </FormControl>
+              <FormDescription>
+                Lo recibirás en tu telefóno celular, puede tardar unos minutos
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}

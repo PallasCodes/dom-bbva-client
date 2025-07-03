@@ -15,27 +15,27 @@ export const Layout = () => {
         <div className="flex mt-2 gap-3 items-center">
           <a
             href=""
-            className="bg-slate-100 text-indigo-700 size-7 flex items-center justify-center rounded-full"
+            className="bg-slate-100 text-blue-950 size-7 flex items-center justify-center rounded-full"
           >
             <FacebookIcon size={18} />
           </a>
           <a
             href=""
-            className="bg-slate-100 text-indigo-700 size-7 flex items-center justify-center rounded-full"
+            className="bg-slate-100 text-blue-950 size-7 flex items-center justify-center rounded-full"
           >
             <Twitter size={18} />
           </a>
           <a
             href=""
-            className="bg-slate-100 text-indigo-700 size-7 flex items-center justify-center rounded-full"
+            className="bg-slate-100 text-blue-950 size-7 flex items-center justify-center rounded-full"
           >
             <Mail size={18} />
           </a>
           <a href="" className="flex gap-2 items-center">
-            <span className="bg-slate-100 text-indigo-700 size-7 flex items-center justify-center rounded-full">
+            <span className="bg-slate-100 text-blue-950 size-7 flex items-center justify-center rounded-full">
               <PhoneIcon size={18} />
             </span>
-            <span className="text-sm font-medium  text-gray-600">800 500 9195</span>
+            <span className="text-sm font-medium text-gray-600">800 500 9195</span>
           </a>
         </div>
       </div>

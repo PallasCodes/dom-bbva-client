@@ -101,7 +101,7 @@ export const IndividualInfoForm = ({ onSave, isLoading, formData }: Props) => {
           name="nombre1"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Nombre</FormLabel>
+              <FormLabel>Nombre*</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -131,7 +131,7 @@ export const IndividualInfoForm = ({ onSave, isLoading, formData }: Props) => {
           name="apellidoPaterno"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Apellido Paterno</FormLabel>
+              <FormLabel>Apellido Paterno*</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -161,7 +161,7 @@ export const IndividualInfoForm = ({ onSave, isLoading, formData }: Props) => {
           name="rfc"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>RFC</FormLabel>
+              <FormLabel>RFC*</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -176,7 +176,7 @@ export const IndividualInfoForm = ({ onSave, isLoading, formData }: Props) => {
           name="curp"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>CURP</FormLabel>
+              <FormLabel>CURP*</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -191,7 +191,7 @@ export const IndividualInfoForm = ({ onSave, isLoading, formData }: Props) => {
           name="idNacionalidad"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Nacionalidad</FormLabel>
+              <FormLabel>Nacionalidad*</FormLabel>
               <Select
                 disabled={disabledForm}
                 onValueChange={(value) => field.onChange(Number(value))}
@@ -219,7 +219,7 @@ export const IndividualInfoForm = ({ onSave, isLoading, formData }: Props) => {
           name="idEstadoCivil"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Estado Civil</FormLabel>
+              <FormLabel>Estado Civil*</FormLabel>
               <Select
                 disabled={disabledForm}
                 onValueChange={(value) => field.onChange(Number(value))}
@@ -247,7 +247,7 @@ export const IndividualInfoForm = ({ onSave, isLoading, formData }: Props) => {
           name="dependientes"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Dependientes</FormLabel>
+              <FormLabel>Dependientes*</FormLabel>
               <FormControl>
                 <Input
                   type="number"
@@ -266,7 +266,7 @@ export const IndividualInfoForm = ({ onSave, isLoading, formData }: Props) => {
           disabled={disabledForm}
           render={({ field }) => (
             <FormItem className="space-y-3">
-              <FormLabel>Sexo</FormLabel>
+              <FormLabel>Sexo*</FormLabel>
               <FormControl>
                 <RadioGroup
                   className="flex"
