@@ -1,8 +1,11 @@
 import { FacebookIcon, Mail, PhoneIcon, Twitter } from 'lucide-react'
 import { Outlet } from 'react-router-dom'
 import { Loader } from './components/Loader'
+import { useLoading } from './context/LoadingContext'
 
 export const Layout = () => {
+  const { isLoading } = useLoading()
+
   return (
     <>
       <div className="flex flex-col p-4 pb-2 items-center">
@@ -22,7 +25,7 @@ export const Layout = () => {
       <main>
         <Outlet />
       </main>
-      <Loader />
+      <Loader loading={isLoading} />
     </>
   )
 }
