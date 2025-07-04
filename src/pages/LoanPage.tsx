@@ -79,11 +79,14 @@ export default function LoanPage() {
           <p>
             <b>Saldo por pagar</b>
           </p>
-          <p>{numberToCurrency(credit?.saldoVirtual as number)}</p>
+          <p>{numberToCurrency(credit?.porPagar as number)}</p>
         </div>
       </CardContent>
       <CardFooter className="flex gap-3 mt-0">
-        <Button className="grow text-red-600 bg-red-50 shadow-sm">
+        <Button
+          className="grow text-red-600 bg-red-50 shadow-sm"
+          onClick={() => navigate('/informacion-incorrecta')}
+        >
           <X />
           Incorrecta
         </Button>

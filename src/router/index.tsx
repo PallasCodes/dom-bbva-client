@@ -3,6 +3,7 @@ import LoanPage from '@/pages/LoanPage'
 import { createBrowserRouter } from 'react-router-dom'
 import HomePage from '../pages/InidividualInfoPage'
 import { Layout } from '@/Layout'
+import { ErrorMessage } from '@/components/ErrorMessage'
 
 export const router = createBrowserRouter([
   {
@@ -20,6 +21,15 @@ export const router = createBrowserRouter([
       {
         path: '/cambiar-domicialiacion',
         element: <HomePage />
+      },
+      {
+        path: '/informacion-incorrecta',
+        element: (
+          <ErrorMessage
+            title="Información incorrecta"
+            description="Ponte en contacto con nosotros para actualizar tu información"
+          />
+        )
       }
     ]
   },
