@@ -115,14 +115,13 @@ export const IndividualInfoForm = ({
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSave)} className="space-y-4">
         <FormField
-          disabled={disabledForm}
           control={form.control}
           name="nombre1"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Nombre*</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input {...field} readOnly={disabledForm} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -130,14 +129,13 @@ export const IndividualInfoForm = ({
         />
 
         <FormField
-          disabled={disabledForm}
           control={form.control}
           name="nombre2"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Segundo nombre</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input {...field} readOnly={disabledForm} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -145,14 +143,13 @@ export const IndividualInfoForm = ({
         />
 
         <FormField
-          disabled={disabledForm}
           control={form.control}
           name="apellidoPaterno"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Apellido Paterno*</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input {...field} readOnly={disabledForm} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -160,14 +157,13 @@ export const IndividualInfoForm = ({
         />
 
         <FormField
-          disabled={disabledForm}
           control={form.control}
           name="apellidoMaterno"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Apellido Materno</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input {...field} readOnly={disabledForm} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -175,14 +171,13 @@ export const IndividualInfoForm = ({
         />
 
         <FormField
-          disabled={disabledForm}
           control={form.control}
           name="rfc"
           render={({ field }) => (
             <FormItem>
               <FormLabel>RFC*</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input {...field} readOnly={disabledForm} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -190,14 +185,13 @@ export const IndividualInfoForm = ({
         />
 
         <FormField
-          disabled={disabledForm}
           control={form.control}
           name="curp"
           render={({ field }) => (
             <FormItem>
               <FormLabel>CURP*</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input {...field} readOnly={disabledForm} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -205,14 +199,12 @@ export const IndividualInfoForm = ({
         />
 
         <FormField
-          disabled={disabledForm}
           control={form.control}
           name="idNacionalidad"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Nacionalidad*</FormLabel>
               <Select
-                disabled={disabledForm}
                 onValueChange={(value) => field.onChange(Number(value))}
                 value={String(field.value)}
               >
@@ -235,14 +227,12 @@ export const IndividualInfoForm = ({
         />
 
         <FormField
-          disabled={disabledForm}
           control={form.control}
           name="idEstadoCivil"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Estado Civil*</FormLabel>
               <Select
-                disabled={disabledForm}
                 onValueChange={(value) => field.onChange(Number(value))}
                 value={String(field.value)}
               >
@@ -265,7 +255,6 @@ export const IndividualInfoForm = ({
         />
 
         <FormField
-          disabled={disabledForm}
           control={form.control}
           name="dependientes"
           render={({ field }) => (
@@ -276,6 +265,7 @@ export const IndividualInfoForm = ({
                   type="number"
                   {...field}
                   onChange={(e) => field.onChange(Number(e.target.value))}
+                  readOnly={disabledForm}
                 />
               </FormControl>
               <FormMessage />
@@ -286,7 +276,6 @@ export const IndividualInfoForm = ({
         <FormField
           control={form.control}
           name="sexo"
-          disabled={disabledForm}
           render={({ field }) => (
             <FormItem className="space-y-3">
               <FormLabel>Sexo*</FormLabel>
@@ -298,13 +287,13 @@ export const IndividualInfoForm = ({
                 >
                   <FormItem className="flex items-center gap-3 mr-4">
                     <FormControl>
-                      <RadioGroupItem value="M" disabled={disabledForm} />
+                      <RadioGroupItem value="M" />
                     </FormControl>
                     <FormLabel className="font-normal">Masculino</FormLabel>
                   </FormItem>
                   <FormItem className="flex items-center gap-3">
                     <FormControl>
-                      <RadioGroupItem value="F" disabled={disabledForm} />
+                      <RadioGroupItem value="F" />
                     </FormControl>
                     <FormLabel className="font-normal">Femenino</FormLabel>
                   </FormItem>

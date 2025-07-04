@@ -55,11 +55,6 @@ export const BankAccountForm = ({ onSave, isLoading }: Props) => {
     await onSave({ ...data, signature })
   }
 
-  const clearSignature = () => {
-    sigRef.current?.clear()
-    form.setValue('signature', '')
-  }
-
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">

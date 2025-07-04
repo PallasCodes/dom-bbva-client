@@ -180,7 +180,7 @@ export const CUTValidationForm = ({ onSave, catalogIsLoading, stateCatalog }: Pr
                 <Input {...field} />
               </FormControl>
               <FormDescription>
-                Lo recibirás en tu telefóno celular, puede tardar unos minutos
+                Lo recibirás en tu teléfono celular, puede tardar unos minutos
               </FormDescription>
               <FormMessage />
             </FormItem>

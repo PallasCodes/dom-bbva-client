@@ -52,3 +52,38 @@ export const useValidateClabe = () => {
     validateClabe
   }
 }
+
+export interface SaveDirectDebitRequest {
+  nombre1: string
+  nombre2?: string
+  apellidoPaterno: string
+  apellidoMaterno?: string
+  rfc: string
+  curp: string
+  idNacionalidad: number
+  idEstadoCivil: number
+  dependientes: number
+  sexo: 'M' | 'F'
+  clabe: string
+  urlFirma: string
+  idSolicitudDomiciliacion: number
+}
+
+export const useSaveDirectDebit = () => {
+  const { showLoader, hideLoader } = useLoading()
+
+  const saveDirectDebit = async (payload: SaveDirectDebitRequest) => {
+    showLoader()
+    try {
+      const response = await api.post(PREFIX, payload)
+      return response.data
+    } catch (err) {
+      hideLoader()
+      throw err
+    }
+  }
+
+  return {
+    saveDirectDebit
+  }
+}

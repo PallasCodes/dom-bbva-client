@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 
-import { useGetCatalog, useValidateClabe } from '@/api/direct-debits.api'
+import {
+  useGetCatalog,
+  useSaveDirectDebit,
+  useValidateClabe,
+  type SaveDirectDebitRequest
+} from '@/api/direct-debits.api'
 import { getIndividualInfo } from '@/api/individuals.api'
 import {
   Card,
@@ -12,7 +17,7 @@ import {
 } from '@/components/ui/card'
 import { useLoading } from '@/context/LoadingContext'
 import { BankAccountForm } from '@/forms/BankAccountForm'
-import { IndividualInfoForm } from '@/forms/IndividualInfoForm'
+import { IndividualInfoForm, type IndividualFormData } from '@/forms/IndividualInfoForm'
 import { useSocket } from '@/hooks/useSocket'
 import { dataURLtoBlob } from '@/utils'
 import { toast } from 'sonner'
@@ -35,10 +40,13 @@ export default function HomePage() {
   const socketRef = useSocket(import.meta.env.VITE_WS_URL)
   const { validateClabe } = useValidateClabe()
   const { hideLoader, isLoading } = useLoading()
+  const { saveDirectDebit } = useSaveDirectDebit()
 
   // State
   const [step, setStep] = useState(1)
   const [idSocketIo, setIdSocketIo] = useState('')
+  const [apiPayload, setApiPayload] = useState<SaveDirectDebitRequest>()
+  const idSolicitudDomiciliacion = 1
 
   // Api calls
   const { data } = getIndividualInfo(folioOrden)
@@ -48,14 +56,33 @@ export default function HomePage() {
     useGetCatalog(11, true)
 
   // Methods
-  const saveStep1 = async () => {
+  const saveStep1 = async (formData: IndividualFormData) => {
+    setApiPayload({
+      ...formData,
+      sexo: formData.sexo as 'M' | 'F',
+      idSolicitudDomiciliacion,
+      clabe: '',
+      urlFirma: ''
+    })
     setStep(2)
   }
 
-  const saveStep2 = async (args: { signature: string; clabe: string }) => {
+  const saveStep2 = async ({
+    clabe,
+    signature
+  }: {
+    signature: string
+    clabe: string
+  }) => {
+    setApiPayload({
+      ...apiPayload,
+      clabe,
+      urlFirma: signature.substring(0, 200)
+    } as SaveDirectDebitRequest)
     try {
-      const blob = dataURLtoBlob(args.signature)
-      await validateClabe({ clabe: args.clabe, rfc: 'TOMB971024UW4', idSocketIo })
+      await saveDirectDebit(apiPayload as SaveDirectDebitRequest)
+      const blob = dataURLtoBlob(signature)
+      await validateClabe({ clabe, rfc: 'TOMB971024UW4', idSocketIo })
     } catch (e) {
       console.error(e)
     }
