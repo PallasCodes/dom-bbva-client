@@ -67,11 +67,13 @@ export interface LoanInfo {
   prestamo: number
   totalPagar: number
   idOrden: number
+  saldoVirtual: number
 }
 
 export const getLoanInfo = (folioOrden: string) => {
   const { showLoader, hideLoader } = useLoading()
   const [data, setData] = useState<LoanInfo | null>(null)
+  const [error, setError] = useState<number>()
 
   useEffect(() => {
     showLoader()
@@ -80,6 +82,9 @@ export const getLoanInfo = (folioOrden: string) => {
         const response = await api.get<LoanInfo>(`${PREFIX}/loan/${folioOrden}`)
         setData(response.data)
       } catch (err) {
+        if (err instanceof AxiosError) {
+          setError(err.response?.status)
+        }
         throw err
       } finally {
         hideLoader()
@@ -89,5 +94,5 @@ export const getLoanInfo = (folioOrden: string) => {
     fetchLoanInfo(folioOrden)
   }, [])
 
-  return { data }
+  return { data, error }
 }

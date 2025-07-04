@@ -9,9 +9,9 @@ export const Layout = () => {
   return (
     <>
       <div className="flex flex-col p-4 pb-2 items-center">
-        <div className="w-40">
+        <a href="https://intermercado.mx/" target="_blank" className="w-40">
           <img src="/logo-intermercado.png" alt="Logo de Intermercado" />
-        </div>
+        </a>
         <div className="flex mt-2 gap-3 items-center">
           <a
             href="https://www.facebook.com/IntermercadoMx/"

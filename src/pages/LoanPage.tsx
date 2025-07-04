@@ -1,4 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom'
+import { Check, X } from 'lucide-react'
 
 import { getLoanInfo } from '@/api/individuals.api'
 import { Button } from '@/components/ui/button'
@@ -10,28 +11,43 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card'
-import { Check, X } from 'lucide-react'
 import { formatDate, numberToCurrency } from '@/utils'
+import { ErrorMessage } from '@/components/ErrorMessage'
 
 export default function LoanPage() {
   const location = useLocation()
   const { folioOrden } = location.state
 
   if (!folioOrden) {
-    return <h1>Error</h1>
+    return (
+      <ErrorMessage
+        title="Error al obtener la información de tu folio"
+        description="Por favor ponte en contacto con nosotros"
+      />
+    )
   }
 
   const navigate = useNavigate()
-  const { data: credit } = getLoanInfo(folioOrden)
+  // const { data: credit, error } = getLoanInfo(folioOrden)
+  const { data: credit, error } = getLoanInfo('CMV722110VD')
+
+  if (error === 404) {
+    return (
+      <ErrorMessage
+        title="No se encontró la información de tu folio"
+        description="Por favor ponte en contacto con nosotros"
+      />
+    )
+  }
 
   return (
     <Card className="max-w-2xl md:mx-auto m-4 ">
-      <CardHeader className="">
+      <CardHeader>
         <CardTitle className="text-center font-bold text-xl w-full">
           Datos de tu crédito
         </CardTitle>
         <CardDescription className="text-center">
-          Válida que la información sea correcta
+          Valida que la información sea correcta
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -53,11 +69,17 @@ export default function LoanPage() {
           </p>
           <p>{numberToCurrency(credit?.prestamo as number)}</p>
         </div>
-        <div>
+        <div className="mb-4">
           <p>
             <b>Total a pagar</b>
           </p>
           <p>{numberToCurrency(credit?.totalPagar as number)}</p>
+        </div>
+        <div>
+          <p>
+            <b>Saldo por pagar</b>
+          </p>
+          <p>{numberToCurrency(credit?.saldoVirtual as number)}</p>
         </div>
       </CardContent>
       <CardFooter className="flex gap-3 mt-0">
