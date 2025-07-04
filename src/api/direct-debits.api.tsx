@@ -7,18 +7,20 @@ import { api } from '.'
 
 const PREFIX = '/direct-debits'
 
-export const useGetCatalog = (catalogCode: number) => {
-  const [data, setData] = useState<Catalog[] | null>(null)
+export const useGetCatalog = (catalogCode: number, sysCatalog: boolean = false) => {
+  const [data, setData] = useState<Catalog[]>([])
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
-    const getCatalog = async (catalogCode: number) => {
+    const getCatalog = async (catalogCode: number, sysCatalog: boolean) => {
+      const url = `https://auth.intermercado.com.mx/api/catalogos/${
+        sysCatalog ? 'get-elementos-por-tipo' : 'get-elementos-varios-por-codigo'
+      }?codigo=${catalogCode}`
+
       setIsLoading(true)
       try {
-        const response = await api.get<{ elementos: Catalog[] }>(
-          `https://auth.intermercado.com.mx/api/catalogos/get-elementos-varios-por-codigo?codigo=${catalogCode}`
-        )
-        setData(response.data.elementos)
+        const response = await api.get<{ elementos: Catalog[] }>(url)
+        setData(response.data?.elementos ?? [])
       } catch (err) {
         throw err
       } finally {
@@ -26,7 +28,7 @@ export const useGetCatalog = (catalogCode: number) => {
       }
     }
 
-    getCatalog(catalogCode)
+    getCatalog(catalogCode, sysCatalog)
   }, [])
 
   return { data, isLoading }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 
-import { useValidateClabe } from '@/api/direct-debits.api'
+import { useGetCatalog, useValidateClabe } from '@/api/direct-debits.api'
 import { getIndividualInfo } from '@/api/individuals.api'
 import {
   Card,
@@ -34,8 +34,14 @@ export default function HomePage() {
   const [step, setStep] = useState(1)
   const [idSocketIo, setIdSocketIo] = useState('')
 
+  // Api calls
   const { data } = getIndividualInfo(folioOrden)
+  const { data: nationalityCatalog, isLoading: nationalityCatIsLoading } =
+    useGetCatalog(1032)
+  const { data: maritalStatusCatalog, isLoading: maritalStatusCatIsLoading } =
+    useGetCatalog(11, true)
 
+  // Methods
   const saveStep1 = async () => {
     setStep(2)
   }
@@ -88,6 +94,8 @@ export default function HomePage() {
             formData={data as any}
             isLoading={isLoading}
             onSave={saveStep1}
+            nationalityCatalog={nationalityCatalog}
+            maritalStatusCatalog={maritalStatusCatalog}
           />
         )}
 

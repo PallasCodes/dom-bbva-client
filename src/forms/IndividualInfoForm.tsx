@@ -16,6 +16,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
+import type { Catalog } from '@/types/catalog.interface'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ChevronRight } from 'lucide-react'
 import { useEffect, useState } from 'react'
@@ -50,9 +51,17 @@ type Props = {
   onSave: (data: IndividualFormData) => Promise<any>
   isLoading: boolean
   formData: IndividualFormData
+  nationalityCatalog: Catalog[]
+  maritalStatusCatalog: Catalog[]
 }
 
-export const IndividualInfoForm = ({ onSave, isLoading, formData }: Props) => {
+export const IndividualInfoForm = ({
+  onSave,
+  isLoading,
+  formData,
+  nationalityCatalog,
+  maritalStatusCatalog
+}: Props) => {
   const [disabledForm, setDisabledForm] = useState(true)
 
   const form = useForm<IndividualFormData>({
@@ -203,9 +212,11 @@ export const IndividualInfoForm = ({ onSave, isLoading, formData }: Props) => {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="1">Mexicana</SelectItem>
-                  <SelectItem value="2">Estadounidense</SelectItem>
-                  <SelectItem value="700">Otra</SelectItem>
+                  {nationalityCatalog.map((item) => (
+                    <SelectItem value={item.id.toString()} key={item.id}>
+                      {item.nombre}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -231,9 +242,11 @@ export const IndividualInfoForm = ({ onSave, isLoading, formData }: Props) => {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="1">Soltero</SelectItem>
-                  <SelectItem value="2">Casado</SelectItem>
-                  <SelectItem value="3">Divorciado</SelectItem>
+                  {maritalStatusCatalog.map((item) => (
+                    <SelectItem value={item.id.toString()} key={item.id}>
+                      {item.nombre}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <FormMessage />
