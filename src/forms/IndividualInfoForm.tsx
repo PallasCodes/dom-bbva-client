@@ -1,3 +1,8 @@
+import { ChevronRight } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -17,32 +22,37 @@ import {
   SelectValue
 } from '@/components/ui/select'
 import type { Catalog } from '@/types/catalog.interface'
+import { zodEs } from '@/zod/zod-es'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ChevronRight } from 'lucide-react'
-import { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
 
 const formSchema = z.object({
-  nombre1: z.string().min(1).max(100),
-  nombre2: z.string().min(1).max(100).optional(),
-  apellidoPaterno: z.string().min(1).max(100),
-  apellidoMaterno: z.string().min(1).max(100).optional(),
+  nombre1: z.string().min(1, zodEs.string.min(1)).max(100, zodEs.string.max(100)),
+  nombre2: z
+    .string()
+    .min(1, zodEs.string.min(1))
+    .max(100, zodEs.string.max(100))
+    .optional(),
+  apellidoPaterno: z.string().min(1, zodEs.string.min(1)).max(100, zodEs.string.max(100)),
+  apellidoMaterno: z
+    .string()
+    .min(1, zodEs.string.min(1))
+    .max(100, zodEs.string.max(100))
+    .optional(),
   rfc: z
     .string()
-    .regex(/^[A-ZÑ&]{3,4}\d{6}[A-Z0-9]{3}$/, 'El RFC no es válido')
-    .min(12)
-    .max(13)
-    .toUpperCase(),
+    .regex(/^[A-ZÑ&]{3,4}\d{6}[A-Z0-9]{3}$/, zodEs.regex.rfc)
+    .min(12, zodEs.string.min(12))
+    .max(13, zodEs.string.max(13))
+    .transform((val) => val.toUpperCase()),
   curp: z
     .string()
-    .regex(/^[A-Z][AEIOUX][A-Z]{2}\d{6}[HM][A-Z]{5}[A-Z0-9]\d$/, 'El CURP no es válido')
-    .length(18)
-    .toUpperCase(),
+    .regex(/^[A-Z][AEIOUX][A-Z]{2}\d{6}[HM][A-Z]{5}[A-Z0-9]\d$/, zodEs.regex.curp)
+    .length(18, zodEs.string.length(18))
+    .transform((val) => val.toUpperCase()),
   idNacionalidad: z.number(),
   idEstadoCivil: z.number(),
-  dependientes: z.number().min(0),
-  sexo: z.string().min(1)
+  dependientes: z.number().min(0, zodEs.number.min(0)),
+  sexo: z.string().min(1, zodEs.string.nonempty)
 })
 
 export type IndividualFormData = z.infer<typeof formSchema>

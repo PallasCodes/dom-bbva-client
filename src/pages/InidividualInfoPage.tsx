@@ -16,17 +16,23 @@ import { IndividualInfoForm } from '@/forms/IndividualInfoForm'
 import { useSocket } from '@/hooks/useSocket'
 import { dataURLtoBlob } from '@/utils'
 import { toast } from 'sonner'
+import { ErrorMessage } from '@/components/ErrorMessage'
 
 export default function HomePage() {
   const location = useLocation()
   const { folioOrden } = location.state ?? null
 
   if (!folioOrden) {
-    return <h1>Error</h1>
+    return (
+      <ErrorMessage
+        title="Error al obtener la información de tu folio"
+        description="Por favor ponte en contacto con nosotros"
+      />
+    )
   }
 
   // Hooks
-  const socketRef = useSocket('http://localhost:3000')
+  const socketRef = useSocket(import.meta.env.VITE_WS_URL)
   const { validateClabe } = useValidateClabe()
   const { hideLoader, isLoading } = useLoading()
 
@@ -92,7 +98,7 @@ export default function HomePage() {
         {step === 1 && (
           <IndividualInfoForm
             formData={data as any}
-            isLoading={isLoading}
+            isLoading={isLoading || maritalStatusCatIsLoading || nationalityCatIsLoading}
             onSave={saveStep1}
             nationalityCatalog={nationalityCatalog}
             maritalStatusCatalog={maritalStatusCatalog}

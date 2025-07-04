@@ -1,3 +1,7 @@
+import { ChevronRight } from 'lucide-react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -16,17 +20,15 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
+import { zodEs } from '@/zod/zod-es'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ChevronRight } from 'lucide-react'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
 
 const formSchema = z.object({
   idEstadoNacimiento: z.number(),
   diaNacimiento: z.string(),
   mesNacimiento: z.string(),
   anioNacimiento: z.string(),
-  codigo: z.string().min(4).max(4)
+  codigo: z.string().min(4, zodEs.string.length(4)).max(4, zodEs.string.length(4))
 })
 
 export type CUTValidationFormData = z.infer<typeof formSchema>
@@ -46,13 +48,6 @@ const years = Array.from({ length: lastValidYear - 1920 }, (_, i) => i + 1920).r
 export const CUTValidationForm = ({ onSave, catalogIsLoading, stateCatalog }: Props) => {
   const form = useForm<CUTValidationFormData>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      idEstadoNacimiento: 0,
-      diaNacimiento: '',
-      mesNacimiento: '',
-      anioNacimiento: '',
-      codigo: ''
-    },
     mode: 'onBlur',
     reValidateMode: 'onChange'
   })

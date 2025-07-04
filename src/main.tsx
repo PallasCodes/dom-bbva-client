@@ -5,6 +5,10 @@ import { Toaster } from 'sonner'
 import { LoadingProvider } from './context/LoadingContext'
 import './index.css'
 import { router } from './router'
+import { z } from 'zod'
+import { errorMapEs } from './zod/zod-es'
+
+z.setErrorMap(errorMapEs)
 
 createRoot(document.getElementById('root')!).render(
   <LoadingProvider>

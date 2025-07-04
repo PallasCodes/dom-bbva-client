@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
+import { ChevronRight } from 'lucide-react'
 
 import { SignaturePad } from '@/components/SignaturePad'
 import { Button } from '@/components/ui/button'
@@ -13,15 +14,15 @@ import {
   FormMessage
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { zodEs } from '@/zod/zod-es'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ChevronRight } from 'lucide-react'
 
 const formSchema = z.object({
   clabe: z
     .string()
-    .min(18, 'La CLABE debe tener 18 dígitos')
-    .regex(/^012[0-9]{7,}$/, 'La CLABE debe iniciar con 012 y contener solo números'),
-  signature: z.string().min(1, 'La firma es obligatoria')
+    .min(18, zodEs.string.min(18))
+    .regex(/^012[0-9]{7,}$/, zodEs.regex.clabe),
+  signature: z.string().min(1, zodEs.string.nonempty)
 })
 
 export type BankAccountFormData = z.infer<typeof formSchema>
