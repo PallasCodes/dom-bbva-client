@@ -87,3 +87,22 @@ export const useSaveDirectDebit = () => {
     saveDirectDebit
   }
 }
+
+export const useUploadSignature = () => {
+  const { showLoader, hideLoader } = useLoading()
+
+  const uploadSignature = async (payload: FormData) => {
+    showLoader()
+    try {
+      const response = await api.post(`${PREFIX}/upload-signature`, payload)
+      return response.data
+    } catch (err) {
+      hideLoader()
+      throw err
+    }
+  }
+
+  return {
+    uploadSignature
+  }
+}

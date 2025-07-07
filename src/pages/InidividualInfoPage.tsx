@@ -4,6 +4,7 @@ import { useLocation } from 'react-router-dom'
 import {
   useGetCatalog,
   useSaveDirectDebit,
+  useUploadSignature,
   useValidateClabe,
   type SaveDirectDebitRequest
 } from '@/api/direct-debits.api'
@@ -25,7 +26,7 @@ import { ErrorMessage } from '@/components/ErrorMessage'
 
 export default function HomePage() {
   const location = useLocation()
-  const { folioOrden } = location.state ?? null
+  const { folioOrden, idOrden } = location.state ?? null
 
   if (!folioOrden) {
     return (
@@ -41,6 +42,7 @@ export default function HomePage() {
   const { validateClabe } = useValidateClabe()
   const { hideLoader, isLoading } = useLoading()
   const { saveDirectDebit } = useSaveDirectDebit()
+  const { uploadSignature } = useUploadSignature()
 
   // State
   const [step, setStep] = useState(1)
@@ -74,18 +76,26 @@ export default function HomePage() {
     signature: string
     clabe: string
   }) => {
-    setApiPayload({
+    const file = dataURLtoBlob(signature)
+
+    const updatedPayload: SaveDirectDebitRequest = {
       ...apiPayload,
       clabe,
       urlFirma: signature.substring(0, 200)
-    } as SaveDirectDebitRequest)
-    try {
-      await saveDirectDebit(apiPayload as SaveDirectDebitRequest)
-      const blob = dataURLtoBlob(signature)
-      await validateClabe({ clabe, rfc: 'TOMB971024UW4', idSocketIo })
-    } catch (e) {
-      console.error(e)
-    }
+    } as SaveDirectDebitRequest
+
+    setApiPayload(updatedPayload)
+
+    const formData = new FormData()
+    formData.set('file', file)
+    formData.set('idOrden', idOrden)
+
+    await Promise.all([
+      uploadSignature(formData),
+      saveDirectDebit(updatedPayload),
+      // validateClabe({ clabe, rfc: apiPayload.rfc, idSocketIo })
+      validateClabe({ clabe, rfc: 'TOMB971024UW4', idSocketIo })
+    ])
   }
 
   useEffect(() => {

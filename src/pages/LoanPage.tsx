@@ -29,6 +29,7 @@ export default function LoanPage() {
 
   const navigate = useNavigate()
   // const { data: credit, error } = getLoanInfo(folioOrden)
+  // TODO: fix
   const { data: credit, error } = getLoanInfo('CMV722110VD')
 
   if (error === 404) {
@@ -92,7 +93,11 @@ export default function LoanPage() {
         </Button>
         <Button
           className="grow  text-green-600 bg-green-50 shadow-sm"
-          onClick={() => navigate('/cambiar-domicialiacion', { state: { folioOrden } })}
+          onClick={() =>
+            navigate('/cambiar-domicialiacion', {
+              state: { folioOrden, idOrden: credit?.idOrden }
+            })
+          }
         >
           <Check />
           Correcta
