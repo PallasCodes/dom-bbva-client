@@ -49,7 +49,6 @@ export default function HomePage() {
   const [step, setStep] = useState(1)
   const [idSocketIo, setIdSocketIo] = useState('')
   const [apiPayload, setApiPayload] = useState<SaveDirectDebitRequest>()
-  let idSolicitudDomiciliacion: number
 
   // Api calls
   const { data } = getIndividualInfo(folioOrden)
@@ -60,19 +59,13 @@ export default function HomePage() {
   const { data: directDebit } = useGetDirectDebit(idOrden)
   // TODO: fix typing
 
-  useEffect(() => {
-    if (directDebit) {
-      // @ts-ignore
-      idSolicitudDomiciliacion = directDebit.idSolicitudDom
-    }
-  }, [directDebit])
-
   // Methods
   const saveStep1 = async (formData: IndividualFormData) => {
     setApiPayload({
       ...formData,
       sexo: formData.sexo as 'M' | 'F',
-      idSolicitudDomiciliacion,
+      // @ts-ignore
+      idSolicitudDomiciliacion: directDebit.idSolicitudDom as unknown as number,
       clabe: '',
       urlFirma: ''
     })
