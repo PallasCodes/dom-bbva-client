@@ -18,7 +18,7 @@ import {
   CardTitle
 } from '@/components/ui/card'
 import { useLoading } from '@/context/LoadingContext'
-import { BankAccountForm } from '@/forms/BankAccountForm'
+import { BankAccountForm } from '../forms/BankAccountForm'
 import { IndividualInfoForm, type IndividualFormData } from '@/forms/IndividualInfoForm'
 import { useSocket } from '@/hooks/useSocket'
 import { dataURLtoBlob } from '@/utils'
