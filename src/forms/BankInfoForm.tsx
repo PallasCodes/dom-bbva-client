@@ -32,7 +32,7 @@ type Props = {
   isLoading: boolean
 }
 
-export const BankAccountForm = ({ onSave, isLoading }: Props) => {
+export const BankInfoForm = ({ onSave, isLoading }: Props) => {
   const sigRef = useRef<any>(null)
 
   const form = useForm<BankAccountFormData>({

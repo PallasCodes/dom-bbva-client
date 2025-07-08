@@ -18,7 +18,7 @@ import {
   CardTitle
 } from '@/components/ui/card'
 import { useLoading } from '@/context/LoadingContext'
-import { BankAccountForm } from '../forms/BankAccountForm'
+import { BankInfoForm } from '@/forms/BankInfoForm'
 import { IndividualInfoForm, type IndividualFormData } from '@/forms/IndividualInfoForm'
 import { useSocket } from '@/hooks/useSocket'
 import { dataURLtoBlob } from '@/utils'
@@ -154,7 +154,7 @@ export default function HomePage() {
           />
         )}
 
-        {step === 2 && <BankAccountForm isLoading={isLoading} onSave={saveStep2} />}
+        {step === 2 && <BankInfoForm isLoading={isLoading} onSave={saveStep2} />}
       </CardContent>
     </Card>
   )
