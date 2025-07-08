@@ -28,9 +28,9 @@ export default function LoanPage() {
   }
 
   const navigate = useNavigate()
-  // const { data: credit, error } = getLoanInfo(folioOrden)
+  const { data: credit, error } = getLoanInfo(folioOrden)
   // TODO: fix
-  const { data: credit, error } = getLoanInfo('CMV722110VD')
+  // const { data: credit, error } = getLoanInfo('CMV722110VD')
 
   if (error === 404) {
     return (

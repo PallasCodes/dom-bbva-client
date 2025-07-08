@@ -2,7 +2,11 @@ import { useEffect, useRef } from 'react'
 import { io, Socket } from 'socket.io-client'
 
 interface ServerToClientEvents {
-  clabe_verification_result: (data: { valid: boolean; message: string }) => void
+  clabe_verification_result: (data: {
+    valid: boolean
+    message: string
+    pdfUrl?: string
+  }) => void
 }
 
 type MySocket = Socket<ServerToClientEvents>

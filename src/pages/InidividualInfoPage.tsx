@@ -93,8 +93,8 @@ export default function HomePage() {
     await Promise.all([
       uploadSignature(formData),
       saveDirectDebit(updatedPayload),
-      // validateClabe({ clabe, rfc: apiPayload.rfc, idSocketIo })
-      validateClabe({ clabe, rfc: 'TOMB971024UW4', idSocketIo })
+      validateClabe({ clabe, rfc: apiPayload?.rfc as string, idSocketIo })
+      // validateClabe({ clabe, rfc: 'TOMB971024UW4', idSocketIo })
     ])
   }
 
@@ -110,6 +110,11 @@ export default function HomePage() {
       hideLoader()
       const msg = data.message as string
       data.valid ? toast.success(msg) : toast.error(msg)
+
+      if (data.pdfUrl) {
+        window.open(data.pdfUrl)
+      }
+
       console.log('Recibido:', data)
     })
 
