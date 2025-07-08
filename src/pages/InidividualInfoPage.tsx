@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom'
 
 import {
   useGetCatalog,
+  useGetDirectDebit,
   useSaveDirectDebit,
   useUploadSignature,
   useValidateClabe,
@@ -48,7 +49,7 @@ export default function HomePage() {
   const [step, setStep] = useState(1)
   const [idSocketIo, setIdSocketIo] = useState('')
   const [apiPayload, setApiPayload] = useState<SaveDirectDebitRequest>()
-  const idSolicitudDomiciliacion = 1
+  let idSolicitudDomiciliacion: number
 
   // Api calls
   const { data } = getIndividualInfo(folioOrden)
@@ -56,6 +57,15 @@ export default function HomePage() {
     useGetCatalog(1032)
   const { data: maritalStatusCatalog, isLoading: maritalStatusCatIsLoading } =
     useGetCatalog(11, true)
+  const { data: directDebit } = useGetDirectDebit(idOrden)
+  // TODO: fix typing
+
+  useEffect(() => {
+    if (directDebit) {
+      // @ts-ignore
+      idSolicitudDomiciliacion = directDebit.idSolicitudDom
+    }
+  }, [directDebit])
 
   // Methods
   const saveStep1 = async (formData: IndividualFormData) => {

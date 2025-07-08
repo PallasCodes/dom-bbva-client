@@ -7,6 +7,29 @@ import { api } from '.'
 
 const PREFIX = '/direct-debits'
 
+export const useGetDirectDebit = (idOrden: number) => {
+  const [data, setData] = useState()
+  const [isLoading, setIsLoading] = useState(false)
+
+  useEffect(() => {
+    const getDirectDebit = async (idOrden: number) => {
+      setIsLoading(true)
+      try {
+        const response = await api.get(`${PREFIX}/${idOrden}`)
+        setData(response.data)
+      } catch (err) {
+        throw err
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    getDirectDebit(idOrden)
+  }, [])
+
+  return { data, isLoading }
+}
+
 export const useGetCatalog = (catalogCode: number, sysCatalog: boolean = false) => {
   const [data, setData] = useState<Catalog[]>([])
   const [isLoading, setIsLoading] = useState(false)

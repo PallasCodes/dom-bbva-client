@@ -1,4 +1,4 @@
-import { useGetCatalog } from '@/api/direct-debits.api'
+import { useGetCatalog, useGetDirectDebit } from '@/api/direct-debits.api'
 import { useValidateCut, type ValidateCutPayload } from '@/api/individuals.api'
 import { ErrorMessage } from '@/components/ErrorMessage'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
