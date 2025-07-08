@@ -16,6 +16,7 @@ export const useSocket = (url: string) => {
 
   useEffect(() => {
     const socket: MySocket = io(url, {
+      path: '/dom-bbva/socket.io',
       transports: ['websocket']
     })
 
