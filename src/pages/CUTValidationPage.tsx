@@ -1,5 +1,6 @@
 import { useGetCatalog } from '@/api/direct-debits.api'
 import { useValidateCut, type ValidateCutPayload } from '@/api/individuals.api'
+import { ErrorMessage } from '@/components/ErrorMessage'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { CUTValidationForm, type CUTValidationFormData } from '@/forms/CUTValidationForm'
 
@@ -10,7 +11,12 @@ export default function CUTValidationPage() {
   const folioOrden = params.get('folio')
 
   if (!folioOrden) {
-    return <h1>Error</h1>
+    return (
+      <ErrorMessage
+        title="Error al obtener la información de tu folio"
+        description="Por favor ponte en contacto con nosotros"
+      />
+    )
   }
 
   const navigate = useNavigate()

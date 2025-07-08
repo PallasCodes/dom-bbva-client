@@ -93,8 +93,7 @@ export default function HomePage() {
     await Promise.all([
       uploadSignature(formData),
       saveDirectDebit(updatedPayload),
-      validateClabe({ clabe, rfc: apiPayload?.rfc as string, idSocketIo })
-      // validateClabe({ clabe, rfc: 'TOMB971024UW4', idSocketIo })
+      validateClabe({ clabe, rfc: apiPayload?.rfc as string, idSocketIo, idOrden })
     ])
   }
 
@@ -114,8 +113,6 @@ export default function HomePage() {
       if (data.pdfUrl) {
         window.open(data.pdfUrl)
       }
-
-      console.log('Recibido:', data)
     })
 
     return () => {
