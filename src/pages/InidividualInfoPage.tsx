@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 import {
   useGetCatalog,
@@ -44,6 +44,7 @@ export default function HomePage() {
   const { hideLoader, isLoading } = useLoading()
   const { saveDirectDebit } = useSaveDirectDebit()
   const { uploadSignature } = useUploadSignature()
+  const navigate = useNavigate()
 
   // State
   const [step, setStep] = useState(1)
@@ -106,7 +107,6 @@ export default function HomePage() {
 
     socket.on('connect', () => {
       setIdSocketIo(socket.id as string)
-      console.log('🚀 ~ socket.on ~ socket:', socket)
     })
 
     socket.on('clabe_verification_result', (data) => {
@@ -115,7 +115,7 @@ export default function HomePage() {
       data.valid ? toast.success(msg) : toast.error(msg)
 
       if (data.pdfUrl) {
-        window.open(data.pdfUrl)
+        navigate('/proceso-finalizado', { state: { pdfUrl: data.pdfUrl } })
       }
     })
 
