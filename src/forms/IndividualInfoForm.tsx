@@ -109,7 +109,7 @@ export const IndividualInfoForm = ({
       }
       form.reset(safeData)
     }
-  }, [formData, form])
+  }, [formData, form, nationalityCatalog, maritalStatusCatalog])
 
   return (
     <Form {...form}>
@@ -282,7 +282,7 @@ export const IndividualInfoForm = ({
               <FormControl>
                 <RadioGroup
                   className="flex"
-                  onValueChange={field.onChange}
+                  onValueChange={disabledForm ? () => {} : field.onChange}
                   value={field.value}
                 >
                   <FormItem className="flex items-center gap-3 mr-4">
