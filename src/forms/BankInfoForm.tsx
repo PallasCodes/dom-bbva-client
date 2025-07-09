@@ -1,5 +1,5 @@
 import { ChevronRight, Loader2 } from 'lucide-react'
-import { useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -30,7 +30,7 @@ type Props = {
   isLoading: boolean
   verifyClabe: (clabe: string) => Promise<void>
   verifyingClabe: boolean
-  isClabeValid: boolean
+  isClabeValid: boolean | undefined
 }
 
 export const BankInfoForm = ({
@@ -41,6 +41,7 @@ export const BankInfoForm = ({
   isClabeValid
 }: Props) => {
   const sigRef = useRef<any>(null)
+  const [numClabeValidations, setNumClabeValidations] = useState(0)
 
   const form = useForm<BankAccountFormData>({
     resolver: zodResolver(formSchema),
@@ -61,16 +62,33 @@ export const BankInfoForm = ({
     await onSave(data)
   }
 
-  const validateClabe = async ({ target }: React.ChangeEvent<HTMLInputElement>) => {
-    const value = target.value
+  const validateClabe = async () => {
+    const value = form.getValues('clabe')
 
-    if (value.length === 18 && !isClabeValid) {
+    if (value.length === 18 && !isClabeValid && numClabeValidations < 3) {
       const isValid = await form.trigger('clabe')
       if (isValid) {
+        setNumClabeValidations((prev) => prev + 1)
         await verifyClabe(value)
       }
     }
   }
+
+  useEffect(() => {
+    if (isClabeValid === false) {
+      form.setError('clabe', {
+        message: `La CLABE no es valida. Intento ${numClabeValidations} de 3`
+      })
+    } else if (isClabeValid === true) {
+      form.clearErrors('clabe')
+    }
+  }, [isClabeValid])
+
+  useEffect(() => {
+    if (numClabeValidations >= 3) {
+      form.setError('clabe', { message: 'Haz excedido el límite de intentos' })
+    }
+  }, [numClabeValidations])
 
   return (
     <Form {...form}>
@@ -92,7 +110,6 @@ export const BankInfoForm = ({
                 <div className="relative">
                   <Input
                     {...field}
-                    onBlur={validateClabe}
                     readOnly={verifyingClabe || isClabeValid}
                     className={verifyingClabe || isClabeValid ? 'pr-10' : ''}
                   />
@@ -110,6 +127,15 @@ export const BankInfoForm = ({
             </FormItem>
           )}
         />
+
+        <Button
+          size="sm"
+          variant="outline"
+          disabled={numClabeValidations >= 3 || verifyingClabe}
+          onClick={validateClabe}
+        >
+          Validar CLABE
+        </Button>
 
         <FormField
           control={form.control}
@@ -146,15 +172,21 @@ export const BankInfoForm = ({
           )}
         />
 
-        {verifyingClabe ? (
+        {verifyingClabe && numClabeValidations < 3 && (
           <Button type="submit" className="w-full uppercase mt-2" disabled>
             Cargando
             <Loader2 className="animate-spin" />
           </Button>
-        ) : (
+        )}
+        {!verifyingClabe && numClabeValidations < 3 && (
           <Button type="submit" className="w-full uppercase mt-2">
             Siguiente
             <ChevronRight />
+          </Button>
+        )}
+        {numClabeValidations >= 3 && (
+          <Button type="submit" className="w-full uppercase mt-2" disabled>
+            Bloqueado
           </Button>
         )}
       </form>

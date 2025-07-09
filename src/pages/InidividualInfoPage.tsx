@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import {
-  useGetCatalog,
   useGetDirectDebit,
   useSaveDirectDebit,
   useUploadSignature,
@@ -23,6 +22,7 @@ import { BankInfoForm } from '@/forms/BankInfoForm'
 import { IndividualInfoForm, type IndividualFormData } from '@/forms/IndividualInfoForm'
 import { useSocket } from '@/hooks/useSocket'
 import { dataURLtoBlob } from '@/utils'
+import { AxiosError } from 'axios'
 import { toast } from 'sonner'
 
 export default function HomePage() {
@@ -44,7 +44,7 @@ export default function HomePage() {
   const { saveDirectDebit } = useSaveDirectDebit()
   const { uploadSignature } = useUploadSignature()
   const navigate = useNavigate()
-  const [isClabeValid, setIsClabeValid] = useState(false)
+  const [isClabeValid, setIsClabeValid] = useState<boolean | undefined>()
   const { hideLoader, isLoading } = useLoading()
 
   // State
@@ -106,6 +106,9 @@ export default function HomePage() {
     } catch (error) {
       console.error(error)
       setVerifyingClabe(false)
+      if (error instanceof AxiosError && error.response?.status === 400) {
+        setIsClabeValid(false)
+      }
     }
   }
 
@@ -125,6 +128,7 @@ export default function HomePage() {
         setIsClabeValid(true)
       } else {
         toast.error(msg)
+        setIsClabeValid(false)
       }
 
       setVerifyingClabe(false)
