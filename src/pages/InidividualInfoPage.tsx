@@ -106,6 +106,7 @@ export default function HomePage() {
 
     socket.on('connect', () => {
       setIdSocketIo(socket.id as string)
+      console.log('🚀 ~ socket.on ~ socket:', socket)
     })
 
     socket.on('clabe_verification_result', (data) => {

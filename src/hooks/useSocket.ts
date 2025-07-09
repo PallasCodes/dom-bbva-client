@@ -15,8 +15,8 @@ export const useSocket = (url: string) => {
   const socketRef = useRef<MySocket | null>(null)
 
   useEffect(() => {
-    const socket: MySocket = io(url, {
-      path: '/dom-bbva/socket.io',
+    const socket: MySocket = io(`${url}/dom-bbva`, {
+      path: '/socket.io',
       transports: ['websocket']
     })
 
