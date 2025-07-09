@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -118,7 +119,7 @@ export const IndividualInfoForm = ({
           control={form.control}
           name="nombre1"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className={`${disabledForm ? 'opacity-60' : ''}`}>
               <FormLabel>Nombre*</FormLabel>
               <FormControl>
                 <Input {...field} readOnly={disabledForm} />
@@ -132,7 +133,7 @@ export const IndividualInfoForm = ({
           control={form.control}
           name="nombre2"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className={`${disabledForm ? 'opacity-60' : ''}`}>
               <FormLabel>Segundo nombre</FormLabel>
               <FormControl>
                 <Input {...field} readOnly={disabledForm} />
@@ -146,7 +147,7 @@ export const IndividualInfoForm = ({
           control={form.control}
           name="apellidoPaterno"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className={`${disabledForm ? 'opacity-60' : ''}`}>
               <FormLabel>Apellido Paterno*</FormLabel>
               <FormControl>
                 <Input {...field} readOnly={disabledForm} />
@@ -160,7 +161,7 @@ export const IndividualInfoForm = ({
           control={form.control}
           name="apellidoMaterno"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className={`${disabledForm ? 'opacity-60' : ''}`}>
               <FormLabel>Apellido Materno</FormLabel>
               <FormControl>
                 <Input {...field} readOnly={disabledForm} />
@@ -174,7 +175,7 @@ export const IndividualInfoForm = ({
           control={form.control}
           name="rfc"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className={`${disabledForm ? 'opacity-60' : ''}`}>
               <FormLabel>RFC*</FormLabel>
               <FormControl>
                 <Input {...field} readOnly={disabledForm} />
@@ -188,7 +189,7 @@ export const IndividualInfoForm = ({
           control={form.control}
           name="curp"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className={`${disabledForm ? 'opacity-60' : ''}`}>
               <FormLabel>CURP*</FormLabel>
               <FormControl>
                 <Input {...field} readOnly={disabledForm} />
@@ -202,7 +203,7 @@ export const IndividualInfoForm = ({
           control={form.control}
           name="idNacionalidad"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className={`${disabledForm ? 'opacity-60' : ''}`}>
               <FormLabel>Nacionalidad*</FormLabel>
               <Select
                 onValueChange={(value) => field.onChange(Number(value))}
@@ -230,7 +231,7 @@ export const IndividualInfoForm = ({
           control={form.control}
           name="idEstadoCivil"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className={`${disabledForm ? 'opacity-60' : ''}`}>
               <FormLabel>Estado Civil*</FormLabel>
               <Select
                 onValueChange={(value) => field.onChange(Number(value))}
@@ -258,7 +259,7 @@ export const IndividualInfoForm = ({
           control={form.control}
           name="dependientes"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className={`${disabledForm ? 'opacity-60' : ''}`}>
               <FormLabel>Dependientes*</FormLabel>
               <FormControl>
                 <Input
@@ -277,7 +278,7 @@ export const IndividualInfoForm = ({
           control={form.control}
           name="sexo"
           render={({ field }) => (
-            <FormItem className="space-y-3">
+            <FormItem className={`${disabledForm ? 'opacity-60' : ''} space-y-1`}>
               <FormLabel>Sexo*</FormLabel>
               <FormControl>
                 <RadioGroup
@@ -304,7 +305,7 @@ export const IndividualInfoForm = ({
           )}
         />
 
-        <FormItem className="space-y-3">
+        <FormItem className="space-y-1">
           <FormLabel>¿Estos datos coinciden con tu información personal?</FormLabel>
           <FormControl>
             <RadioGroup
@@ -326,6 +327,9 @@ export const IndividualInfoForm = ({
               </FormItem>
             </RadioGroup>
           </FormControl>
+          <FormDescription>
+            Si tus datos son incorrectos márca la opción "No" y corrigelos.
+          </FormDescription>
           <FormMessage />
         </FormItem>
 
