@@ -51,8 +51,7 @@ export const BankInfoForm = ({ onSave, isLoading }: Props) => {
       return
     }
 
-    const signature = sigRef.current.getSignature()
-    await onSave({ ...data, signature })
+    await onSave(data)
   }
 
   return (

@@ -10,6 +10,7 @@ import {
   type SaveDirectDebitRequest
 } from '@/api/direct-debits.api'
 import { getIndividualInfo } from '@/api/individuals.api'
+import { ErrorMessage } from '@/components/ErrorMessage'
 import {
   Card,
   CardContent,
@@ -23,7 +24,6 @@ import { IndividualInfoForm, type IndividualFormData } from '@/forms/IndividualI
 import { useSocket } from '@/hooks/useSocket'
 import { dataURLtoBlob } from '@/utils'
 import { toast } from 'sonner'
-import { ErrorMessage } from '@/components/ErrorMessage'
 
 export default function HomePage() {
   const location = useLocation()
@@ -53,10 +53,6 @@ export default function HomePage() {
 
   // Api calls
   const { data } = getIndividualInfo(folioOrden)
-  const { data: nationalityCatalog, isLoading: nationalityCatIsLoading } =
-    useGetCatalog(1032)
-  const { data: maritalStatusCatalog, isLoading: maritalStatusCatIsLoading } =
-    useGetCatalog(11, true)
   const { data: directDebit } = useGetDirectDebit(idOrden)
   // TODO: fix typing
 
@@ -67,8 +63,7 @@ export default function HomePage() {
       sexo: formData.sexo as 'M' | 'F',
       // @ts-ignore
       idSolicitudDomiciliacion: directDebit.idSolicitudDom as unknown as number,
-      clabe: '',
-      urlFirma: ''
+      clabe: ''
     })
     setStep(2)
   }
@@ -84,8 +79,7 @@ export default function HomePage() {
 
     const updatedPayload: SaveDirectDebitRequest = {
       ...apiPayload,
-      clabe,
-      urlFirma: signature.substring(0, 200)
+      clabe
     } as SaveDirectDebitRequest
 
     setApiPayload(updatedPayload)
@@ -110,6 +104,7 @@ export default function HomePage() {
     })
 
     socket.on('clabe_verification_result', (data) => {
+      console.log('🚀 ~ socket.on ~ data:', data)
       hideLoader()
       const msg = data.message as string
       data.valid ? toast.success(msg) : toast.error(msg)
@@ -141,10 +136,8 @@ export default function HomePage() {
         {step === 1 && (
           <IndividualInfoForm
             formData={data as any}
-            isLoading={isLoading || maritalStatusCatIsLoading || nationalityCatIsLoading}
+            isLoading={isLoading}
             onSave={saveStep1}
-            nationalityCatalog={nationalityCatalog}
-            maritalStatusCatalog={maritalStatusCatalog}
           />
         )}
 

@@ -15,14 +15,6 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select'
-import type { Catalog } from '@/types/catalog.interface'
 import { zodEs } from '@/zod/zod-es'
 import { zodResolver } from '@hookform/resolvers/zod'
 
@@ -50,9 +42,6 @@ const formSchema = z.object({
     .regex(/^[A-Z][AEIOUX][A-Z]{2}\d{6}[HM][A-Z]{5}[A-Z0-9]\d$/, zodEs.regex.curp)
     .length(18, zodEs.string.length(18))
     .transform((val) => val.toUpperCase()),
-  idNacionalidad: z.number(),
-  idEstadoCivil: z.number(),
-  dependientes: z.number().min(0, zodEs.number.min(0)),
   sexo: z.string().min(1, zodEs.string.nonempty)
 })
 
@@ -62,17 +51,9 @@ type Props = {
   onSave: (data: IndividualFormData) => Promise<any>
   isLoading: boolean
   formData: IndividualFormData
-  nationalityCatalog: Catalog[]
-  maritalStatusCatalog: Catalog[]
 }
 
-export const IndividualInfoForm = ({
-  onSave,
-  isLoading,
-  formData,
-  nationalityCatalog,
-  maritalStatusCatalog
-}: Props) => {
+export const IndividualInfoForm = ({ onSave, isLoading, formData }: Props) => {
   const [disabledForm, setDisabledForm] = useState(true)
 
   const form = useForm<IndividualFormData>({
@@ -84,9 +65,6 @@ export const IndividualInfoForm = ({
       apellidoMaterno: '',
       rfc: '',
       curp: '',
-      idNacionalidad: 0,
-      idEstadoCivil: 0,
-      dependientes: 0,
       sexo: ''
     },
     mode: 'onBlur',
@@ -103,14 +81,11 @@ export const IndividualInfoForm = ({
         apellidoMaterno: formData.apellidoMaterno ?? undefined,
         rfc: formData.rfc ?? '',
         curp: formData.curp ?? '',
-        sexo: formData.sexo ?? '',
-        idNacionalidad: Number(formData.idNacionalidad ?? 0),
-        idEstadoCivil: Number(formData.idEstadoCivil ?? 0),
-        dependientes: formData.dependientes ?? 0
+        sexo: formData.sexo ?? ''
       }
       form.reset(safeData)
     }
-  }, [formData, form, nationalityCatalog, maritalStatusCatalog])
+  }, [formData, form])
 
   return (
     <Form {...form}>
@@ -193,81 +168,6 @@ export const IndividualInfoForm = ({
               <FormLabel>CURP*</FormLabel>
               <FormControl>
                 <Input {...field} readOnly={disabledForm} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="idNacionalidad"
-          render={({ field }) => (
-            <FormItem className={`${disabledForm ? 'opacity-60' : ''}`}>
-              <FormLabel>Nacionalidad*</FormLabel>
-              <Select
-                onValueChange={(value) => field.onChange(Number(value))}
-                value={String(field.value)}
-              >
-                <FormControl className="w-full">
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecciona una nacionalidad" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {nationalityCatalog.map((item) => (
-                    <SelectItem value={item.id.toString()} key={item.id}>
-                      {item.nombre}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="idEstadoCivil"
-          render={({ field }) => (
-            <FormItem className={`${disabledForm ? 'opacity-60' : ''}`}>
-              <FormLabel>Estado Civil*</FormLabel>
-              <Select
-                onValueChange={(value) => field.onChange(Number(value))}
-                value={String(field.value)}
-              >
-                <FormControl className="w-full">
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecciona tu estado civil" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {maritalStatusCatalog.map((item) => (
-                    <SelectItem value={item.id.toString()} key={item.id}>
-                      {item.nombre}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="dependientes"
-          render={({ field }) => (
-            <FormItem className={`${disabledForm ? 'opacity-60' : ''}`}>
-              <FormLabel>Dependientes*</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  {...field}
-                  onChange={(e) => field.onChange(Number(e.target.value))}
-                  readOnly={disabledForm}
-                />
               </FormControl>
               <FormMessage />
             </FormItem>

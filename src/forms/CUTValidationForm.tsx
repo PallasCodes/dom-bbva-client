@@ -49,7 +49,10 @@ export const CUTValidationForm = ({ onSave, catalogIsLoading, stateCatalog }: Pr
   const form = useForm<CUTValidationFormData>({
     resolver: zodResolver(formSchema),
     mode: 'onBlur',
-    reValidateMode: 'onChange'
+    reValidateMode: 'onChange',
+    defaultValues: {
+      idEstadoNacimiento: 9
+    }
   })
 
   return (
