@@ -41,15 +41,17 @@ export default function HomePage() {
   // Hooks
   const socketRef = useSocket(import.meta.env.VITE_WS_URL)
   const { validateClabe } = useValidateClabe()
-  const { hideLoader, isLoading } = useLoading()
   const { saveDirectDebit } = useSaveDirectDebit()
   const { uploadSignature } = useUploadSignature()
   const navigate = useNavigate()
+  const [isClabeValid, setIsClabeValid] = useState(false)
+  const { hideLoader, isLoading } = useLoading()
 
   // State
   const [step, setStep] = useState(1)
   const [idSocketIo, setIdSocketIo] = useState('')
   const [apiPayload, setApiPayload] = useState<SaveDirectDebitRequest>()
+  const [verifyingClabe, setVerifyingClabe] = useState(false)
 
   // Api calls
   const { data } = getIndividualInfo(folioOrden)
@@ -88,11 +90,23 @@ export default function HomePage() {
     formData.set('file', file)
     formData.set('idOrden', idOrden)
 
-    await Promise.all([
-      uploadSignature(formData),
-      saveDirectDebit(updatedPayload),
-      validateClabe({ clabe, rfc: apiPayload?.rfc as string, idSocketIo, idOrden })
-    ])
+    await Promise.all([uploadSignature(formData), saveDirectDebit(updatedPayload)])
+  }
+
+  const verifyClabe = async (clabe: string) => {
+    try {
+      setVerifyingClabe(true)
+      const res = await validateClabe({
+        clabe,
+        rfc: apiPayload?.rfc as string,
+        idSocketIo,
+        idOrden
+      })
+      return res
+    } catch (error) {
+      console.error(error)
+      setVerifyingClabe(false)
+    }
   }
 
   useEffect(() => {
@@ -104,14 +118,16 @@ export default function HomePage() {
     })
 
     socket.on('clabe_verification_result', (data) => {
-      console.log('🚀 ~ socket.on ~ data:', data)
-      hideLoader()
       const msg = data.message as string
-      data.valid ? toast.success(msg) : toast.error(msg)
 
-      if (data.pdfUrl) {
-        navigate('/proceso-finalizado', { state: { pdfUrl: data.pdfUrl } })
+      if (data.valid) {
+        toast.success(msg)
+        setIsClabeValid(true)
+      } else {
+        toast.error(msg)
       }
+
+      setVerifyingClabe(false)
     })
 
     return () => {
@@ -141,7 +157,15 @@ export default function HomePage() {
           />
         )}
 
-        {step === 2 && <BankInfoForm isLoading={isLoading} onSave={saveStep2} />}
+        {step === 2 && (
+          <BankInfoForm
+            isLoading={isLoading}
+            onSave={saveStep2}
+            verifyClabe={verifyClabe}
+            verifyingClabe={verifyingClabe}
+            isClabeValid={isClabeValid}
+          />
+        )}
       </CardContent>
     </Card>
   )

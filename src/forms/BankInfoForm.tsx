@@ -1,13 +1,14 @@
+import { ChevronRight, Loader2 } from 'lucide-react'
 import { useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { ChevronRight } from 'lucide-react'
 
 import { SignaturePad } from '@/components/SignaturePad'
 import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -18,10 +19,7 @@ import { zodEs } from '@/zod/zod-es'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 const formSchema = z.object({
-  clabe: z
-    .string()
-    .min(18, zodEs.string.min(18))
-    .regex(/^012[0-9]{7,}$/, zodEs.regex.clabe),
+  clabe: z.string().regex(/^012\d{15}$/, zodEs.regex.clabe),
   signature: z.string().min(1, zodEs.string.nonempty)
 })
 
@@ -30,9 +28,18 @@ export type BankAccountFormData = z.infer<typeof formSchema>
 type Props = {
   onSave: (data: BankAccountFormData) => Promise<any>
   isLoading: boolean
+  verifyClabe: (clabe: string) => Promise<void>
+  verifyingClabe: boolean
+  isClabeValid: boolean
 }
 
-export const BankInfoForm = ({ onSave, isLoading }: Props) => {
+export const BankInfoForm = ({
+  onSave,
+  isLoading,
+  verifyClabe,
+  verifyingClabe,
+  isClabeValid
+}: Props) => {
   const sigRef = useRef<any>(null)
 
   const form = useForm<BankAccountFormData>({
@@ -54,9 +61,27 @@ export const BankInfoForm = ({ onSave, isLoading }: Props) => {
     await onSave(data)
   }
 
+  const validateClabe = async ({ target }: React.ChangeEvent<HTMLInputElement>) => {
+    const value = target.value
+
+    if (value.length === 18 && !isClabeValid) {
+      const isValid = await form.trigger('clabe')
+      if (isValid) {
+        await verifyClabe(value)
+      }
+    }
+  }
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+      <form
+        onSubmit={
+          isClabeValid && !verifyingClabe
+            ? form.handleSubmit(handleSubmit)
+            : (e) => e.preventDefault()
+        }
+        className="space-y-4"
+      >
         <FormField
           control={form.control}
           name="clabe"
@@ -64,8 +89,23 @@ export const BankInfoForm = ({ onSave, isLoading }: Props) => {
             <FormItem>
               <FormLabel>CLABE Bancaria*</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <div className="relative">
+                  <Input
+                    {...field}
+                    onBlur={validateClabe}
+                    readOnly={verifyingClabe || isClabeValid}
+                    className={verifyingClabe || isClabeValid ? 'pr-10' : ''}
+                  />
+                  {verifyingClabe && (
+                    <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />
+                  )}
+                </div>
               </FormControl>
+              {verifyingClabe && (
+                <FormDescription>
+                  Estamos validando tu cuenta, podría tardar 1 o 2 minutos.
+                </FormDescription>
+              )}
               <FormMessage />
             </FormItem>
           )}
@@ -106,10 +146,17 @@ export const BankInfoForm = ({ onSave, isLoading }: Props) => {
           )}
         />
 
-        <Button type="submit" className="w-full uppercase mt-2" disabled={isLoading}>
-          {isLoading ? 'Guardando...' : 'Siguiente'}
-          <ChevronRight />
-        </Button>
+        {verifyingClabe ? (
+          <Button type="submit" className="w-full uppercase mt-2" disabled>
+            Cargando
+            <Loader2 className="animate-spin" />
+          </Button>
+        ) : (
+          <Button type="submit" className="w-full uppercase mt-2">
+            Siguiente
+            <ChevronRight />
+          </Button>
+        )}
       </form>
     </Form>
   )

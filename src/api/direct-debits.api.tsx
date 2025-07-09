@@ -58,15 +58,15 @@ export const useGetCatalog = (catalogCode: number, sysCatalog: boolean = false) 
 }
 
 export const useValidateClabe = () => {
-  const { showLoader, hideLoader } = useLoading()
+  // const { showLoader, hideLoader } = useLoading()
 
   const validateClabe = async (payload: ValidateClabeRequest) => {
-    showLoader('Estamos validando tu cuenta', 'Podría tardar entre 1 o 2 minutos')
+    // showLoader('Estamos validando tu cuenta', 'Podría tardar entre 1 o 2 minutos')
     try {
       const response = await api.post(`${PREFIX}/validate-clabe`, payload)
       return response.data
     } catch (err) {
-      hideLoader()
+      // hideLoader()
       throw err
     }
   }
