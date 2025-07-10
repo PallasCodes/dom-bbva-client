@@ -172,7 +172,9 @@ export const BankInfoForm = ({ onSave, isLoading, rfc, idOrden }: Props) => {
                   <Input
                     {...field}
                     readOnly={verifyingClabe || isClabeValid || numClabeValidations >= 3}
-                    className={verifyingClabe || isClabeValid ? 'pr-10' : ''}
+                    className={`${verifyingClabe ? 'pr-10' : ''} ${
+                      isClabeValid ? 'pr-10 border-green-500 border-2' : ''
+                    }`}
                   />
                   {verifyingClabe && (
                     <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />
@@ -189,13 +191,8 @@ export const BankInfoForm = ({ onSave, isLoading, rfc, idOrden }: Props) => {
           )}
         />
 
-        {!verifyingClabe && numClabeValidations < 3 && (
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={onValidateClabe}
-            disabled={isClabeValid}
-          >
+        {!verifyingClabe && numClabeValidations < 3 && isClabeValid !== true && (
+          <Button size="sm" variant="outline" onClick={onValidateClabe}>
             Validar CLABE
           </Button>
         )}
@@ -235,22 +232,10 @@ export const BankInfoForm = ({ onSave, isLoading, rfc, idOrden }: Props) => {
           )}
         />
 
-        {(verifyingClabe && numClabeValidations < 3) ||
-          (isLoading && (
-            <Button type="submit" className="w-full uppercase mt-2" disabled>
-              Cargando
-              <Loader2 className="animate-spin" />
-            </Button>
-          ))}
-        {!verifyingClabe && numClabeValidations < 3 && (
+        {isClabeValid && (
           <Button type="submit" className="w-full uppercase mt-2">
             Siguiente
             <ChevronRight />
-          </Button>
-        )}
-        {numClabeValidations >= 3 && (
-          <Button type="submit" className="w-full uppercase mt-2" disabled>
-            Bloqueado
           </Button>
         )}
       </form>
