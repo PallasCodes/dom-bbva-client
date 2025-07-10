@@ -1,4 +1,4 @@
-import { AxiosError, isAxiosError } from 'axios'
+import { isAxiosError } from 'axios'
 import { ChevronRight, Loader2 } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -19,9 +19,9 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { useSocket } from '@/hooks/useSocket'
+import { ValidateClabeError } from '@/types/errors/validate-clabe-error.enum'
 import { zodEs } from '@/zod/zod-es'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ValidateClabeError } from '@/types/errors/validate-clabe-error.enum'
 
 const formSchema = z.object({
   clabe: z.string().regex(/^012\d{15}$/, zodEs.regex.clabe),
@@ -82,14 +82,14 @@ export const BankInfoForm = ({ onSave, isLoading, rfc, idOrden }: Props) => {
             form.setError('clabe', {
               message: error.response.data.message ?? 'La CLABE no es valida'
             })
-            setNumClabeValidations(numClabeValidations + 1)
+            setNumClabeValidations((prev) => prev + 1)
             break
 
           case ValidateClabeError.INVALID_CLABE_OR_RFC:
             form.setError('clabe', {
               message: error.response.data.message ?? 'La CLABE o RFC no son validos'
             })
-            setNumClabeValidations(numClabeValidations + 1)
+            setNumClabeValidations((prev) => prev + 1)
             break
 
           case ValidateClabeError.VALIDATION_TRIES_LIMIT_REACHED:
@@ -148,17 +148,16 @@ export const BankInfoForm = ({ onSave, isLoading, rfc, idOrden }: Props) => {
 
     return () => {
       socket.off('clabe_verification_result')
+      socket.disconnect()
     }
   }, [socketRef])
+
+  const shouldAllowSubmit = isClabeValid && !verifyingClabe
 
   return (
     <Form {...form}>
       <form
-        onSubmit={
-          isClabeValid && !verifyingClabe
-            ? form.handleSubmit(handleSubmit)
-            : (e) => e.preventDefault()
-        }
+        onSubmit={shouldAllowSubmit ? form.handleSubmit(handleSubmit) : undefined}
         className="space-y-4"
       >
         <FormField
@@ -236,6 +235,13 @@ export const BankInfoForm = ({ onSave, isLoading, rfc, idOrden }: Props) => {
           <Button type="submit" className="w-full uppercase mt-2">
             Siguiente
             <ChevronRight />
+          </Button>
+        )}
+
+        {isClabeValid && isLoading && (
+          <Button type="submit" className="w-full uppercase mt-2" disabled>
+            Cargando
+            <Loader2 className="animate-spin" />
           </Button>
         )}
       </form>
