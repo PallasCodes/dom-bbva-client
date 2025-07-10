@@ -5,6 +5,7 @@ import type { IndividualFormData } from '@/forms/IndividualInfoForm'
 import { api } from '.'
 import { AxiosError } from 'axios'
 import { toast } from 'sonner'
+import { sleep } from '@/utils'
 
 const PREFIX = '/individuals'
 
@@ -71,14 +72,15 @@ export interface LoanInfo {
 }
 
 export const getLoanInfo = (folioOrden: string) => {
-  const { showLoader, hideLoader } = useLoading()
   const [data, setData] = useState<LoanInfo | null>(null)
   const [error, setError] = useState<number>()
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
-    showLoader()
     const fetchLoanInfo = async (folioOrden: string) => {
+      setIsLoading(true)
       try {
+        await sleep(3)
         const response = await api.get<LoanInfo>(`${PREFIX}/loan/${folioOrden}`)
         setData(response.data)
       } catch (err) {
@@ -87,12 +89,12 @@ export const getLoanInfo = (folioOrden: string) => {
         }
         throw err
       } finally {
-        hideLoader()
+        setIsLoading(false)
       }
     }
 
     fetchLoanInfo(folioOrden)
   }, [])
 
-  return { data, error }
+  return { data, error, isLoading }
 }

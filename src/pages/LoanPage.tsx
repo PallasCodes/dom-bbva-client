@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/card'
 import { formatDate, numberToCurrency } from '@/utils'
 import { ErrorMessage } from '@/components/ErrorMessage'
+import { Skeleton } from '@/components/ui/skeleton'
 
 export default function LoanPage() {
   const location = useLocation()
@@ -28,7 +29,7 @@ export default function LoanPage() {
   }
 
   const navigate = useNavigate()
-  const { data: credit, error } = getLoanInfo(folioOrden)
+  const { data: credit, error, isLoading } = getLoanInfo(folioOrden)
 
   if (error === 404) {
     return (
@@ -38,6 +39,39 @@ export default function LoanPage() {
       />
     )
   }
+
+  if (isLoading)
+    return (
+      <Card className="max-w-2xl md:mx-auto m-4 ">
+        <CardHeader>
+          <CardTitle className="text-center font-bold text-xl w-full">
+            Datos de tu crédito
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="mb-4">
+            <p className="font-bold">Folio</p>
+            <Skeleton className="h-6 w-full" />
+          </div>
+          <div className="mb-4">
+            <p className="font-bold">Fecha de firma</p>
+            <Skeleton className="h-6 w-full" />
+          </div>
+          <div className="mb-4">
+            <p className="font-bold">Monto que solicitaste</p>
+            <Skeleton className="h-6 w-full" />
+          </div>
+          <div className="mb-4">
+            <p className="font-bold">Total a pagar</p>
+            <Skeleton className="h-6 w-full" />
+          </div>
+          <div>
+            <p className="font-bold">Saldo por pagar</p>
+            <Skeleton className="h-6 w-full" />
+          </div>
+        </CardContent>
+      </Card>
+    )
 
   return (
     <Card className="max-w-2xl md:mx-auto m-4 ">

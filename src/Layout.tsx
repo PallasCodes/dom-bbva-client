@@ -1,10 +1,22 @@
 import { FacebookIcon, Mail, PhoneIcon, Twitter } from 'lucide-react'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useLocation } from 'react-router-dom'
 import { Loader } from './components/Loader'
 import { useLoading } from './context/LoadingContext'
+import { useEffect, useState } from 'react'
 
 export const Layout = () => {
   const { isLoading, title, description } = useLoading()
+  const location = useLocation()
+
+  const [showContent, setShowContent] = useState(true)
+
+  useEffect(() => {
+    setShowContent(false)
+    const timeout = setTimeout(() => {
+      setShowContent(true)
+    }, 50)
+    return () => clearTimeout(timeout)
+  }, [location.pathname])
 
   return (
     <>
@@ -41,10 +53,19 @@ export const Layout = () => {
           </a>
         </div>
       </div>
-      <main>
-        <Outlet />
+
+      <main className="relative overflow-hidden min-h-[300px] transition-all duration-300 ease-in-out">
+        <div
+          key={location.pathname}
+          className={`transition-all duration-700 ease-in-out transform ${
+            showContent ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
+          }`}
+        >
+          <Outlet />
+        </div>
       </main>
-      <Loader loading={isLoading} title={title} description={description} />
+
+      <Loader loading={false} title={title} description={description} />
     </>
   )
 }

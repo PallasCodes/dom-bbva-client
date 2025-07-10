@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useLocation } from 'react-router-dom'
 
 import {
@@ -19,9 +19,7 @@ import {
 import { useLoading } from '@/context/LoadingContext'
 import { BankInfoForm } from '@/forms/BankInfoForm'
 import { IndividualInfoForm, type IndividualFormData } from '@/forms/IndividualInfoForm'
-import { useSocket } from '@/hooks/useSocket'
 import { dataURLtoBlob } from '@/utils'
-import { toast } from 'sonner'
 
 export default function HomePage() {
   const location = useLocation()
@@ -37,17 +35,13 @@ export default function HomePage() {
   }
 
   // Hooks
-  const socketRef = useSocket(import.meta.env.VITE_WS_URL)
   const { saveDirectDebit } = useSaveDirectDebit()
   const { uploadSignature } = useUploadSignature()
   const { isLoading } = useLoading()
 
   // State
   const [step, setStep] = useState(1)
-  const [idSocketIo, setIdSocketIo] = useState('')
   const [apiPayload, setApiPayload] = useState<SaveDirectDebitRequest>()
-  const [isClabeValid, setIsClabeValid] = useState<boolean | undefined>()
-  const [verifyingClabe, setVerifyingClabe] = useState(false)
 
   // Api calls
   const { data } = getIndividualInfo(folioOrden)
@@ -89,33 +83,6 @@ export default function HomePage() {
     await Promise.all([uploadSignature(formData), saveDirectDebit(updatedPayload)])
   }
 
-  useEffect(() => {
-    const socket = socketRef.current
-    if (!socket) return
-
-    socket.on('connect', () => {
-      setIdSocketIo(socket.id as string)
-    })
-
-    socket.on('clabe_verification_result', (data) => {
-      const msg = data.message as string
-
-      if (data.valid) {
-        toast.success(msg)
-        setIsClabeValid(true)
-      } else {
-        toast.error(msg)
-        setIsClabeValid(false)
-      }
-
-      setVerifyingClabe(false)
-    })
-
-    return () => {
-      socket.off('clabe_verification_result')
-    }
-  }, [socketRef])
-
   return (
     <Card className="max-w-2xl md:mx-auto m-4 ">
       <CardHeader className="">
@@ -142,11 +109,8 @@ export default function HomePage() {
           <BankInfoForm
             isLoading={isLoading}
             onSave={saveStep2}
-            idSocketIo={idSocketIo}
             idOrden={idOrden}
             rfc={apiPayload?.rfc ?? ''}
-            isClabeValid={isClabeValid}
-            verifyingClabe={verifyingClabe}
           />
         )}
       </CardContent>

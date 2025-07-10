@@ -16,9 +16,11 @@ import {
   FormMessage
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { useSocket } from '@/hooks/useSocket'
 import { zodEs } from '@/zod/zod-es'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AxiosError } from 'axios'
+import { toast } from 'sonner'
 
 const formSchema = z.object({
   clabe: z.string().regex(/^012\d{15}$/, zodEs.regex.clabe),
@@ -31,27 +33,19 @@ type Props = {
   onSave: (data: BankAccountFormData) => Promise<any>
   isLoading: boolean
   rfc: string
-  idSocketIo: string
   idOrden: number
-  isClabeValid: boolean | undefined
-  verifyingClabe: boolean
 }
 
-export const BankInfoForm = ({
-  onSave,
-  isLoading,
-  rfc,
-  idSocketIo,
-  idOrden,
-  isClabeValid,
-  verifyingClabe
-}: Props) => {
+export const BankInfoForm = ({ onSave, isLoading, rfc, idOrden }: Props) => {
   const sigRef = useRef<any>(null)
   const [numClabeValidations, setNumClabeValidations] = useState(0)
-  const [docZomedIn, setDocZoomedIn] = useState(false)
   const [isClabeValidState, setIsClabeValidState] = useState<boolean | undefined>()
   const [verifyingClabeState, setVerifyingClabeState] = useState(false)
   const { validateClabe } = useValidateClabe()
+  const socketRef = useSocket(import.meta.env.VITE_WS_URL)
+  const [isClabeValid, setIsClabeValid] = useState<boolean | undefined>()
+  const [verifyingClabe, setVerifyingClabe] = useState(false)
+  const [idSocketIo, setIdSocketIo] = useState('')
 
   const form = useForm<BankAccountFormData>({
     resolver: zodResolver(formSchema),
@@ -111,10 +105,6 @@ export const BankInfoForm = ({
     }
   }
 
-  const zoomDoc = () => {
-    setDocZoomedIn(!docZomedIn)
-  }
-
   useEffect(() => {
     if (isClabeValidState === false) {
       form.setError('clabe', {
@@ -130,6 +120,33 @@ export const BankInfoForm = ({
       form.setError('clabe', { message: 'Haz excedido el límite de intentos' })
     }
   }, [numClabeValidations])
+
+  useEffect(() => {
+    const socket = socketRef.current
+    if (!socket) return
+
+    socket.on('connect', () => {
+      setIdSocketIo(socket.id as string)
+    })
+
+    socket.on('clabe_verification_result', (data) => {
+      const msg = data.message as string
+
+      if (data.valid) {
+        toast.success(msg)
+        setIsClabeValid(true)
+      } else {
+        toast.error(msg)
+        setIsClabeValid(false)
+      }
+
+      setVerifyingClabe(false)
+    })
+
+    return () => {
+      socket.off('clabe_verification_result')
+    }
+  }, [socketRef])
 
   return (
     <Form {...form}>
@@ -181,24 +198,6 @@ export const BankInfoForm = ({
             Validar CLABE
           </Button>
         )}
-
-        <div
-          className={`overflow-auto border border-gray-500 document-frame-wrapper flex items-center relative`}
-        >
-          <div
-            className={`document-frame absolute ${
-              docZomedIn ? 'scale-[300%] left-[100%] top-[100%]' : ''
-            }`}
-            onDoubleClick={zoomDoc}
-            onTouchStart={zoomDoc}
-          ></div>
-        </div>
-        <p className="text-sm text-gray-700 mt-[-8px] sm:hidden">
-          *Click en el documento para hacer zoom
-        </p>
-        <p className="text-sm text-gray-700 mt-[-8px] hidden sm:block">
-          *Doble click en el documento para hacer zoom
-        </p>
 
         <FormField
           control={form.control}

@@ -36,3 +36,11 @@ export const formatDate = (date: Date | string) => {
     return ''
   }
 }
+
+export const sleep = (seconds: number): Promise<void> => {
+  return new Promise((accept) => {
+    setTimeout(() => {
+      accept()
+    }, seconds * 1000)
+  })
+}
