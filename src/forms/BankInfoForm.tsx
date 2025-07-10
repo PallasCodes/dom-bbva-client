@@ -189,11 +189,15 @@ export const BankInfoForm = ({
             className={`document-frame absolute ${
               docZomedIn ? 'scale-[300%] left-[100%] top-[100%]' : ''
             }`}
-            onClick={zoomDoc}
+            onDoubleClick={zoomDoc}
+            onTouchStart={zoomDoc}
           ></div>
         </div>
-        <p className="text-sm text-gray-700 mt-[-8px]">
+        <p className="text-sm text-gray-700 mt-[-8px] sm:hidden">
           *Click en el documento para hacer zoom
+        </p>
+        <p className="text-sm text-gray-700 mt-[-8px] hidden sm:block">
+          *Doble click en el documento para hacer zoom
         </p>
 
         <FormField
