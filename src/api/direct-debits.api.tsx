@@ -4,8 +4,9 @@ import { useLoading } from '@/context/LoadingContext'
 import type { Catalog } from '@/types/catalog.interface'
 import type { ValidateClabeRequest } from '@/types/requests/validate-clabe.interface'
 import { api } from '.'
-import { AxiosError } from 'axios'
+import { AxiosError, isAxiosError } from 'axios'
 import { toast } from 'sonner'
+import { ValidateClabeError } from '@/types/errors/validate-clabe-error.enum'
 
 const PREFIX = '/direct-debits'
 
@@ -65,9 +66,11 @@ export const useValidateClabe = () => {
       const response = await api.post(`${PREFIX}/validate-clabe`, payload)
       return response.data
     } catch (err) {
-      if (err instanceof AxiosError) {
-        toast.error(err.response?.data.message ?? 'Ocurrió un error al validar la CLABE')
+      const errCode = isAxiosError(err) ? err?.response?.data.code : null
+      if (!Object.keys(ValidateClabeError).includes(errCode)) {
+        toast.error('Ocurrió un error al validar la CLABE')
       }
+
       throw err
     }
   }

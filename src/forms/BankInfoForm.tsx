@@ -1,4 +1,4 @@
-import { AxiosError } from 'axios'
+import { AxiosError, isAxiosError } from 'axios'
 import { ChevronRight, Loader2 } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -21,6 +21,7 @@ import { Input } from '@/components/ui/input'
 import { useSocket } from '@/hooks/useSocket'
 import { zodEs } from '@/zod/zod-es'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { ValidateClabeError } from '@/types/errors/validate-clabe-error.enum'
 
 const formSchema = z.object({
   clabe: z.string().regex(/^012\d{15}$/, zodEs.regex.clabe),
@@ -60,21 +61,45 @@ export const BankInfoForm = ({ onSave, isLoading, rfc, idOrden }: Props) => {
     reValidateMode: 'onChange'
   })
 
-  const verifyClabeReq = async (clabe: string) => {
+  const validateClabeReq = async (clabe: string) => {
+    setVerifyingClabe(true)
+    form.clearErrors('clabe')
+
     try {
-      setVerifyingClabe(true)
-      const res = await validateClabe({
+      const { numTries } = await validateClabe({
         clabe,
         rfc,
         idSocketIo,
         idOrden
       })
-      return res
+      setNumClabeValidations(numTries ?? numClabeValidations)
     } catch (error) {
       setVerifyingClabe(false)
-      if (error instanceof AxiosError && error.response?.status === 400) {
+
+      if (isAxiosError(error) && error.response?.status === 400) {
+        switch (error.response.data.code) {
+          case ValidateClabeError.INVALID_CLABE:
+            form.setError('clabe', {
+              message: error.response.data.message ?? 'La CLABE no es valida'
+            })
+            setNumClabeValidations(numClabeValidations + 1)
+            break
+
+          case ValidateClabeError.INVALID_CLABE_OR_RFC:
+            form.setError('clabe', {
+              message: error.response.data.message ?? 'La CLABE o RFC no son validos'
+            })
+            setNumClabeValidations(numClabeValidations + 1)
+            break
+
+          case ValidateClabeError.VALIDATION_TRIES_LIMIT_REACHED:
+            form.setError('clabe', {
+              message: error.response.data.message ?? 'Haz execido el límite de intentos'
+            })
+            setNumClabeValidations(3)
+            break
+        }
         setIsClabeValid(false)
-        return error.response.data
       }
     }
   }
@@ -94,27 +119,10 @@ export const BankInfoForm = ({ onSave, isLoading, rfc, idOrden }: Props) => {
     if (value.length === 18 && !isClabeValid && numClabeValidations < 3) {
       const isValid = await form.trigger('clabe')
       if (isValid) {
-        const { numTries } = await verifyClabeReq(value)
-        setNumClabeValidations(numTries ?? numClabeValidations)
+        await validateClabeReq(value)
       }
     }
   }
-
-  useEffect(() => {
-    if (isClabeValid === false) {
-      form.setError('clabe', {
-        message: `La CLABE no es valida. Intento ${numClabeValidations} de 3`
-      })
-    } else if (isClabeValid === true) {
-      form.clearErrors('clabe')
-    }
-  }, [isClabeValid])
-
-  useEffect(() => {
-    if (numClabeValidations >= 3 && !isClabeValid) {
-      form.setError('clabe', { message: 'Haz excedido el límite de intentos' })
-    }
-  }, [numClabeValidations])
 
   useEffect(() => {
     const socket = socketRef.current
@@ -163,7 +171,7 @@ export const BankInfoForm = ({ onSave, isLoading, rfc, idOrden }: Props) => {
                 <div className="relative">
                   <Input
                     {...field}
-                    readOnly={verifyingClabe || isClabeValid}
+                    readOnly={verifyingClabe || isClabeValid || numClabeValidations >= 3}
                     className={verifyingClabe || isClabeValid ? 'pr-10' : ''}
                   />
                   {verifyingClabe && (
@@ -181,12 +189,12 @@ export const BankInfoForm = ({ onSave, isLoading, rfc, idOrden }: Props) => {
           )}
         />
 
-        {!verifyingClabe && (
+        {!verifyingClabe && numClabeValidations < 3 && (
           <Button
             size="sm"
             variant="outline"
-            disabled={numClabeValidations >= 3 || verifyingClabe || isClabeValid}
             onClick={onValidateClabe}
+            disabled={isClabeValid}
           >
             Validar CLABE
           </Button>
