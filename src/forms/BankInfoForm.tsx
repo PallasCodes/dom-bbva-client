@@ -1,7 +1,7 @@
 import { ChevronRight, Loader2 } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
+import { isValid, z } from 'zod'
 
 import { SignaturePad } from '@/components/SignaturePad'
 import { Button } from '@/components/ui/button'
@@ -28,7 +28,7 @@ export type BankAccountFormData = z.infer<typeof formSchema>
 type Props = {
   onSave: (data: BankAccountFormData) => Promise<any>
   isLoading: boolean
-  verifyClabe: (clabe: string) => Promise<void>
+  verifyClabe: (clabe: string) => Promise<{ numTries: number }>
   verifyingClabe: boolean
   isClabeValid: boolean | undefined
 }
@@ -42,6 +42,7 @@ export const BankInfoForm = ({
 }: Props) => {
   const sigRef = useRef<any>(null)
   const [numClabeValidations, setNumClabeValidations] = useState(0)
+  const [docZomedIn, setDocZoomedIn] = useState(false)
 
   const form = useForm<BankAccountFormData>({
     resolver: zodResolver(formSchema),
@@ -49,8 +50,8 @@ export const BankInfoForm = ({
       clabe: '',
       signature: ''
     },
-    mode: 'onBlur',
-    reValidateMode: 'onBlur'
+    mode: 'onChange',
+    reValidateMode: 'onChange'
   })
 
   const handleSubmit = async (data: BankAccountFormData) => {
@@ -68,10 +69,14 @@ export const BankInfoForm = ({
     if (value.length === 18 && !isClabeValid && numClabeValidations < 3) {
       const isValid = await form.trigger('clabe')
       if (isValid) {
-        setNumClabeValidations((prev) => prev + 1)
-        await verifyClabe(value)
+        const { numTries } = await verifyClabe(value)
+        setNumClabeValidations(numTries ?? numClabeValidations)
       }
     }
+  }
+
+  const zoomDoc = () => {
+    setDocZoomedIn(!docZomedIn)
   }
 
   useEffect(() => {
@@ -85,7 +90,7 @@ export const BankInfoForm = ({
   }, [isClabeValid])
 
   useEffect(() => {
-    if (numClabeValidations >= 3) {
+    if (numClabeValidations >= 3 && !isClabeValid) {
       form.setError('clabe', { message: 'Haz excedido el límite de intentos' })
     }
   }, [numClabeValidations])
@@ -120,7 +125,7 @@ export const BankInfoForm = ({
               </FormControl>
               {verifyingClabe && (
                 <FormDescription>
-                  Estamos validando tu cuenta, podría tardar 1 o 2 minutos.
+                  {`La validación podría tardar 1 o 2 minutos. Intento ${numClabeValidations} de 3`}
                 </FormDescription>
               )}
               <FormMessage />
@@ -128,14 +133,30 @@ export const BankInfoForm = ({
           )}
         />
 
-        <Button
-          size="sm"
-          variant="outline"
-          disabled={numClabeValidations >= 3 || verifyingClabe}
-          onClick={validateClabe}
+        {!verifyingClabe && (
+          <Button
+            size="sm"
+            variant="outline"
+            disabled={numClabeValidations >= 3 || verifyingClabe || isClabeValid}
+            onClick={validateClabe}
+          >
+            Validar CLABE
+          </Button>
+        )}
+
+        <div
+          className={`overflow-auto border border-gray-500 document-frame-wrapper flex items-center relative`}
         >
-          Validar CLABE
-        </Button>
+          <div
+            className={`document-frame absolute ${
+              docZomedIn ? 'scale-[300%] left-[100%] top-[100%]' : ''
+            }`}
+            onClick={zoomDoc}
+          ></div>
+        </div>
+        <p className="text-sm text-gray-700 mt-[-8px]">
+          *Click en el documento para hacer zoom
+        </p>
 
         <FormField
           control={form.control}

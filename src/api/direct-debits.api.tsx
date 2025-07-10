@@ -4,6 +4,8 @@ import { useLoading } from '@/context/LoadingContext'
 import type { Catalog } from '@/types/catalog.interface'
 import type { ValidateClabeRequest } from '@/types/requests/validate-clabe.interface'
 import { api } from '.'
+import { AxiosError } from 'axios'
+import { toast } from 'sonner'
 
 const PREFIX = '/direct-debits'
 
@@ -58,15 +60,14 @@ export const useGetCatalog = (catalogCode: number, sysCatalog: boolean = false) 
 }
 
 export const useValidateClabe = () => {
-  // const { showLoader, hideLoader } = useLoading()
-
   const validateClabe = async (payload: ValidateClabeRequest) => {
-    // showLoader('Estamos validando tu cuenta', 'Podría tardar entre 1 o 2 minutos')
     try {
       const response = await api.post(`${PREFIX}/validate-clabe`, payload)
       return response.data
     } catch (err) {
-      // hideLoader()
+      if (err instanceof AxiosError) {
+        toast.error(err.response?.data.message ?? 'Ocurrió un error al validar la CLABE')
+      }
       throw err
     }
   }

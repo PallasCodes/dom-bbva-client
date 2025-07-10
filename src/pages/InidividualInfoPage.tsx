@@ -104,10 +104,10 @@ export default function HomePage() {
       })
       return res
     } catch (error) {
-      console.error(error)
       setVerifyingClabe(false)
       if (error instanceof AxiosError && error.response?.status === 400) {
         setIsClabeValid(false)
+        return error.response.data
       }
     }
   }
