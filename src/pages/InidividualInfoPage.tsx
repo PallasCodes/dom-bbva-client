@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 
 import {
   useGetDirectDebit,
   useSaveDirectDebit,
   useUploadSignature,
-  useValidateClabe,
   type SaveDirectDebitRequest
 } from '@/api/direct-debits.api'
 import { getIndividualInfo } from '@/api/individuals.api'
@@ -22,7 +21,6 @@ import { BankInfoForm } from '@/forms/BankInfoForm'
 import { IndividualInfoForm, type IndividualFormData } from '@/forms/IndividualInfoForm'
 import { useSocket } from '@/hooks/useSocket'
 import { dataURLtoBlob } from '@/utils'
-import { AxiosError } from 'axios'
 import { toast } from 'sonner'
 
 export default function HomePage() {
@@ -40,17 +38,15 @@ export default function HomePage() {
 
   // Hooks
   const socketRef = useSocket(import.meta.env.VITE_WS_URL)
-  const { validateClabe } = useValidateClabe()
   const { saveDirectDebit } = useSaveDirectDebit()
   const { uploadSignature } = useUploadSignature()
-  const navigate = useNavigate()
-  const [isClabeValid, setIsClabeValid] = useState<boolean | undefined>()
-  const { hideLoader, isLoading } = useLoading()
+  const { isLoading } = useLoading()
 
   // State
   const [step, setStep] = useState(1)
   const [idSocketIo, setIdSocketIo] = useState('')
   const [apiPayload, setApiPayload] = useState<SaveDirectDebitRequest>()
+  const [isClabeValid, setIsClabeValid] = useState<boolean | undefined>()
   const [verifyingClabe, setVerifyingClabe] = useState(false)
 
   // Api calls
@@ -91,25 +87,6 @@ export default function HomePage() {
     formData.set('idOrden', idOrden)
 
     await Promise.all([uploadSignature(formData), saveDirectDebit(updatedPayload)])
-  }
-
-  const verifyClabe = async (clabe: string) => {
-    try {
-      setVerifyingClabe(true)
-      const res = await validateClabe({
-        clabe,
-        rfc: apiPayload?.rfc as string,
-        idSocketIo,
-        idOrden
-      })
-      return res
-    } catch (error) {
-      setVerifyingClabe(false)
-      if (error instanceof AxiosError && error.response?.status === 400) {
-        setIsClabeValid(false)
-        return error.response.data
-      }
-    }
   }
 
   useEffect(() => {
@@ -165,9 +142,11 @@ export default function HomePage() {
           <BankInfoForm
             isLoading={isLoading}
             onSave={saveStep2}
-            verifyClabe={verifyClabe}
-            verifyingClabe={verifyingClabe}
+            idSocketIo={idSocketIo}
+            idOrden={idOrden}
+            rfc={apiPayload?.rfc ?? ''}
             isClabeValid={isClabeValid}
+            verifyingClabe={verifyingClabe}
           />
         )}
       </CardContent>

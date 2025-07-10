@@ -1,8 +1,9 @@
 import { ChevronRight, Loader2 } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { isValid, z } from 'zod'
+import { z } from 'zod'
 
+import { useValidateClabe } from '@/api/direct-debits.api'
 import { SignaturePad } from '@/components/SignaturePad'
 import { Button } from '@/components/ui/button'
 import {
@@ -17,6 +18,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { zodEs } from '@/zod/zod-es'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { AxiosError } from 'axios'
 
 const formSchema = z.object({
   clabe: z.string().regex(/^012\d{15}$/, zodEs.regex.clabe),
@@ -28,21 +30,28 @@ export type BankAccountFormData = z.infer<typeof formSchema>
 type Props = {
   onSave: (data: BankAccountFormData) => Promise<any>
   isLoading: boolean
-  verifyClabe: (clabe: string) => Promise<{ numTries: number }>
-  verifyingClabe: boolean
+  rfc: string
+  idSocketIo: string
+  idOrden: number
   isClabeValid: boolean | undefined
+  verifyingClabe: boolean
 }
 
 export const BankInfoForm = ({
   onSave,
   isLoading,
-  verifyClabe,
-  verifyingClabe,
-  isClabeValid
+  rfc,
+  idSocketIo,
+  idOrden,
+  isClabeValid,
+  verifyingClabe
 }: Props) => {
   const sigRef = useRef<any>(null)
   const [numClabeValidations, setNumClabeValidations] = useState(0)
   const [docZomedIn, setDocZoomedIn] = useState(false)
+  const [isClabeValidState, setIsClabeValidState] = useState<boolean | undefined>()
+  const [verifyingClabeState, setVerifyingClabeState] = useState(false)
+  const { validateClabe } = useValidateClabe()
 
   const form = useForm<BankAccountFormData>({
     resolver: zodResolver(formSchema),
@@ -54,6 +63,33 @@ export const BankInfoForm = ({
     reValidateMode: 'onChange'
   })
 
+  useEffect(() => {
+    setIsClabeValidState(isClabeValid)
+  }, [isClabeValid])
+
+  useEffect(() => {
+    setVerifyingClabeState(verifyingClabe)
+  }, [verifyingClabeState])
+
+  const verifyClabeReq = async (clabe: string) => {
+    try {
+      setVerifyingClabeState(true)
+      const res = await validateClabe({
+        clabe,
+        rfc,
+        idSocketIo,
+        idOrden
+      })
+      return res
+    } catch (error) {
+      setVerifyingClabeState(false)
+      if (error instanceof AxiosError && error.response?.status === 400) {
+        setIsClabeValidState(false)
+        return error.response.data
+      }
+    }
+  }
+
   const handleSubmit = async (data: BankAccountFormData) => {
     if (sigRef.current?.isEmpty()) {
       form.setError('signature', { message: 'La firma es obligatoria' })
@@ -63,13 +99,13 @@ export const BankInfoForm = ({
     await onSave(data)
   }
 
-  const validateClabe = async () => {
+  const onValidateClabe = async () => {
     const value = form.getValues('clabe')
 
-    if (value.length === 18 && !isClabeValid && numClabeValidations < 3) {
+    if (value.length === 18 && !isClabeValidState && numClabeValidations < 3) {
       const isValid = await form.trigger('clabe')
       if (isValid) {
-        const { numTries } = await verifyClabe(value)
+        const { numTries } = await verifyClabeReq(value)
         setNumClabeValidations(numTries ?? numClabeValidations)
       }
     }
@@ -80,17 +116,17 @@ export const BankInfoForm = ({
   }
 
   useEffect(() => {
-    if (isClabeValid === false) {
+    if (isClabeValidState === false) {
       form.setError('clabe', {
         message: `La CLABE no es valida. Intento ${numClabeValidations} de 3`
       })
-    } else if (isClabeValid === true) {
+    } else if (isClabeValidState === true) {
       form.clearErrors('clabe')
     }
-  }, [isClabeValid])
+  }, [isClabeValidState])
 
   useEffect(() => {
-    if (numClabeValidations >= 3 && !isClabeValid) {
+    if (numClabeValidations >= 3 && !isClabeValidState) {
       form.setError('clabe', { message: 'Haz excedido el límite de intentos' })
     }
   }, [numClabeValidations])
@@ -99,7 +135,7 @@ export const BankInfoForm = ({
     <Form {...form}>
       <form
         onSubmit={
-          isClabeValid && !verifyingClabe
+          isClabeValidState && !verifyingClabeState
             ? form.handleSubmit(handleSubmit)
             : (e) => e.preventDefault()
         }
@@ -115,15 +151,15 @@ export const BankInfoForm = ({
                 <div className="relative">
                   <Input
                     {...field}
-                    readOnly={verifyingClabe || isClabeValid}
-                    className={verifyingClabe || isClabeValid ? 'pr-10' : ''}
+                    readOnly={verifyingClabeState || isClabeValidState}
+                    className={verifyingClabeState || isClabeValidState ? 'pr-10' : ''}
                   />
-                  {verifyingClabe && (
+                  {verifyingClabeState && (
                     <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />
                   )}
                 </div>
               </FormControl>
-              {verifyingClabe && (
+              {verifyingClabeState && (
                 <FormDescription>
                   {`La validación podría tardar 1 o 2 minutos. Intento ${numClabeValidations} de 3`}
                 </FormDescription>
@@ -133,12 +169,14 @@ export const BankInfoForm = ({
           )}
         />
 
-        {!verifyingClabe && (
+        {!verifyingClabeState && (
           <Button
             size="sm"
             variant="outline"
-            disabled={numClabeValidations >= 3 || verifyingClabe || isClabeValid}
-            onClick={validateClabe}
+            disabled={
+              numClabeValidations >= 3 || verifyingClabeState || isClabeValidState
+            }
+            onClick={onValidateClabe}
           >
             Validar CLABE
           </Button>
@@ -193,13 +231,14 @@ export const BankInfoForm = ({
           )}
         />
 
-        {verifyingClabe && numClabeValidations < 3 && (
-          <Button type="submit" className="w-full uppercase mt-2" disabled>
-            Cargando
-            <Loader2 className="animate-spin" />
-          </Button>
-        )}
-        {!verifyingClabe && numClabeValidations < 3 && (
+        {(verifyingClabeState && numClabeValidations < 3) ||
+          (isLoading && (
+            <Button type="submit" className="w-full uppercase mt-2" disabled>
+              Cargando
+              <Loader2 className="animate-spin" />
+            </Button>
+          ))}
+        {!verifyingClabeState && numClabeValidations < 3 && (
           <Button type="submit" className="w-full uppercase mt-2">
             Siguiente
             <ChevronRight />
