@@ -47,11 +47,14 @@ export default function LoanPage() {
           <CardTitle className="text-center font-bold text-xl w-full">
             Datos de tu crédito
           </CardTitle>
+          <CardDescription className="text-center">
+            Valida que la información sea correcta
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="mb-4">
             <p className="font-bold">Folio</p>
-            <Skeleton className="h-6 w-full" />
+            <Skeleton className="h-6 w-10/12" />
           </div>
           <div className="mb-4">
             <p className="font-bold">Fecha de firma</p>
@@ -59,7 +62,7 @@ export default function LoanPage() {
           </div>
           <div className="mb-4">
             <p className="font-bold">Monto que solicitaste</p>
-            <Skeleton className="h-6 w-full" />
+            <Skeleton className="h-6 w-8/12" />
           </div>
           <div className="mb-4">
             <p className="font-bold">Total a pagar</p>
@@ -67,7 +70,7 @@ export default function LoanPage() {
           </div>
           <div>
             <p className="font-bold">Saldo por pagar</p>
-            <Skeleton className="h-6 w-full" />
+            <Skeleton className="h-6 w-9/12" />
           </div>
         </CardContent>
       </Card>

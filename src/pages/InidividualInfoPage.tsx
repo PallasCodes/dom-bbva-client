@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 import {
   useGetDirectDebit,
@@ -38,6 +38,7 @@ export default function HomePage() {
   const { saveDirectDebit } = useSaveDirectDebit()
   const { uploadSignature } = useUploadSignature()
   const { isLoading } = useLoading()
+  const navigate = useNavigate()
 
   // State
   const [step, setStep] = useState(1)
@@ -80,7 +81,13 @@ export default function HomePage() {
     formData.set('file', file)
     formData.set('idOrden', idOrden)
 
-    await Promise.all([uploadSignature(formData), saveDirectDebit(updatedPayload)])
+    try {
+      await saveDirectDebit(updatedPayload)
+      const { pdfUrl } = await uploadSignature(formData)
+      navigate('/proceso-finalizado', { state: { pdfUrl } })
+    } catch (err) {
+      console.error(err)
+    }
   }
 
   return (
