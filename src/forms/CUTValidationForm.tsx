@@ -51,7 +51,11 @@ export const CUTValidationForm = ({ onSave, catalogIsLoading, stateCatalog }: Pr
     mode: 'onBlur',
     reValidateMode: 'onChange',
     defaultValues: {
-      idEstadoNacimiento: 9
+      idEstadoNacimiento: undefined,
+      anioNacimiento: '',
+      codigo: '',
+      diaNacimiento: '',
+      mesNacimiento: ''
     }
   })
 
