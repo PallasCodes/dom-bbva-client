@@ -1,3 +1,4 @@
+import type { PropsWithChildren } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
 
 interface Props {
@@ -5,15 +6,20 @@ interface Props {
   description?: string
 }
 
-export const ErrorMessage = ({ title, description }: Props) => {
+export const ErrorMessage = ({
+  title,
+  description,
+  children
+}: PropsWithChildren<Props>) => {
   return (
     <Card className="max-w-2xl md:mx-auto m-4 gap-0">
       <CardHeader>
         <CardTitle className="font-bold text-xl w-full">{title}</CardTitle>
       </CardHeader>
-      {description && (
+      {(description || children) && (
         <CardContent>
-          <p>{description}</p>
+          {description && <p>{description}</p>}
+          {children}
         </CardContent>
       )}
     </Card>

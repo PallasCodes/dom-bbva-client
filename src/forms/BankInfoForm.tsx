@@ -231,7 +231,7 @@ export const BankInfoForm = ({ onSave, isLoading, rfc, idOrden }: Props) => {
           )}
         />
 
-        {isClabeValid && (
+        {isClabeValid && !isLoading && (
           <Button type="submit" className="w-full uppercase mt-2">
             Siguiente
             <ChevronRight />

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useLayoutEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import {
@@ -19,13 +19,13 @@ import {
 import { useLoading } from '@/context/LoadingContext'
 import { BankInfoForm } from '@/forms/BankInfoForm'
 import { IndividualInfoForm, type IndividualFormData } from '@/forms/IndividualInfoForm'
+import { useGeolocation } from '@/hooks/useGeolocation'
 import { dataURLtoBlob } from '@/utils'
 
 export default function HomePage() {
   const location = useLocation()
-  const { folioOrden, idOrden } = location.state ?? null
 
-  if (!folioOrden) {
+  if (!location.state || !location.state?.folioOrden || !location.state?.idOrden) {
     return (
       <ErrorMessage
         title="Error al obtener la información de tu folio"
@@ -33,12 +33,20 @@ export default function HomePage() {
       />
     )
   }
+  const { folioOrden, idOrden } = location.state ?? null
 
   // Hooks
   const { saveDirectDebit } = useSaveDirectDebit()
   const { uploadSignature } = useUploadSignature()
   const { isLoading } = useLoading()
   const navigate = useNavigate()
+  const {
+    latitude,
+    longitude,
+    permissionDenied: geolocationDenied,
+    loading: geolocationIsLoading,
+    error: geolocationError
+  } = useGeolocation()
 
   // State
   const [step, setStep] = useState(1)
@@ -47,10 +55,11 @@ export default function HomePage() {
   // Api calls
   const { data } = getIndividualInfo(folioOrden)
   const { data: directDebit } = useGetDirectDebit(idOrden)
-  // TODO: fix typing
+  // TODO: fix types
 
   // Methods
   const saveStep1 = async (formData: IndividualFormData) => {
+    console.log({ latitude, longitude })
     setApiPayload({
       ...formData,
       sexo: formData.sexo as 'M' | 'F',
@@ -60,6 +69,12 @@ export default function HomePage() {
     })
     setStep(2)
   }
+
+  useLayoutEffect(() => {
+    alert(
+      'Es necesario que permitas acceder a tu ubicación para firmar electrónicamente el documento'
+    )
+  }, [])
 
   const saveStep2 = async ({
     clabe,
@@ -80,6 +95,8 @@ export default function HomePage() {
     const formData = new FormData()
     formData.set('file', file)
     formData.set('idOrden', idOrden)
+    formData.set('latitude', String(latitude))
+    formData.set('longitude', String(longitude))
 
     try {
       await saveDirectDebit(updatedPayload)
@@ -88,6 +105,28 @@ export default function HomePage() {
     } catch (err) {
       console.error(err)
     }
+  }
+
+  if (geolocationError || geolocationDenied) {
+    return (
+      <ErrorMessage
+        title="No se pudo obtener tu ubicación"
+        description="Es necesario acceder a tu ubicación para firmar el documento. "
+      >
+        <p className="my-2">
+          Ve a 🔧 Ajustes → Privacidad → Ubicación → y permite el acceso para este sitio.
+        </p>
+        <iframe
+          width="100%"
+          src="https://www.youtube.com/embed/oasvnEOsx4E?si=OlS5NMhzzBBl0Acr"
+          title="YouTube video player"
+          frame-border="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrer-policy="strict-origin-when-cross-origin"
+          allow-fullscreen
+        />
+      </ErrorMessage>
+    )
   }
 
   return (
@@ -114,7 +153,7 @@ export default function HomePage() {
 
         {step === 2 && (
           <BankInfoForm
-            isLoading={isLoading}
+            isLoading={isLoading || geolocationIsLoading}
             onSave={saveStep2}
             idOrden={idOrden}
             rfc={apiPayload?.rfc ?? ''}
