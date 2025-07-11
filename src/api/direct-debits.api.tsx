@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react'
 
 import { useLoading } from '@/context/LoadingContext'
 import type { Catalog } from '@/types/catalog.interface'
-import type { ValidateClabeRequest } from '@/types/requests/validate-clabe.interface'
-import { api } from '.'
-import { AxiosError, isAxiosError } from 'axios'
-import { toast } from 'sonner'
 import { ValidateClabeError } from '@/types/errors/validate-clabe-error.enum'
+import type { ValidateClabeRequest } from '@/types/requests/validate-clabe.interface'
+import { isAxiosError } from 'axios'
+import { toast } from 'sonner'
+import { api } from '.'
 
 const PREFIX = '/direct-debits'
 

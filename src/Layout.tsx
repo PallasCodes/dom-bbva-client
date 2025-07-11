@@ -1,11 +1,8 @@
 import { FacebookIcon, Mail, PhoneIcon, Twitter } from 'lucide-react'
-import { Outlet, useLocation } from 'react-router-dom'
-import { Loader } from './components/Loader'
-import { useLoading } from './context/LoadingContext'
 import { useEffect, useState } from 'react'
+import { Outlet, useLocation } from 'react-router-dom'
 
 export const Layout = () => {
-  const { isLoading, title, description } = useLoading()
   const location = useLocation()
 
   const [showContent, setShowContent] = useState(true)
@@ -64,8 +61,6 @@ export const Layout = () => {
           <Outlet />
         </div>
       </main>
-
-      <Loader loading={false} title={title} description={description} />
     </>
   )
 }
