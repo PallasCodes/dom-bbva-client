@@ -5,6 +5,7 @@ import HomePage from '../pages/InidividualInfoPage'
 import { Layout } from '@/Layout'
 import { ErrorMessage } from '@/components/ErrorMessage'
 import DirectDebitPdfPage from '@/pages/DirectDebitPdfPage'
+import ProcessFinishedPage from '@/pages/ProcessFinishedPage'
 
 export const router = createBrowserRouter([
   {
@@ -23,10 +24,13 @@ export const router = createBrowserRouter([
         path: '/cambiar-domicialiacion',
         element: <HomePage />
       },
-
+      {
+        path: '/firmar-documento',
+        element: <DirectDebitPdfPage />
+      },
       {
         path: '/proceso-finalizado',
-        element: <DirectDebitPdfPage />
+        element: <ProcessFinishedPage />
       },
       {
         path: '/informacion-incorrecta',

@@ -112,20 +112,37 @@ export const useSaveDirectDebit = () => {
 }
 
 export const useUploadSignature = () => {
-  const { showLoader, hideLoader } = useLoading()
-
   const uploadSignature = async (payload: FormData) => {
-    showLoader()
     try {
       const response = await api.post(`${PREFIX}/upload-signature`, payload)
       return response.data
     } catch (err) {
-      hideLoader()
       throw err
     }
   }
 
   return {
     uploadSignature
+  }
+}
+
+export const useSignDirectDebit = () => {
+  const [loading, setLoading] = useState<boolean | undefined>()
+
+  const signDirectDebit = async (idOrden: number) => {
+    setLoading(true)
+    try {
+      const response = await api.post(`${PREFIX}/sign/${idOrden}`)
+      return response.data
+    } catch (err) {
+      throw err
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return {
+    signDirectDebit,
+    loading
   }
 }

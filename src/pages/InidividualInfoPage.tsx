@@ -101,7 +101,7 @@ export default function HomePage() {
     try {
       await saveDirectDebit(updatedPayload)
       const { pdfUrl } = await uploadSignature(formData)
-      navigate('/proceso-finalizado', { state: { pdfUrl } })
+      navigate('/firmar-documento', { state: { pdfUrl, idOrden } })
     } catch (err) {
       console.error(err)
     }
