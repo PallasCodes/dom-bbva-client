@@ -2,10 +2,9 @@ import { useEffect, useState } from 'react'
 
 import { useLoading } from '@/context/LoadingContext'
 import type { IndividualFormData } from '@/forms/IndividualInfoForm'
-import { api } from '.'
 import { AxiosError } from 'axios'
 import { toast } from 'sonner'
-import { sleep } from '@/utils'
+import { api } from '.'
 
 const PREFIX = '/individuals'
 
@@ -80,7 +79,6 @@ export const getLoanInfo = (folioOrden: string) => {
     const fetchLoanInfo = async (folioOrden: string) => {
       setIsLoading(true)
       try {
-        await sleep(3)
         const response = await api.get<LoanInfo>(`${PREFIX}/loan/${folioOrden}`)
         setData(response.data)
       } catch (err) {

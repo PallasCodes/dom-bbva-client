@@ -120,14 +120,14 @@ export default function LoanPage() {
       </CardContent>
       <CardFooter className="flex gap-3 mt-0">
         <Button
-          className="grow text-red-600 bg-red-50 shadow-sm"
+          className="grow text-red-600 bg-red-50 shadow-sm hover:bg-red-100 transition-colors"
           onClick={() => navigate('/informacion-incorrecta')}
         >
           <X />
           Incorrecta
         </Button>
         <Button
-          className="grow  text-green-600 bg-green-50 shadow-sm"
+          className="grow text-green-600 bg-green-50 shadow-sm hover:bg-green-100 transition-colors"
           onClick={() =>
             navigate('/cambiar-domicialiacion', {
               state: { folioOrden, idOrden: credit?.idOrden }
