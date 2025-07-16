@@ -1,4 +1,4 @@
-import { useLayoutEffect } from 'react'
+import { useLayoutEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { useUploadSignature } from '@/api/direct-debits.api'
@@ -34,7 +34,7 @@ export default function ValidateClabePage() {
   const { idOrden, rfc, idSolicitudDom } = location.state ?? null
 
   const { uploadSignature } = useUploadSignature()
-  const { isLoading } = useLoading()
+  const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate()
   const {
     latitude,
@@ -62,11 +62,14 @@ export default function ValidateClabePage() {
     formData.set('longitude', String(longitude))
     formData.set('idSolicitudDom', String(idSolicitudDom))
 
+    setIsLoading(true)
     try {
       const { pdfUrl } = await uploadSignature(formData)
       navigate('/firmar-documento', { state: { pdfUrl, idOrden, idSolicitudDom } })
     } catch (err) {
       console.error(err)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -104,7 +107,7 @@ export default function ValidateClabePage() {
       </CardHeader>
       <CardContent>
         <BankInfoForm
-          isLoading={isLoading || geolocationIsLoading}
+          isLoading={geolocationIsLoading || isLoading}
           onSave={saveStep2}
           idOrden={idOrden}
           rfc={rfc}
