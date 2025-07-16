@@ -10,7 +10,6 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card'
-import { useLoading } from '@/context/LoadingContext'
 import { BankInfoForm } from '@/forms/BankInfoForm'
 import { useGeolocation } from '@/hooks/useGeolocation'
 import { dataURLtoBlob } from '@/utils'
@@ -40,7 +39,6 @@ export default function ValidateClabePage() {
     latitude,
     longitude,
     permissionDenied: geolocationDenied,
-    loading: geolocationIsLoading,
     error: geolocationError
   } = useGeolocation()
 
@@ -107,7 +105,7 @@ export default function ValidateClabePage() {
       </CardHeader>
       <CardContent>
         <BankInfoForm
-          isLoading={geolocationIsLoading || isLoading}
+          isLoading={isLoading}
           onSave={saveStep2}
           idOrden={idOrden}
           rfc={rfc}
