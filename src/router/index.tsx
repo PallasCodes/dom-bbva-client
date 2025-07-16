@@ -1,11 +1,12 @@
-import CUTValidationPage from '@/pages/CUTValidationPage'
-import LoanPage from '@/pages/LoanPage'
-import { createBrowserRouter } from 'react-router-dom'
-import HomePage from '../pages/InidividualInfoPage'
 import { Layout } from '@/Layout'
 import { ErrorMessage } from '@/components/ErrorMessage'
+import CUTValidationPage from '@/pages/CUTValidationPage'
 import DirectDebitPdfPage from '@/pages/DirectDebitPdfPage'
+import LoanPage from '@/pages/LoanPage'
 import ProcessFinishedPage from '@/pages/ProcessFinishedPage'
+import { createBrowserRouter } from 'react-router-dom'
+import IndividualInfoPage from '../pages/IndividualInfoPage'
+import ValidateClabePage from '../pages/ValidateClabePage'
 
 export const router = createBrowserRouter([
   {
@@ -21,8 +22,12 @@ export const router = createBrowserRouter([
         element: <LoanPage />
       },
       {
-        path: '/cambiar-domicialiacion',
-        element: <HomePage />
+        path: '/validar-datos',
+        element: <IndividualInfoPage />
+      },
+      {
+        path: '/validar-clabe',
+        element: <ValidateClabePage />
       },
       {
         path: '/firmar-documento',

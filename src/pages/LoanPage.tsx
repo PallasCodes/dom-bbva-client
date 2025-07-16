@@ -129,7 +129,7 @@ export default function LoanPage() {
         <Button
           className="grow text-green-600 bg-green-50 shadow-sm hover:bg-green-100 transition-colors"
           onClick={() =>
-            navigate('/cambiar-domicialiacion', {
+            navigate('/validar-datos', {
               state: { folioOrden, idOrden: credit?.idOrden }
             })
           }

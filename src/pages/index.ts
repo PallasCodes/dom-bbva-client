@@ -1,1 +1,1 @@
-export * from './InidividualInfoPage'
+export * from './ValidateClabePage'

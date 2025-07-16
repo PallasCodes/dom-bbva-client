@@ -1,13 +1,7 @@
-import { useLayoutEffect, useState } from 'react'
+import { useLayoutEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-import {
-  useGetDirectDebit,
-  useSaveDirectDebit,
-  useUploadSignature,
-  type SaveDirectDebitRequest
-} from '@/api/direct-debits.api'
-import { getIndividualInfo } from '@/api/individuals.api'
+import { useUploadSignature } from '@/api/direct-debits.api'
 import { ErrorMessage } from '@/components/ErrorMessage'
 import {
   Card,
@@ -18,14 +12,13 @@ import {
 } from '@/components/ui/card'
 import { useLoading } from '@/context/LoadingContext'
 import { BankInfoForm } from '@/forms/BankInfoForm'
-import { IndividualInfoForm, type IndividualFormData } from '@/forms/IndividualInfoForm'
 import { useGeolocation } from '@/hooks/useGeolocation'
 import { dataURLtoBlob } from '@/utils'
 
-export default function HomePage() {
+export default function ValidateClabePage() {
   const location = useLocation()
 
-  if (!location.state || !location.state?.folioOrden || !location.state?.idOrden) {
+  if (!location.state || !location.state?.idOrden || !location.state?.rfc) {
     return (
       <ErrorMessage
         title="Error al obtener la información de tu folio"
@@ -33,10 +26,8 @@ export default function HomePage() {
       />
     )
   }
-  const { folioOrden, idOrden } = location.state ?? null
+  const { idOrden, rfc } = location.state ?? null
 
-  // Hooks
-  const { saveDirectDebit } = useSaveDirectDebit()
   const { uploadSignature } = useUploadSignature()
   const { isLoading } = useLoading()
   const navigate = useNavigate()
@@ -48,26 +39,7 @@ export default function HomePage() {
     error: geolocationError
   } = useGeolocation()
 
-  // State
-  const [step, setStep] = useState(1)
-  const [apiPayload, setApiPayload] = useState<SaveDirectDebitRequest>()
-
-  // Api calls
-  const { data } = getIndividualInfo(folioOrden)
-  const { data: directDebit } = useGetDirectDebit(idOrden)
   // TODO: fix types
-
-  // Methods
-  const saveStep1 = async (formData: IndividualFormData) => {
-    console.log({ latitude, longitude })
-    setApiPayload({
-      ...formData,
-      sexo: formData.sexo as 'M' | 'F',
-      // @ts-ignore
-      idSolicitudDomiciliacion: directDebit.idSolicitudDom as unknown as number
-    })
-    setStep(2)
-  }
 
   useLayoutEffect(() => {
     alert(
@@ -85,7 +57,6 @@ export default function HomePage() {
     formData.set('longitude', String(longitude))
 
     try {
-      await saveDirectDebit(apiPayload!)
       const { pdfUrl } = await uploadSignature(formData)
       navigate('/firmar-documento', { state: { pdfUrl, idOrden } })
     } catch (err) {
@@ -119,32 +90,19 @@ export default function HomePage() {
     <Card className="max-w-2xl md:mx-auto m-4 ">
       <CardHeader className="">
         <CardTitle className="text-center font-bold text-xl w-full">
-          {step === 1 && 'Información personal'}
-          {step === 2 && 'Nueva cuenta bancaria'}
+          Nueva cuenta bancaria
         </CardTitle>
-        {step === 2 && (
-          <CardDescription>
-            Registra la CLABE bancaria de BBVA a la que se domiciliará tu pago
-          </CardDescription>
-        )}
+        <CardDescription>
+          Registra la CLABE bancaria de BBVA a la que se domiciliará tu pago
+        </CardDescription>
       </CardHeader>
       <CardContent>
-        {step === 1 && (
-          <IndividualInfoForm
-            formData={data as any}
-            isLoading={isLoading}
-            onSave={saveStep1}
-          />
-        )}
-
-        {step === 2 && (
-          <BankInfoForm
-            isLoading={isLoading || geolocationIsLoading}
-            onSave={saveStep2}
-            idOrden={idOrden}
-            rfc={apiPayload?.rfc ?? ''}
-          />
-        )}
+        <BankInfoForm
+          isLoading={isLoading || geolocationIsLoading}
+          onSave={saveStep2}
+          idOrden={idOrden}
+          rfc={rfc}
+        />
       </CardContent>
     </Card>
   )
