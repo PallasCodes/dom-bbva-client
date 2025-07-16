@@ -64,8 +64,7 @@ export default function HomePage() {
       ...formData,
       sexo: formData.sexo as 'M' | 'F',
       // @ts-ignore
-      idSolicitudDomiciliacion: directDebit.idSolicitudDom as unknown as number,
-      clabe: ''
+      idSolicitudDomiciliacion: directDebit.idSolicitudDom as unknown as number
     })
     setStep(2)
   }
@@ -76,21 +75,8 @@ export default function HomePage() {
     )
   }, [])
 
-  const saveStep2 = async ({
-    clabe,
-    signature
-  }: {
-    signature: string
-    clabe: string
-  }) => {
+  const saveStep2 = async ({ signature }: { signature: string; clabe: string }) => {
     const file = dataURLtoBlob(signature)
-
-    const updatedPayload: SaveDirectDebitRequest = {
-      ...apiPayload,
-      clabe
-    } as SaveDirectDebitRequest
-
-    setApiPayload(updatedPayload)
 
     const formData = new FormData()
     formData.set('file', file)
@@ -99,7 +85,7 @@ export default function HomePage() {
     formData.set('longitude', String(longitude))
 
     try {
-      await saveDirectDebit(updatedPayload)
+      await saveDirectDebit(apiPayload!)
       const { pdfUrl } = await uploadSignature(formData)
       navigate('/firmar-documento', { state: { pdfUrl, idOrden } })
     } catch (err) {

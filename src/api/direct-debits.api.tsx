@@ -88,7 +88,6 @@ export interface SaveDirectDebitRequest {
   rfc: string
   curp: string
   sexo: 'M' | 'F'
-  clabe: string
   idSolicitudDomiciliacion: number
 }
 
