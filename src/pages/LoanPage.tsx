@@ -53,7 +53,7 @@ export default function LoanPage() {
 
   if (isLoading)
     return (
-      <Card className="max-w-2xl md:mx-auto m-4 ">
+      <Card className="max-w-md md:mx-auto m-4 ">
         <CardHeader>
           <CardTitle className="text-center font-bold text-xl w-full">
             Datos de tu crédito
@@ -88,7 +88,7 @@ export default function LoanPage() {
     )
 
   return (
-    <Card className="max-w-2xl md:mx-auto m-4 ">
+    <Card className="max-w-md md:mx-auto m-4 ">
       <CardHeader>
         <CardTitle className="text-center font-bold text-xl w-full">
           Datos de tu crédito

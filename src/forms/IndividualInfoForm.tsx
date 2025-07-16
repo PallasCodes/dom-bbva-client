@@ -41,8 +41,7 @@ const formSchema = z.object({
     .string()
     .regex(/^[A-Z][AEIOUX][A-Z]{2}\d{6}[HM][A-Z]{5}[A-Z0-9]\d$/, zodEs.regex.curp)
     .length(18, zodEs.string.length(18))
-    .transform((val) => val.toUpperCase()),
-  sexo: z.string().min(1, zodEs.string.nonempty)
+    .transform((val) => val.toUpperCase())
 })
 
 export type IndividualFormData = z.infer<typeof formSchema>
@@ -64,8 +63,7 @@ export const IndividualInfoForm = ({ onSave, isLoading, formData }: Props) => {
       apellidoPaterno: '',
       apellidoMaterno: '',
       rfc: '',
-      curp: '',
-      sexo: ''
+      curp: ''
     },
     mode: 'onBlur',
     reValidateMode: 'onBlur'
@@ -80,8 +78,7 @@ export const IndividualInfoForm = ({ onSave, isLoading, formData }: Props) => {
         apellidoPaterno: formData.apellidoPaterno ?? '',
         apellidoMaterno: formData.apellidoMaterno ?? undefined,
         rfc: formData.rfc ?? '',
-        curp: formData.curp ?? '',
-        sexo: formData.sexo ?? ''
+        curp: formData.curp ?? ''
       }
       form.reset(safeData)
     }
@@ -168,37 +165,6 @@ export const IndividualInfoForm = ({ onSave, isLoading, formData }: Props) => {
               <FormLabel>CURP*</FormLabel>
               <FormControl>
                 <Input {...field} readOnly={disabledForm} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="sexo"
-          render={({ field }) => (
-            <FormItem className={`${disabledForm ? 'opacity-60' : ''} space-y-1`}>
-              <FormLabel>Sexo*</FormLabel>
-              <FormControl>
-                <RadioGroup
-                  className="flex"
-                  onValueChange={disabledForm ? () => {} : field.onChange}
-                  value={field.value}
-                >
-                  <FormItem className="flex items-center gap-3 mr-4">
-                    <FormControl>
-                      <RadioGroupItem value="M" />
-                    </FormControl>
-                    <FormLabel className="font-normal">Masculino</FormLabel>
-                  </FormItem>
-                  <FormItem className="flex items-center gap-3">
-                    <FormControl>
-                      <RadioGroupItem value="F" />
-                    </FormControl>
-                    <FormLabel className="font-normal">Femenino</FormLabel>
-                  </FormItem>
-                </RadioGroup>
               </FormControl>
               <FormMessage />
             </FormItem>

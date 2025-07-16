@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
+import { SignDocForm } from '@/forms/SingDocForm'
 import { Check, Loader2 } from 'lucide-react'
 import { useState, type FormEvent } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
@@ -54,20 +55,23 @@ export default function DirectDebitPdfPage() {
   }
 
   return (
-    <Card className="max-w-2xl md:mx-auto m-4 gap-2">
+    <Card className="max-w-md md:mx-auto m-4 gap-2">
       <CardHeader className="">
         <CardTitle className="text-center font-bold text-xl w-full">
           Firma de documento
         </CardTitle>
       </CardHeader>
       <CardContent className="px-4">
-        <div style={{ width: '100%', aspectRatio: '7.9 / 11' }} className="max-w-4xl">
+        <div
+          style={{ width: '100%', aspectRatio: '7.9 / 11' }}
+          className="max-w-4xl mb-6"
+        >
           <iframe
             src={`https://docs.google.com/gview?embedded=true&url=${state.pdfUrl}`}
             style={{ width: '100%', height: '100%', border: 'none' }}
           />
         </div>
-        <form onSubmit={onSubmit}>
+        {/* <form onSubmit={onSubmit}>
           <div className="flex gap-2 mt-6">
             <Checkbox
               id="acceptTerms"
@@ -90,11 +94,12 @@ export default function DirectDebitPdfPage() {
             </Button>
           ) : (
             <Button className="w-full mt-6" type="submit">
-              Finalizar
+              Firmar electrónicamente
               <Check />
             </Button>
           )}
-        </form>
+        </form> */}
+        <SignDocForm />
       </CardContent>
     </Card>
   )

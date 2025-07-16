@@ -12,7 +12,7 @@ export const ErrorMessage = ({
   children
 }: PropsWithChildren<Props>) => {
   return (
-    <Card className="max-w-2xl md:mx-auto m-4 gap-0">
+    <Card className="max-w-md md:mx-auto m-4 gap-0">
       <CardHeader>
         <CardTitle className="font-bold text-xl w-full">{title}</CardTitle>
       </CardHeader>

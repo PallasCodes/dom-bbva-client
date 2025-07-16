@@ -40,7 +40,7 @@ export default function CUTValidationPage() {
   }
 
   return (
-    <Card className="max-w-2xl md:mx-auto m-4">
+    <Card className="max-w-md md:mx-auto m-4">
       <CardHeader className="">
         <CardTitle className="text-center font-bold text-xl w-full">
           Autentícate
