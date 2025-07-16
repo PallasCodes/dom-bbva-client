@@ -9,21 +9,20 @@ interface ServerToClientEvents {
   }) => void
 }
 
+const MODE = import.meta.env.VITE_MODE
+
 type MySocket = Socket<ServerToClientEvents>
 
 export const useSocket = (url: string) => {
   const socketRef = useRef<MySocket | null>(null)
+  const fullUrl = MODE === 'prod' ? `${url}/dom-bbva` : url
+  const path = MODE === 'prod' ? '/dom-bbva/socket.io' : ''
 
   useEffect(() => {
-    const socket: MySocket =
-      import.meta.env.VITE_MODE === 'prod'
-        ? io(`${url}/dom-bbva`, {
-            path: '/dom-bbva/socket.io',
-            transports: ['websocket']
-          })
-        : io(url, {
-            transports: ['websocket']
-          })
+    const socket: MySocket = io(fullUrl, {
+      path,
+      transports: ['websocket']
+    })
 
     socketRef.current = socket
 
