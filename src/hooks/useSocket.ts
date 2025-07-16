@@ -16,7 +16,7 @@ export const useSocket = (url: string) => {
 
   useEffect(() => {
     const socket: MySocket =
-      import.meta.env.MODE === 'prod'
+      import.meta.env.VITE_MODE === 'prod'
         ? io(`${url}/dom-bbva`, {
             path: '/dom-bbva/socket.io',
             transports: ['websocket']

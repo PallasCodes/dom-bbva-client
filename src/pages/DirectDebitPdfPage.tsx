@@ -16,7 +16,7 @@ export default function DirectDebitPdfPage() {
   const [acceptTerms, setAcceptTerms] = useState<'false' | 'true'>('false')
   const [formError, setFormError] = useState<string | undefined>(undefined)
 
-  if (!state || !state.pdfUrl || !state.idOrden) {
+  if (!state || !state.pdfUrl || !state.idOrden || !state.idSolicitudDom) {
     return (
       <ErrorMessage
         title="Error al generar el documento"
@@ -31,7 +31,7 @@ export default function DirectDebitPdfPage() {
     if (acceptTerms === 'true') {
       setFormError(undefined)
       try {
-        await signDirectDebit(state.idOrden)
+        await signDirectDebit(state.idOrden, state.idSolicitudDom)
         navigate('/proceso-finalizado')
       } catch (error) {}
     } else {

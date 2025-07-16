@@ -36,7 +36,14 @@ export default function IndividualInfoPage() {
         // @ts-ignore
         idSolicitudDomiciliacion: directDebit.idSolicitudDom as unknown as number
       })
-      navigate('/validar-clabe', { state: { idOrden, rfc: formData.rfc } })
+      navigate('/validar-clabe', {
+        state: {
+          idOrden,
+          rfc: formData.rfc,
+          // @ts-ignore
+          idSolicitudDom: directDebit!.idSolicitudDom
+        }
+      })
     } catch (err) {}
   }
 

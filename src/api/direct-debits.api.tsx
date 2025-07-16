@@ -128,10 +128,10 @@ export const useUploadSignature = () => {
 export const useSignDirectDebit = () => {
   const [loading, setLoading] = useState<boolean | undefined>()
 
-  const signDirectDebit = async (idOrden: number) => {
+  const signDirectDebit = async (idOrden: number, idSolicitudDom: number) => {
     setLoading(true)
     try {
-      const response = await api.post(`${PREFIX}/sign/${idOrden}`)
+      const response = await api.post(`${PREFIX}/sign/${idOrden}`, { idSolicitudDom })
       return response.data
     } catch (err) {
       throw err
@@ -142,6 +142,27 @@ export const useSignDirectDebit = () => {
 
   return {
     signDirectDebit,
+    loading
+  }
+}
+
+export const useValidateLoan = () => {
+  const [loading, setLoading] = useState<boolean | undefined>()
+
+  const validateLoan = async (idSolicitudDom: number) => {
+    setLoading(true)
+    try {
+      const response = await api.post(`${PREFIX}/validate-loan/${idSolicitudDom}`)
+      return response.data
+    } catch (err) {
+      throw err
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return {
+    validateLoan,
     loading
   }
 }

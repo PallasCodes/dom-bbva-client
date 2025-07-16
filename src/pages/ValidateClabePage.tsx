@@ -18,7 +18,12 @@ import { dataURLtoBlob } from '@/utils'
 export default function ValidateClabePage() {
   const location = useLocation()
 
-  if (!location.state || !location.state?.idOrden || !location.state?.rfc) {
+  if (
+    !location.state ||
+    !location.state?.idOrden ||
+    !location.state?.rfc ||
+    !location.state?.idSolicitudDom
+  ) {
     return (
       <ErrorMessage
         title="Error al obtener la información de tu folio"
@@ -26,7 +31,7 @@ export default function ValidateClabePage() {
       />
     )
   }
-  const { idOrden, rfc } = location.state ?? null
+  const { idOrden, rfc, idSolicitudDom } = location.state ?? null
 
   const { uploadSignature } = useUploadSignature()
   const { isLoading } = useLoading()
@@ -55,10 +60,11 @@ export default function ValidateClabePage() {
     formData.set('idOrden', idOrden)
     formData.set('latitude', String(latitude))
     formData.set('longitude', String(longitude))
+    formData.set('idSolicitudDom', String(idSolicitudDom))
 
     try {
       const { pdfUrl } = await uploadSignature(formData)
-      navigate('/firmar-documento', { state: { pdfUrl, idOrden } })
+      navigate('/firmar-documento', { state: { pdfUrl, idOrden, idSolicitudDom } })
     } catch (err) {
       console.error(err)
     }

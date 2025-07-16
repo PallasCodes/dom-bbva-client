@@ -68,6 +68,7 @@ export interface LoanInfo {
   totalPagar: number
   idOrden: number
   porPagar: number
+  idSolicitudDom: number
 }
 
 export const getLoanInfo = (folioOrden: string) => {
