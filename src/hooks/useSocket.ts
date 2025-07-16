@@ -16,14 +16,15 @@ export const useSocket = (url: string) => {
 
   useEffect(() => {
     const socket: MySocket =
-      import.meta.env.MODE === 'prod'
-        ? io(`${url}/dom-bbva`, {
-            path: '/dom-bbva/socket.io',
-            transports: ['websocket']
-          })
-        : io(url, {
-            transports: ['websocket']
-          })
+      // import.meta.env.MODE === 'prod'
+      //   ?
+      io(`${url}/dom-bbva`, {
+        path: '/dom-bbva/socket.io',
+        transports: ['websocket']
+      })
+    // : io(url, {
+    //     transports: ['websocket']
+    //   })
 
     socketRef.current = socket
 

@@ -130,10 +130,12 @@ export const BankInfoForm = ({ onSave, isLoading, rfc, idOrden }: Props) => {
 
     socket.on('connect', () => {
       setIdSocketIo(socket.id as string)
+      console.log('socket id ', socket.id)
     })
 
     socket.on('clabe_verification_result', (data) => {
       const msg = data.message as string
+      console.log('clabe ', data)
 
       if (data.valid) {
         toast.success(msg)
