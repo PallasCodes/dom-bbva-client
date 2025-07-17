@@ -60,7 +60,7 @@ export default function ValidateClabePage() {
     try {
       const { pdfUrl } = await uploadSignature(formData)
       // @ts-ignore
-      await setSolDom((prev) => ({ ...prev, pdfUrl }))
+      await setSolDom((prev) => ({ ...prev, publicUrl: pdfUrl }))
       navigate('/firmar-documento')
     } catch (err) {
       console.error(err)
