@@ -3,8 +3,9 @@ import { useValidateCut, type ValidateCutPayload } from '@/api/individuals.api'
 import { ErrorMessage } from '@/components/ErrorMessage'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { CUTValidationForm, type CUTValidationFormData } from '@/forms/CUTValidationForm'
+import { useValidateDirectDebit } from '@/hooks/useValidateDirectDebit'
 
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 
 export default function CUTValidationPage() {
   const [params] = useSearchParams()
@@ -19,8 +20,7 @@ export default function CUTValidationPage() {
     )
   }
 
-  const navigate = useNavigate()
-
+  const { validateDirectDebit } = useValidateDirectDebit()
   const { data: stateCatalog, isLoading: catalogIsLoading } = useGetCatalog(1003)
   const { validateCut } = useValidateCut()
 
@@ -32,8 +32,8 @@ export default function CUTValidationPage() {
       idEstadoNacimiento: payload.idEstadoNacimiento
     }
     try {
-      await validateCut(apiPayload)
-      navigate('/info-credito', { state: { folioOrden } })
+      const { solDom } = await validateCut(apiPayload)
+      validateDirectDebit(solDom)
     } catch (error) {
       console.error(error)
     }

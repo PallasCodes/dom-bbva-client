@@ -9,12 +9,13 @@ import {
   CardTitle
 } from '@/components/ui/card'
 import { IndividualInfoForm, type IndividualFormData } from '@/forms/IndividualInfoForm'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useAuth } from '@/store/auth.store'
+import { useNavigate } from 'react-router-dom'
 
 export default function IndividualInfoPage() {
-  const location = useLocation()
+  const { solDom } = useAuth()
 
-  if (!location.state || !location.state?.folioOrden || !location.state?.idOrden) {
+  if (!solDom || !solDom.folioOrden || !solDom.idOrden) {
     return (
       <ErrorMessage
         title="Error al obtener la información de tu folio"
@@ -22,7 +23,7 @@ export default function IndividualInfoPage() {
       />
     )
   }
-  const { folioOrden, idOrden } = location.state ?? null
+  const { folioOrden, idOrden } = solDom
   const { data: directDebit } = useGetDirectDebit(idOrden)
   const { data } = getIndividualInfo(folioOrden)
   const { saveDirectDebit } = useSaveDirectDebit()
@@ -35,14 +36,7 @@ export default function IndividualInfoPage() {
         // @ts-ignore
         idSolicitudDomiciliacion: directDebit.idSolicitudDom as unknown as number
       })
-      navigate('/validar-clabe', {
-        state: {
-          idOrden,
-          rfc: formData.rfc,
-          // @ts-ignore
-          idSolicitudDom: directDebit!.idSolicitudDom
-        }
-      })
+      navigate('/validar-clabe')
     } catch (err) {}
   }
 

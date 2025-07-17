@@ -1,5 +1,5 @@
 import { useLayoutEffect, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import { useUploadSignature } from '@/api/direct-debits.api'
 import { ErrorMessage } from '@/components/ErrorMessage'
@@ -12,17 +12,13 @@ import {
 } from '@/components/ui/card'
 import { BankInfoForm } from '@/forms/BankInfoForm'
 import { useGeolocation } from '@/hooks/useGeolocation'
+import { useAuth } from '@/store/auth.store'
 import { dataURLtoBlob } from '@/utils'
 
 export default function ValidateClabePage() {
-  const location = useLocation()
+  const { solDom, setSolDom } = useAuth()
 
-  if (
-    !location.state ||
-    !location.state?.idOrden ||
-    !location.state?.rfc ||
-    !location.state?.idSolicitudDom
-  ) {
+  if (!solDom || !solDom?.idOrden || !solDom?.rfc || !solDom?.idSolicitudDom) {
     return (
       <ErrorMessage
         title="Error al obtener la información de tu folio"
@@ -30,7 +26,7 @@ export default function ValidateClabePage() {
       />
     )
   }
-  const { idOrden, rfc, idSolicitudDom } = location.state ?? null
+  const { idOrden, rfc, idSolicitudDom } = solDom
 
   const { uploadSignature } = useUploadSignature()
   const [isLoading, setIsLoading] = useState(false)
@@ -55,7 +51,7 @@ export default function ValidateClabePage() {
 
     const formData = new FormData()
     formData.set('file', file)
-    formData.set('idOrden', idOrden)
+    formData.set('idOrden', String(idOrden))
     formData.set('latitude', String(latitude))
     formData.set('longitude', String(longitude))
     formData.set('idSolicitudDom', String(idSolicitudDom))
@@ -63,7 +59,9 @@ export default function ValidateClabePage() {
     setIsLoading(true)
     try {
       const { pdfUrl } = await uploadSignature(formData)
-      navigate('/firmar-documento', { state: { pdfUrl, idOrden, idSolicitudDom } })
+      // @ts-ignore
+      await setSolDom((prev) => ({ ...prev, pdfUrl }))
+      navigate('/firmar-documento')
     } catch (err) {
       console.error(err)
     } finally {

@@ -2,14 +2,15 @@ import { useSignDirectDebit } from '@/api/direct-debits.api'
 import { ErrorMessage } from '@/components/ErrorMessage'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { SignDocForm } from '@/forms/SingDocForm'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useAuth } from '@/store/auth.store'
+import { useNavigate } from 'react-router-dom'
 
 export default function DirectDebitPdfPage() {
-  const { state } = useLocation()
+  const { solDom } = useAuth()
   const { signDirectDebit, loading } = useSignDirectDebit()
   const navigate = useNavigate()
 
-  if (!state || !state.pdfUrl || !state.idOrden || !state.idSolicitudDom) {
+  if (!solDom || !solDom.publicUrl || !solDom.idOrden || !solDom.idSolicitudDom) {
     return (
       <ErrorMessage
         title="Error al generar el documento"
@@ -20,7 +21,7 @@ export default function DirectDebitPdfPage() {
 
   const onSubmit = async () => {
     try {
-      await signDirectDebit(state.idOrden, state.idSolicitudDom)
+      await signDirectDebit(solDom.idOrden, solDom.idSolicitudDom)
       navigate('/proceso-finalizado')
     } catch (error) {}
   }
@@ -38,7 +39,7 @@ export default function DirectDebitPdfPage() {
           className="max-w-4xl mb-6"
         >
           <iframe
-            src={`https://docs.google.com/gview?embedded=true&url=${state.pdfUrl}`}
+            src={`https://docs.google.com/gview?embedded=true&url=${solDom.publicUrl}`}
             style={{ width: '100%', height: '100%', border: 'none' }}
           />
         </div>

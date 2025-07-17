@@ -1,7 +1,9 @@
-import { useLocation, useNavigate } from 'react-router-dom'
 import { Check, X } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 
+import { useValidateLoan } from '@/api/direct-debits.api'
 import { getLoanInfo } from '@/api/individuals.api'
+import { ErrorMessage } from '@/components/ErrorMessage'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -11,16 +13,14 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card'
-import { formatDate, numberToCurrency } from '@/utils'
-import { ErrorMessage } from '@/components/ErrorMessage'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useValidateLoan } from '@/api/direct-debits.api'
+import { useAuth } from '@/store/auth.store'
+import { formatDate, numberToCurrency } from '@/utils'
 
 export default function LoanPage() {
-  const location = useLocation()
-  const { folioOrden } = location.state
+  const { solDom } = useAuth()
 
-  if (!folioOrden) {
+  if (!solDom || !solDom.folioOrden) {
     return (
       <ErrorMessage
         title="Error al obtener la información de tu folio"
@@ -28,6 +28,7 @@ export default function LoanPage() {
       />
     )
   }
+  const { folioOrden } = solDom
 
   const navigate = useNavigate()
   const { data: loan, error, isLoading } = getLoanInfo(folioOrden)
@@ -36,9 +37,7 @@ export default function LoanPage() {
   const handleValidateData = async () => {
     try {
       await validateLoan(loan!.idSolicitudDom)
-      navigate('/validar-datos', {
-        state: { folioOrden, idOrden: loan!.idOrden }
-      })
+      navigate('/validar-datos')
     } catch (e) {}
   }
 
