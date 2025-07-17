@@ -125,7 +125,7 @@ export const useUploadSignature = () => {
 }
 
 export const useSignDirectDebit = () => {
-  const [loading, setLoading] = useState<boolean | undefined>()
+  const [loading, setLoading] = useState<boolean>(false)
 
   const signDirectDebit = async (idOrden: number, idSolicitudDom: number) => {
     setLoading(true)
