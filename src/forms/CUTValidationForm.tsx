@@ -184,7 +184,7 @@ export const CUTValidationForm = ({ onSave, catalogIsLoading, stateCatalog }: Pr
             <FormItem>
               <FormLabel>Confirmación de Código Único de Trámite*</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input {...field} autoComplete="off" />
               </FormControl>
               <FormDescription>
                 Lo recibirás en tu teléfono celular, puede tardar unos minutos

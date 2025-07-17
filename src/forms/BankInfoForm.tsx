@@ -1,6 +1,6 @@
 import { isAxiosError } from 'axios'
 import { ChevronRight, Loader2 } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
@@ -22,9 +22,13 @@ import { useSocket } from '@/hooks/useSocket'
 import { ValidateClabeError } from '@/types/errors/validate-clabe-error.enum'
 import { zodEs } from '@/zod/zod-es'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { sleep } from '@/utils'
 
 const formSchema = z.object({
-  clabe: z.string().regex(/^012\d{15}$/, zodEs.regex.clabe),
+  clabe: z
+    .string()
+    .regex(/^012\d{15}$/, zodEs.regex.clabe)
+    .min(1),
   signature: z.string().min(1, zodEs.string.nonempty)
 })
 
@@ -110,6 +114,10 @@ export const BankInfoForm = ({ onSave, isLoading, rfc, idOrden }: Props) => {
       return
     }
 
+    console.log({ data })
+
+    await sleep(5)
+
     await onSave(data)
   }
 
@@ -130,12 +138,10 @@ export const BankInfoForm = ({ onSave, isLoading, rfc, idOrden }: Props) => {
 
     socket.on('connect', () => {
       setIdSocketIo(socket.id as string)
-      console.log('socket id ', socket.id)
     })
 
     socket.on('clabe_verification_result', (data) => {
       const msg = data.message as string
-      console.log('clabe ', data)
 
       if (data.valid) {
         toast.success(msg)
@@ -154,14 +160,14 @@ export const BankInfoForm = ({ onSave, isLoading, rfc, idOrden }: Props) => {
     }
   }, [socketRef])
 
-  const shouldAllowSubmit = isClabeValid && !verifyingClabe
+  const shouldAllowSubmit = useMemo(
+    () => isClabeValid && !verifyingClabe,
+    [isClabeValid, verifyingClabe]
+  )
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={shouldAllowSubmit ? form.handleSubmit(handleSubmit) : undefined}
-        className="space-y-4"
-      >
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
         <FormField
           control={form.control}
           name="clabe"
@@ -184,19 +190,23 @@ export const BankInfoForm = ({ onSave, isLoading, rfc, idOrden }: Props) => {
               </FormControl>
               {verifyingClabe && (
                 <FormDescription>
-                  {`La validación podría tardar 1 o 2 minutos. Intento ${numClabeValidations} de 3`}
+                  {`Estamos validando tu CLABE. Intento ${numClabeValidations} de 3`}
                 </FormDescription>
               )}
               <FormMessage />
+              {!verifyingClabe && numClabeValidations < 3 && isClabeValid !== true && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={onValidateClabe}
+                  className="max-w-min"
+                >
+                  Validar CLABE
+                </Button>
+              )}
             </FormItem>
           )}
         />
-
-        {!verifyingClabe && numClabeValidations < 3 && isClabeValid !== true && (
-          <Button size="sm" variant="outline" onClick={onValidateClabe}>
-            Validar CLABE
-          </Button>
-        )}
 
         <FormField
           control={form.control}
@@ -217,6 +227,7 @@ export const BankInfoForm = ({ onSave, isLoading, rfc, idOrden }: Props) => {
                   />
                   <Button
                     type="button"
+                    size="sm"
                     onClick={() => {
                       sigRef.current?.clear()
                       form.setValue('signature', '', { shouldValidate: true })
@@ -233,14 +244,14 @@ export const BankInfoForm = ({ onSave, isLoading, rfc, idOrden }: Props) => {
           )}
         />
 
-        {isClabeValid && !isLoading && (
+        {!isLoading && (
           <Button type="submit" className="w-full uppercase mt-2">
             Siguiente
             <ChevronRight />
           </Button>
         )}
 
-        {isClabeValid && isLoading && (
+        {isLoading && (
           <Button type="submit" className="w-full uppercase mt-2" disabled>
             Cargando
             <Loader2 className="animate-spin" />

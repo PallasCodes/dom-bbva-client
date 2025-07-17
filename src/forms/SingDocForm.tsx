@@ -15,6 +15,12 @@ import {
   FormLabel,
   FormMessage
 } from '@/components/ui/form'
+import { Loader2 } from 'lucide-react'
+
+interface Props {
+  onSave: () => Promise<void>
+  loading: boolean
+}
 
 const FormSchema = z.object({
   terms: z.literal(true, {
@@ -28,7 +34,7 @@ const FormSchema = z.object({
 
 type FormData = z.infer<typeof FormSchema>
 
-export const SignDocForm = () => {
+export const SignDocForm = ({ onSave, loading }: Props) => {
   const form = useForm<FormData>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -38,13 +44,9 @@ export const SignDocForm = () => {
     }
   })
 
-  const onSubmit = (data: FormData) => {
-    console.log('Datos enviados:', data)
-  }
-
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(onSave)} className="space-y-4">
         <FormField
           control={form.control}
           name="terms"
@@ -95,9 +97,17 @@ export const SignDocForm = () => {
           )}
         />
 
-        <Button type="submit" className="w-full">
-          Firmar Electrónicamente
-        </Button>
+        {!loading && (
+          <Button type="submit" className="w-full">
+            Firmar Electrónicamente
+          </Button>
+        )}
+        {loading && (
+          <Button type="submit" className="w-full" disabled>
+            Cargando
+            <Loader2 className="animate-spin" />
+          </Button>
+        )}
       </form>
     </Form>
   )

@@ -50,7 +50,7 @@ export default function ValidateClabePage() {
     )
   }, [])
 
-  const saveStep2 = async ({ signature }: { signature: string; clabe: string }) => {
+  const onSave = async ({ signature }: { signature: string; clabe: string }) => {
     const file = dataURLtoBlob(signature)
 
     const formData = new FormData()
@@ -104,12 +104,7 @@ export default function ValidateClabePage() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <BankInfoForm
-          isLoading={isLoading}
-          onSave={saveStep2}
-          idOrden={idOrden}
-          rfc={rfc}
-        />
+        <BankInfoForm isLoading={isLoading} onSave={onSave} idOrden={idOrden} rfc={rfc} />
       </CardContent>
     </Card>
   )
