@@ -38,9 +38,16 @@ type Props = {
   isLoading: boolean
   rfc: string
   idOrden: number
+  geolocationDenied: boolean
 }
 
-export const BankInfoForm = ({ onSave, isLoading, rfc, idOrden }: Props) => {
+export const BankInfoForm = ({
+  onSave,
+  isLoading,
+  rfc,
+  idOrden,
+  geolocationDenied
+}: Props) => {
   // state
   const sigRef = useRef<any>(null)
   const [numClabeValidations, setNumClabeValidations] = useState(0)
@@ -269,7 +276,11 @@ export const BankInfoForm = ({ onSave, isLoading, rfc, idOrden }: Props) => {
         />
 
         {!isLoading && (
-          <Button type="submit" className="w-full uppercase mt-2">
+          <Button
+            type="submit"
+            className="w-full uppercase mt-2"
+            disabled={geolocationDenied}
+          >
             Siguiente
             <ChevronRight />
           </Button>

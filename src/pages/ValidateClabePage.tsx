@@ -57,8 +57,7 @@ export default function ValidateClabePage() {
     setIsLoading(true)
     try {
       const { pdfUrl } = await uploadSignature(formData)
-      // @ts-ignore
-      await setSolDom((prev) => ({ ...prev, publicUrl: pdfUrl }))
+      setSolDom({ ...solDom, publicUrl: pdfUrl })
       navigate('/firmar-documento')
     } catch (err) {
       console.error(err)
@@ -100,7 +99,13 @@ export default function ValidateClabePage() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <BankInfoForm isLoading={isLoading} onSave={onSave} idOrden={idOrden} rfc={rfc} />
+        <BankInfoForm
+          isLoading={isLoading}
+          onSave={onSave}
+          idOrden={idOrden}
+          rfc={rfc}
+          geolocationDenied={geolocationDenied}
+        />
       </CardContent>
     </Card>
   )
