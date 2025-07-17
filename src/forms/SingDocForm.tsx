@@ -57,12 +57,12 @@ export const SignDocForm = ({ onSave, loading }: Props) => {
               </FormControl>
               <div className="grid gap-1 leading-none">
                 <FormLabel>
-                  Reconozco que, mi firma digital y la aceptación electrónica de las
-                  condiciones en esta solicitud y en los documentos tienen el mismo valor
-                  que mi firma autógrafa, al amparo de lo establecido en los artículos
-                  1803 y 1811 del Código Civil Federal, así como del artículo 80 del
-                  Código de Comercio que refieren a la contratación, aceptación y
-                  obligaciones generados por medios electrónicos.
+                  Reconozco que, mi firma digital y la aceptación electrónica para la
+                  actualización del documento en mi expediente de crédito tienen el mismo
+                  valor que mi firma autógrafa, conforme a lo establecido en los artículos
+                  1803 y 1811 del Código Civil Federal, así como el artículo 80 del Código
+                  de Comercio, que regulan la contratación, aceptación y obligaciones
+                  generadas por medios electrónicos.
                 </FormLabel>
                 <FormDescription>
                   Para continuar reconoce tu firma digital.
