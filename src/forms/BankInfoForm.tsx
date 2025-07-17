@@ -146,8 +146,9 @@ export const BankInfoForm = ({ onSave, isLoading, rfc, idOrden }: Props) => {
       if (data.valid) {
         toast.success(msg)
         setIsClabeValid(true)
+        form.clearErrors('clabe')
       } else {
-        toast.error(msg)
+        form.setError('clabe', { message: 'La CLABE no es valida' })
         setIsClabeValid(false)
       }
 
