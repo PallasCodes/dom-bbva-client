@@ -1,6 +1,6 @@
 import { isAxiosError } from 'axios'
-import { ChevronRight, Loader2 } from 'lucide-react'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { Check, ChevronRight, Loader2 } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
@@ -22,7 +22,6 @@ import { useSocket } from '@/hooks/useSocket'
 import { ValidateClabeError } from '@/types/errors/validate-clabe-error.enum'
 import { zodEs } from '@/zod/zod-es'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { sleep } from '@/utils'
 
 const formSchema = z.object({
   clabe: z
@@ -114,9 +113,10 @@ export const BankInfoForm = ({ onSave, isLoading, rfc, idOrden }: Props) => {
       return
     }
 
-    console.log({ data })
-
-    await sleep(5)
+    if (!isClabeValid) {
+      form.setError('clabe', { message: 'Debes validar tu CLABE' })
+      return
+    }
 
     await onSave(data)
   }
@@ -160,10 +160,20 @@ export const BankInfoForm = ({ onSave, isLoading, rfc, idOrden }: Props) => {
     }
   }, [socketRef])
 
-  const shouldAllowSubmit = useMemo(
-    () => isClabeValid && !verifyingClabe,
-    [isClabeValid, verifyingClabe]
-  )
+  useEffect(() => {
+    const handleBeforeUnload = (event: any) => {
+      if (verifyingClabe) {
+        event.preventDefault()
+        event.returnValue = ''
+      }
+    }
+
+    window.addEventListener('beforeunload', handleBeforeUnload)
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload)
+    }
+  }, [verifyingClabe])
 
   return (
     <Form {...form}>
@@ -174,35 +184,48 @@ export const BankInfoForm = ({ onSave, isLoading, rfc, idOrden }: Props) => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>CLABE Bancaria*</FormLabel>
-              <FormControl>
-                <div className="relative">
-                  <Input
-                    {...field}
-                    readOnly={verifyingClabe || isClabeValid || numClabeValidations >= 3}
-                    className={`${verifyingClabe ? 'pr-10' : ''} ${
-                      isClabeValid ? 'pr-10 border-green-500 border-2' : ''
-                    }`}
-                  />
-                  {verifyingClabe && (
-                    <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />
-                  )}
-                </div>
-              </FormControl>
-              {verifyingClabe && (
-                <FormDescription>
-                  {`Estamos validando tu CLABE. Intento ${numClabeValidations} de 3`}
-                </FormDescription>
-              )}
+              <div className="flex gap-2">
+                <FormControl>
+                  <div className="relative flex-grow">
+                    <Input
+                      {...field}
+                      readOnly={
+                        verifyingClabe || isClabeValid || numClabeValidations >= 3
+                      }
+                      className={`${verifyingClabe ? 'pr-10' : ''} ${
+                        isClabeValid ? 'pr-10 border-green-500 border-2' : ''
+                      }`}
+                    />
+                    {verifyingClabe && (
+                      <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />
+                    )}
+                  </div>
+                </FormControl>
+
+                {!verifyingClabe && numClabeValidations < 3 && isClabeValid !== true && (
+                  <Button
+                    size="sm"
+                    onClick={onValidateClabe}
+                    className="max-w-min h-full flex items-center justify-center bg-green-600 hover:bg-green-700 text-white transition-colors"
+                  >
+                    <Check />
+                    Validar
+                  </Button>
+                )}
+                {verifyingClabe && numClabeValidations < 3 && isClabeValid !== true && (
+                  <Button
+                    size="sm"
+                    onClick={onValidateClabe}
+                    className="max-w-min h-full flex items-center justify-center bg-green-600 text-white"
+                    disabled
+                  >
+                    Validando...
+                  </Button>
+                )}
+              </div>
               <FormMessage />
-              {!verifyingClabe && numClabeValidations < 3 && isClabeValid !== true && (
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={onValidateClabe}
-                  className="max-w-min"
-                >
-                  Validar CLABE
-                </Button>
+              {verifyingClabe && (
+                <FormDescription>Estamos validando tu CLABE</FormDescription>
               )}
             </FormItem>
           )}
