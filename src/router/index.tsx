@@ -7,6 +7,7 @@ import ProcessFinishedPage from '@/pages/ProcessFinishedPage'
 import { createBrowserRouter } from 'react-router-dom'
 import IndividualInfoPage from '../pages/IndividualInfoPage'
 import ValidateClabePage from '../pages/ValidateClabePage'
+import { ProtectedRoute } from './ProtectedRoute'
 
 export const router = createBrowserRouter([
   {
@@ -23,27 +24,45 @@ export const router = createBrowserRouter([
       },
       {
         path: '/validar-datos',
-        element: <IndividualInfoPage />
+        element: (
+          <ProtectedRoute>
+            <IndividualInfoPage />
+          </ProtectedRoute>
+        )
       },
       {
         path: '/validar-clabe',
-        element: <ValidateClabePage />
+        element: (
+          <ProtectedRoute>
+            <ValidateClabePage />
+          </ProtectedRoute>
+        )
       },
       {
         path: '/firmar-documento',
-        element: <DirectDebitPdfPage />
+        element: (
+          <ProtectedRoute>
+            <DirectDebitPdfPage />
+          </ProtectedRoute>
+        )
       },
       {
         path: '/proceso-finalizado',
-        element: <ProcessFinishedPage />
+        element: (
+          <ProtectedRoute>
+            <ProcessFinishedPage />
+          </ProtectedRoute>
+        )
       },
       {
         path: '/informacion-incorrecta',
         element: (
-          <ErrorMessage
-            title="Información incorrecta"
-            description="Ponte en contacto con nosotros para actualizar tu información"
-          />
+          <ProtectedRoute>
+            <ErrorMessage
+              title="Información incorrecta"
+              description="Ponte en contacto con nosotros para actualizar tu información"
+            />
+          </ProtectedRoute>
         )
       }
     ]

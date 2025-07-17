@@ -14,8 +14,8 @@ export default function CUTValidationPage() {
   if (!folioOrden) {
     return (
       <ErrorMessage
-        title="Error al obtener la información de tu folio"
-        description="Por favor ponte en contacto con nosotros"
+        title="URL mal formada"
+        description="No se encontró tu folio en la URL, vuelve a abrir el enlace que se envío a tu celular"
       />
     )
   }
