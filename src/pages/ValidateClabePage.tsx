@@ -38,8 +38,6 @@ export default function ValidateClabePage() {
     error: geolocationError
   } = useGeolocation()
 
-  // TODO: fix types
-
   useLayoutEffect(() => {
     alert(
       'Es necesario que permitas acceder a tu ubicación para firmar electrónicamente el documento'

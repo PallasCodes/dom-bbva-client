@@ -84,8 +84,8 @@ export const SignDocForm = ({ onSave, loading }: Props) => {
               <div className="grid gap-1 leading-none">
                 <FormLabel>
                   Manifiesto que, durante y hasta finalizar el proceso de domiciliación
-                  automática web Intermercado fue realizado en su totalidad por mí mismo y
-                  por mi voluntad, y se ha constituido en forma libre sin que existiera
+                  automática Intermercado fue realizado en su totalidad por mí mismo y por
+                  mi voluntad, y se ha constituido en forma libre sin que existiera
                   presión ni obligación alguna.
                 </FormLabel>
                 <FormDescription>
