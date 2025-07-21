@@ -1,19 +1,9 @@
 import { FacebookIcon, Mail, PhoneIcon, Twitter } from 'lucide-react'
-import { useEffect, useState } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
+import { AnimatePresence, motion } from 'framer-motion'
 
 export const Layout = () => {
   const location = useLocation()
-
-  const [showContent, setShowContent] = useState(true)
-
-  useEffect(() => {
-    setShowContent(false)
-    const timeout = setTimeout(() => {
-      setShowContent(true)
-    }, 50)
-    return () => clearTimeout(timeout)
-  }, [location.pathname])
 
   return (
     <>
@@ -52,14 +42,17 @@ export const Layout = () => {
       </div>
 
       <main className="relative overflow-hidden min-h-[300px] transition-all duration-300 ease-in-out">
-        <div
-          key={location.pathname}
-          className={`transition-all duration-700 ease-in-out transform ${
-            showContent ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
-          }`}
-        >
-          <Outlet />
-        </div>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={location.pathname}
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -50 }}
+            transition={{ duration: 0.4, ease: 'easeInOut' }}
+          >
+            <Outlet />
+          </motion.div>
+        </AnimatePresence>
       </main>
     </>
   )

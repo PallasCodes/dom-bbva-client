@@ -35,7 +35,7 @@ export type CUTValidationFormData = z.infer<typeof formSchema>
 
 type Props = {
   onSave: (data: any) => Promise<any>
-  catalogIsLoading: boolean
+  isLoading: boolean
   stateCatalog: { id: number; nombre: string }[] | null
 }
 
@@ -45,7 +45,7 @@ const currentYear = new Date().getFullYear()
 const lastValidYear = currentYear - 17
 const years = Array.from({ length: lastValidYear - 1920 }, (_, i) => i + 1920).reverse()
 
-export const CUTValidationForm = ({ onSave, catalogIsLoading, stateCatalog }: Props) => {
+export const CUTValidationForm = ({ onSave, isLoading, stateCatalog }: Props) => {
   const form = useForm<CUTValidationFormData>({
     resolver: zodResolver(formSchema),
     mode: 'onBlur',
@@ -71,7 +71,7 @@ export const CUTValidationForm = ({ onSave, catalogIsLoading, stateCatalog }: Pr
               <Select
                 onValueChange={(value) => field.onChange(Number(value))}
                 value={String(field.value)}
-                disabled={catalogIsLoading} // opcional: bloquear el select
+                disabled={isLoading} // opcional: bloquear el select
               >
                 <FormControl className="w-full">
                   <SelectTrigger>
@@ -79,7 +79,7 @@ export const CUTValidationForm = ({ onSave, catalogIsLoading, stateCatalog }: Pr
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {catalogIsLoading ? (
+                  {isLoading ? (
                     <div className="p-4 text-sm text-muted-foreground">Cargando...</div>
                   ) : (
                     stateCatalog?.map((state) => (
@@ -194,11 +194,7 @@ export const CUTValidationForm = ({ onSave, catalogIsLoading, stateCatalog }: Pr
           )}
         />
 
-        <Button
-          type="submit"
-          className="w-full uppercase mt-2"
-          disabled={catalogIsLoading}
-        >
+        <Button type="submit" className="w-full uppercase mt-2" disabled={isLoading}>
           Siguiente
           <ChevronRight />
         </Button>

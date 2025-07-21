@@ -34,7 +34,7 @@ export default function IndividualInfoPage() {
       await saveDirectDebit({
         ...formData,
         // @ts-ignore
-        idSolicitudDomiciliacion: directDebit.idSolicitudDom as unknown as number
+        idSolicitudDomiciliacion: directDebit.idSolicitudDom
       })
       navigate('/validar-clabe')
     } catch (err) {}

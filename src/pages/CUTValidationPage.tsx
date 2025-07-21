@@ -22,14 +22,17 @@ export default function CUTValidationPage() {
 
   const { validateDirectDebit } = useValidateDirectDebit()
   const { data: stateCatalog, isLoading: catalogIsLoading } = useGetCatalog(1003)
-  const { validateCut } = useValidateCut()
+  const { validateCut, isLoading: cutIsLoading } = useValidateCut()
 
   const handleForm = async (payload: CUTValidationFormData) => {
+    const { codigo, anioNacimiento, mesNacimiento, diaNacimiento, idEstadoNacimiento } =
+      payload
+
     const apiPayload: ValidateCutPayload = {
-      codigo: payload.codigo,
-      fechaNacimiento: `${payload.anioNacimiento}-${payload.mesNacimiento}-${payload.diaNacimiento}`,
+      codigo,
       folioOrden,
-      idEstadoNacimiento: payload.idEstadoNacimiento
+      idEstadoNacimiento,
+      fechaNacimiento: `${anioNacimiento}-${mesNacimiento}-${diaNacimiento}`
     }
     try {
       const { solDom } = await validateCut(apiPayload)
@@ -48,7 +51,7 @@ export default function CUTValidationPage() {
       </CardHeader>
       <CardContent>
         <CUTValidationForm
-          catalogIsLoading={catalogIsLoading}
+          isLoading={catalogIsLoading || cutIsLoading}
           onSave={handleForm}
           stateCatalog={stateCatalog}
         />

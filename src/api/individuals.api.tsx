@@ -39,10 +39,10 @@ export interface ValidateCutPayload {
 }
 
 export const useValidateCut = () => {
-  const { showLoader, hideLoader } = useLoading()
+  const [isLoading, setIsLoading] = useState(false)
 
   const validateCut = async (payload: ValidateCutPayload) => {
-    showLoader()
+    setIsLoading(true)
     try {
       const response = await api.post(`${PREFIX}/validate`, payload)
       return response.data
@@ -52,12 +52,13 @@ export const useValidateCut = () => {
       }
       throw err
     } finally {
-      hideLoader()
+      setIsLoading(false)
     }
   }
 
   return {
-    validateCut
+    validateCut,
+    isLoading
   }
 }
 
