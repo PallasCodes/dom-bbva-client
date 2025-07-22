@@ -6,7 +6,7 @@ import { useAuth } from '@/store/auth.store'
 import { useNavigate } from 'react-router-dom'
 
 export default function DirectDebitPdfPage() {
-  const { solDom } = useAuth()
+  const { solDom, setSolDom } = useAuth()
   const { signDirectDebit, loading } = useSignDirectDebit()
   const navigate = useNavigate()
 
@@ -21,9 +21,12 @@ export default function DirectDebitPdfPage() {
 
   const onSubmit = async () => {
     try {
-      await signDirectDebit(solDom.idPersonaFisica)
+      const { pdfUrls } = await signDirectDebit(solDom.idPersonaFisica)
+      setSolDom({ ...solDom, publicUrls: pdfUrls })
       navigate('/proceso-finalizado')
-    } catch (error) {}
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (
