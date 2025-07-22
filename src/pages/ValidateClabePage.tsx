@@ -18,7 +18,7 @@ import { dataURLtoBlob } from '@/utils'
 export default function ValidateClabePage() {
   const { solDom, setSolDom } = useAuth()
 
-  if (!solDom || !solDom?.idOrden || !solDom?.rfc || !solDom?.idSolicitudDom) {
+  if (!solDom || !solDom?.idPersonaFisica || !solDom?.rfc || !solDom?.idSolicitudDom) {
     return (
       <ErrorMessage
         title="Error al obtener la información de tu folio"
@@ -26,7 +26,7 @@ export default function ValidateClabePage() {
       />
     )
   }
-  const { idOrden, rfc, idSolicitudDom } = solDom
+  const { idPersonaFisica, rfc, idSolicitudDom } = solDom
 
   const { uploadSignature } = useUploadSignature()
   const [isLoading, setIsLoading] = useState(false)
@@ -49,7 +49,7 @@ export default function ValidateClabePage() {
 
     const formData = new FormData()
     formData.set('file', file)
-    formData.set('idOrden', String(idOrden))
+    formData.set('idPersonaFisica', String(idPersonaFisica))
     formData.set('latitude', String(latitude))
     formData.set('longitude', String(longitude))
     formData.set('idSolicitudDom', String(idSolicitudDom))
@@ -102,7 +102,7 @@ export default function ValidateClabePage() {
         <BankInfoForm
           isLoading={isLoading}
           onSave={onSave}
-          idOrden={idOrden}
+          idPersonaFisica={idPersonaFisica}
           rfc={rfc}
           geolocationDenied={geolocationDenied}
         />

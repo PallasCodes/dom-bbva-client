@@ -37,7 +37,7 @@ type Props = {
   onSave: (data: BankAccountFormData) => Promise<any>
   isLoading: boolean
   rfc: string
-  idOrden: number
+  idPersonaFisica: number
   geolocationDenied: boolean
 }
 
@@ -45,7 +45,7 @@ export const BankInfoForm = ({
   onSave,
   isLoading,
   rfc,
-  idOrden,
+  idPersonaFisica,
   geolocationDenied
 }: Props) => {
   // state
@@ -80,7 +80,7 @@ export const BankInfoForm = ({
         clabe,
         rfc,
         idSocketIo,
-        idOrden
+        idPersonaFisica
       })
       setNumClabeValidations(numTries ?? numClabeValidations)
     } catch (error) {
