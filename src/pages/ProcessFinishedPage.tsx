@@ -4,7 +4,7 @@ import { useAuth } from '@/store/auth.store'
 export default function ProcessFinishedPage() {
   const { solDom } = useAuth()
 
-  if (!solDom || !solDom.publicUrl) {
+  if (!solDom || !solDom.publicUrls) {
     return (
       <ErrorMessage
         title="Error al obtener el documento"
@@ -13,14 +13,20 @@ export default function ProcessFinishedPage() {
     )
   }
 
+  const openPdfs = () => {
+    solDom.publicUrls.forEach((url) => {
+      window.open(url)
+    })
+  }
+
   return (
     <div className="text-center">
       <h2 className="font-bold antialiased text-xl mt-4 mb-2">Proceso finalizado</h2>
       <p>
-        Visualiza tu documento de domiciliación dando&nbsp;
-        <a href={solDom.publicUrl} target="_blank" className="font-medium text-blue-600">
+        Visualiza tus documentos de domiciliación dando&nbsp;
+        <button className="font-medium text-blue-600" onClick={openPdfs}>
           click aquí
-        </a>
+        </button>
       </p>
     </div>
   )

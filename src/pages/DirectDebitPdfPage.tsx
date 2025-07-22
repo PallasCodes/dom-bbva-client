@@ -10,7 +10,7 @@ export default function DirectDebitPdfPage() {
   const { signDirectDebit, loading } = useSignDirectDebit()
   const navigate = useNavigate()
 
-  if (!solDom || !solDom.publicUrl || !solDom.idOrden || !solDom.idSolicitudDom) {
+  if (!solDom || !solDom.publicUrls || !solDom.idSolicitudDom) {
     return (
       <ErrorMessage
         title="Error al generar el documento"
@@ -21,7 +21,7 @@ export default function DirectDebitPdfPage() {
 
   const onSubmit = async () => {
     try {
-      await signDirectDebit(solDom.idOrden, solDom.idSolicitudDom)
+      await signDirectDebit(solDom.idPersonaFisica)
       navigate('/proceso-finalizado')
     } catch (error) {}
   }
@@ -34,15 +34,18 @@ export default function DirectDebitPdfPage() {
         </CardTitle>
       </CardHeader>
       <CardContent className="px-4">
-        <div
-          style={{ width: '100%', aspectRatio: '7.9 / 11' }}
-          className="max-w-4xl mb-6"
-        >
-          <iframe
-            src={`https://docs.google.com/gview?embedded=true&url=${solDom.publicUrl}`}
-            style={{ width: '100%', height: '100%', border: 'none' }}
-          />
-        </div>
+        {solDom.publicUrls.map((publicUrl) => (
+          <div
+            style={{ width: '100%', aspectRatio: '7.9 / 11' }}
+            className="max-w-4xl mb-6"
+            key={publicUrl}
+          >
+            <iframe
+              src={`https://docs.google.com/gview?embedded=true&url=${publicUrl}`}
+              style={{ width: '100%', height: '100%', border: 'none' }}
+            />
+          </div>
+        ))}
         <SignDocForm onSave={onSubmit} loading={loading} />
       </CardContent>
     </Card>

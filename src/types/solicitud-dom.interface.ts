@@ -4,6 +4,6 @@ export interface SolicitudDom {
   paso: number
   idSolicitudDom: number
   rfc: string
-  publicUrl: string
+  publicUrls: string[]
   idPersonaFisica: number
 }

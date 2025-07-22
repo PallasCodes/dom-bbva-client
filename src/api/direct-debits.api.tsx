@@ -127,10 +127,10 @@ export const useUploadSignature = () => {
 export const useSignDirectDebit = () => {
   const [loading, setLoading] = useState<boolean>(false)
 
-  const signDirectDebit = async (idOrden: number, idSolicitudDom: number) => {
+  const signDirectDebit = async (idPersonaFisica: number) => {
     setLoading(true)
     try {
-      const response = await api.post(`${PREFIX}/sign/${idOrden}`, { idSolicitudDom })
+      const response = await api.post(`${PREFIX}/sign/${idPersonaFisica}`)
       return response.data
     } catch (err) {
       throw err

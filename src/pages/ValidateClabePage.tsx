@@ -26,7 +26,7 @@ export default function ValidateClabePage() {
       />
     )
   }
-  const { idPersonaFisica, rfc, idSolicitudDom } = solDom
+  const { idPersonaFisica, rfc } = solDom
 
   const { uploadSignature } = useUploadSignature()
   const [isLoading, setIsLoading] = useState(false)
@@ -52,12 +52,11 @@ export default function ValidateClabePage() {
     formData.set('idPersonaFisica', String(idPersonaFisica))
     formData.set('latitude', String(latitude))
     formData.set('longitude', String(longitude))
-    formData.set('idSolicitudDom', String(idSolicitudDom))
 
     setIsLoading(true)
     try {
-      const { pdfUrl } = await uploadSignature(formData)
-      setSolDom({ ...solDom, publicUrl: pdfUrl })
+      const { pdfUrls } = await uploadSignature(formData)
+      setSolDom({ ...solDom, publicUrls: pdfUrls })
       navigate('/firmar-documento')
     } catch (err) {
       console.error(err)
