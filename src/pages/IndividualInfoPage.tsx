@@ -1,4 +1,4 @@
-import { useGetDirectDebit, useSaveDirectDebit } from '@/api/direct-debits.api'
+import { useSaveDirectDebit } from '@/api/direct-debits.api'
 import { getIndividualInfo } from '@/api/individuals.api'
 import { ErrorMessage } from '@/components/ErrorMessage'
 import {
