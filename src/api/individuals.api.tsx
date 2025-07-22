@@ -8,15 +8,15 @@ import { api } from '.'
 
 const PREFIX = '/individuals'
 
-export const getIndividualInfo = (folioOrden: string) => {
+export const getIndividualInfo = (idPersonaFisica: number) => {
   const { showLoader, hideLoader } = useLoading()
   const [data, setData] = useState<IndividualFormData | null>(null)
 
   useEffect(() => {
-    const fetchIndividuals = async (folioOrden: string) => {
+    const fetchIndividuals = async (idPersonaFisica: number) => {
       showLoader()
       try {
-        const response = await api.get<IndividualFormData>(`${PREFIX}/${folioOrden}`)
+        const response = await api.get<IndividualFormData>(`${PREFIX}/${idPersonaFisica}`)
         setData(response.data)
       } catch (err) {
         throw err
@@ -25,7 +25,7 @@ export const getIndividualInfo = (folioOrden: string) => {
       }
     }
 
-    fetchIndividuals(folioOrden)
+    fetchIndividuals(idPersonaFisica)
   }, [])
 
   return { data }

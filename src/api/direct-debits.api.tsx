@@ -10,15 +10,15 @@ import { api } from '.'
 
 const PREFIX = '/direct-debits'
 
-export const useGetDirectDebit = (idOrden: number) => {
+export const useGetDirectDebit = (idPersonaFisica: number) => {
   const [data, setData] = useState()
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
-    const getDirectDebit = async (idOrden: number) => {
+    const getDirectDebit = async (idPersonaFisica: number) => {
       setIsLoading(true)
       try {
-        const response = await api.get(`${PREFIX}/${idOrden}`)
+        const response = await api.get(`${PREFIX}/${idPersonaFisica}`)
         setData(response.data)
       } catch (err) {
         throw err
@@ -27,7 +27,7 @@ export const useGetDirectDebit = (idOrden: number) => {
       }
     }
 
-    getDirectDebit(idOrden)
+    getDirectDebit(idPersonaFisica)
   }, [])
 
   return { data, isLoading }

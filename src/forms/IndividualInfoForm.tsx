@@ -20,17 +20,9 @@ import { zodResolver } from '@hookform/resolvers/zod'
 
 const formSchema = z.object({
   nombre1: z.string().min(1, zodEs.string.min(1)).max(100, zodEs.string.max(100)),
-  nombre2: z
-    .string()
-    .min(1, zodEs.string.min(1))
-    .max(100, zodEs.string.max(100))
-    .optional(),
+  nombre2: z.string().max(100, zodEs.string.max(100)).optional(),
   apellidoPaterno: z.string().min(1, zodEs.string.min(1)).max(100, zodEs.string.max(100)),
-  apellidoMaterno: z
-    .string()
-    .min(1, zodEs.string.min(1))
-    .max(100, zodEs.string.max(100))
-    .optional(),
+  apellidoMaterno: z.string().max(100, zodEs.string.max(100)).optional(),
   rfc: z
     .string()
     .regex(/^[A-ZÑ&]{3,4}\d{6}[A-Z0-9]{3}$/, zodEs.regex.rfc)

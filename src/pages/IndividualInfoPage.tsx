@@ -15,7 +15,7 @@ import { useNavigate } from 'react-router-dom'
 export default function IndividualInfoPage() {
   const { solDom } = useAuth()
 
-  if (!solDom || !solDom.folioOrden || !solDom.idOrden) {
+  if (!solDom || !solDom.idPersonaFisica) {
     return (
       <ErrorMessage
         title="Error al obtener la información de tu folio"
@@ -23,9 +23,9 @@ export default function IndividualInfoPage() {
       />
     )
   }
-  const { folioOrden, idOrden } = solDom
-  const { data: directDebit } = useGetDirectDebit(idOrden)
-  const { data } = getIndividualInfo(folioOrden)
+  const { idPersonaFisica } = solDom
+  // const { data: directDebit } = useGetDirectDebit(idPersonaFisica)
+  const { data } = getIndividualInfo(idPersonaFisica)
   const { saveDirectDebit } = useSaveDirectDebit()
   const navigate = useNavigate()
 
@@ -34,7 +34,7 @@ export default function IndividualInfoPage() {
       await saveDirectDebit({
         ...formData,
         // @ts-ignore
-        idSolicitudDomiciliacion: directDebit.idSolicitudDom
+        idSolicitudDomiciliacion: solDom.idSolicitudDom
       })
       navigate('/validar-clabe')
     } catch (err) {}
