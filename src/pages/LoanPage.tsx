@@ -19,8 +19,9 @@ import { formatDate, numberToCurrency } from '@/utils'
 
 export default function LoanPage() {
   const { solDom } = useAuth()
+  console.log('🚀 ~ LoanPage ~ solDom:', solDom)
 
-  if (!solDom || !solDom.folioOrden) {
+  if (!solDom || !solDom.idPersonaFisica) {
     return (
       <ErrorMessage
         title="Error al obtener la información de tu folio"
@@ -28,10 +29,10 @@ export default function LoanPage() {
       />
     )
   }
-  const { folioOrden } = solDom
+  const { idPersonaFisica } = solDom
 
   const navigate = useNavigate()
-  const { data: loan, error, isLoading } = getLoanInfo(folioOrden)
+  const { data: loan, error, isLoading } = getLoanInfo(idPersonaFisica)
   const { loading, validateLoan } = useValidateLoan()
 
   const handleValidateData = async () => {

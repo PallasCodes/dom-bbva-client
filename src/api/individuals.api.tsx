@@ -72,16 +72,16 @@ export interface LoanInfo {
   idSolicitudDom: number
 }
 
-export const getLoanInfo = (folioOrden: string) => {
+export const getLoanInfo = (idPersonaFisica: number) => {
   const [data, setData] = useState<LoanInfo | null>(null)
   const [error, setError] = useState<number>()
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
-    const fetchLoanInfo = async (folioOrden: string) => {
+    const fetchLoanInfo = async (idPersonaFisica: number) => {
       setIsLoading(true)
       try {
-        const response = await api.get<LoanInfo>(`${PREFIX}/loan/${folioOrden}`)
+        const response = await api.get<LoanInfo>(`${PREFIX}/loan/${idPersonaFisica}`)
         setData(response.data)
       } catch (err) {
         if (err instanceof AxiosError) {
@@ -93,7 +93,7 @@ export const getLoanInfo = (folioOrden: string) => {
       }
     }
 
-    fetchLoanInfo(folioOrden)
+    fetchLoanInfo(idPersonaFisica)
   }, [])
 
   return { data, error, isLoading }
