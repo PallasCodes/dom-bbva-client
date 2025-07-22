@@ -148,10 +148,10 @@ export const useSignDirectDebit = () => {
 export const useValidateLoan = () => {
   const [loading, setLoading] = useState<boolean | undefined>()
 
-  const validateLoan = async (idSolicitudDom: number) => {
+  const validateLoans = async (idPersonaFisica: number) => {
     setLoading(true)
     try {
-      const response = await api.post(`${PREFIX}/validate-loan/${idSolicitudDom}`)
+      const response = await api.post(`${PREFIX}/validate-loan/${idPersonaFisica}`)
       return response.data
     } catch (err) {
       throw err
@@ -161,7 +161,7 @@ export const useValidateLoan = () => {
   }
 
   return {
-    validateLoan,
+    validateLoans,
     loading
   }
 }

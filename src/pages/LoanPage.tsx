@@ -4,19 +4,17 @@ import { useNavigate } from 'react-router-dom'
 import { useValidateLoan } from '@/api/direct-debits.api'
 import { getLoanInfo } from '@/api/individuals.api'
 import { ErrorMessage } from '@/components/ErrorMessage'
+import { LoanCard } from '@/components/LoanCard'
 import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle
 } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useAuth } from '@/store/auth.store'
-import { formatDate, numberToCurrency } from '@/utils'
-import { LoanCard } from '@/components/LoanCard'
 
 export default function LoanPage() {
   const { solDom } = useAuth()
@@ -33,11 +31,11 @@ export default function LoanPage() {
 
   const navigate = useNavigate()
   const { data: loans, error, isLoading } = getLoanInfo(idPersonaFisica)
-  const { loading, validateLoan } = useValidateLoan()
+  const { loading, validateLoans } = useValidateLoan()
 
   const handleValidateData = async () => {
     try {
-      await validateLoan(loans![0].idSolicitudDom)
+      await validateLoans(idPersonaFisica)
       navigate('/validar-datos')
     } catch (e) {}
   }
