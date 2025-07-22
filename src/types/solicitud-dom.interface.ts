@@ -5,4 +5,5 @@ export interface SolicitudDom {
   idSolicitudDom: number
   rfc: string
   publicUrl: string
+  cliente: number // idPersonaFisica
 }

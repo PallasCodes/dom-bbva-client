@@ -32,7 +32,7 @@ export const getIndividualInfo = (folioOrden: string) => {
 }
 
 export interface ValidateCutPayload {
-  folioOrden: string
+  idPersonaFisica: number
   codigo: string
   fechaNacimiento: string
   idEstadoNacimiento: number

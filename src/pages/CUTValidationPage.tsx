@@ -9,9 +9,9 @@ import { useSearchParams } from 'react-router-dom'
 
 export default function CUTValidationPage() {
   const [params] = useSearchParams()
-  const folioOrden = params.get('folio')
+  const cliente = params.get('cliente')
 
-  if (!folioOrden) {
+  if (!cliente) {
     return (
       <ErrorMessage
         title="URL mal formada"
@@ -30,7 +30,7 @@ export default function CUTValidationPage() {
 
     const apiPayload: ValidateCutPayload = {
       codigo,
-      folioOrden,
+      idPersonaFisica: +cliente,
       idEstadoNacimiento,
       fechaNacimiento: `${anioNacimiento}-${mesNacimiento}-${diaNacimiento}`
     }
