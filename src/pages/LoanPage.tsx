@@ -16,10 +16,10 @@ import {
 import { Skeleton } from '@/components/ui/skeleton'
 import { useAuth } from '@/store/auth.store'
 import { formatDate, numberToCurrency } from '@/utils'
+import { LoanCard } from '@/components/LoanCard'
 
 export default function LoanPage() {
   const { solDom } = useAuth()
-  console.log('🚀 ~ LoanPage ~ solDom:', solDom)
 
   if (!solDom || !solDom.idPersonaFisica) {
     return (
@@ -32,12 +32,12 @@ export default function LoanPage() {
   const { idPersonaFisica } = solDom
 
   const navigate = useNavigate()
-  const { data: loan, error, isLoading } = getLoanInfo(idPersonaFisica)
+  const { data: loans, error, isLoading } = getLoanInfo(idPersonaFisica)
   const { loading, validateLoan } = useValidateLoan()
 
   const handleValidateData = async () => {
     try {
-      await validateLoan(loan!.idSolicitudDom)
+      await validateLoan(loans![0].idSolicitudDom)
       navigate('/validar-datos')
     } catch (e) {}
   }
@@ -88,38 +88,16 @@ export default function LoanPage() {
     )
 
   return (
-    <Card className="max-w-md md:mx-auto m-4 ">
-      <CardHeader>
-        <CardTitle className="text-center font-bold text-xl w-full">
-          Datos de tu crédito
-        </CardTitle>
-        <CardDescription className="text-center">
-          Valida que la información sea correcta
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="mb-4">
-          <p className="font-bold">Folio</p>
-          <p>{loan?.folioInterno}</p>
-        </div>
-        <div className="mb-4">
-          <p className="font-bold">Fecha de firma</p>
-          <p>{formatDate(loan?.fechaFirma as string | Date)}</p>
-        </div>
-        <div className="mb-4">
-          <p className="font-bold">Monto que solicitaste</p>
-          <p>{numberToCurrency(loan?.prestamo as number)}</p>
-        </div>
-        <div className="mb-4">
-          <p className="font-bold">Total a pagar</p>
-          <p>{numberToCurrency(loan?.totalPagar as number)}</p>
-        </div>
-        <div>
-          <p className="font-bold">Saldo por pagar</p>
-          <p>{numberToCurrency(loan?.porPagar as number)}</p>
-        </div>
-      </CardContent>
-      <CardFooter className="flex gap-3 mt-0">
+    <>
+      <h1 className="text-center mt-4 font-semibold antialiased text-lg">
+        Valida que los datos de tus folios sean correctos
+      </h1>
+
+      <div className="mb-4">
+        {loans && loans.map((loan) => <LoanCard loan={loan} key={loan.idOrden} />)}
+      </div>
+
+      <div className="flex gap-4 justify-center max-w-sm mx-auto mt-4 mb-6">
         <Button
           className="grow text-red-600 bg-red-50 shadow-sm hover:bg-red-100 transition-colors"
           onClick={() => navigate('/informacion-incorrecta')}
@@ -136,7 +114,7 @@ export default function LoanPage() {
           <Check />
           Correcta
         </Button>
-      </CardFooter>
-    </Card>
+      </div>
+    </>
   )
 }

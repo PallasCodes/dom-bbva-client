@@ -73,7 +73,7 @@ export interface LoanInfo {
 }
 
 export const getLoanInfo = (idPersonaFisica: number) => {
-  const [data, setData] = useState<LoanInfo | null>(null)
+  const [data, setData] = useState<LoanInfo[] | null>(null)
   const [error, setError] = useState<number>()
   const [isLoading, setIsLoading] = useState(false)
 
@@ -81,8 +81,10 @@ export const getLoanInfo = (idPersonaFisica: number) => {
     const fetchLoanInfo = async (idPersonaFisica: number) => {
       setIsLoading(true)
       try {
-        const response = await api.get<LoanInfo>(`${PREFIX}/loan/${idPersonaFisica}`)
-        setData(response.data)
+        const response = await api.get<{ loans: LoanInfo[] }>(
+          `${PREFIX}/loan/${idPersonaFisica}`
+        )
+        setData(response.data.loans)
       } catch (err) {
         if (err instanceof AxiosError) {
           setError(err.response?.status)
