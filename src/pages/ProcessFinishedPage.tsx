@@ -20,14 +20,22 @@ export default function ProcessFinishedPage() {
   }
 
   return (
-    <div className="text-center">
-      <h2 className="font-bold antialiased text-xl mt-4 mb-2">Proceso finalizado</h2>
+    <div className="text-center max-w-5xl">
+      <h2 className="font-bold antialiased text-xl mt-4 mb-2">
+        Proceso de actualización de datos completado
+      </h2>
       <p>
-        Visualiza tus documentos de domiciliación dando&nbsp;
+        Visualiza tus documentos de domiciliación actualizadosnbsp;
         <button className="font-medium text-blue-600" onClick={openPdfs}>
           click aquí
         </button>
       </p>
+
+      <img
+        src="./cobranza_nintendo.png"
+        alt="Promoción Nintendo Switch"
+        className="w-full h-auto"
+      />
     </div>
   )
 }
