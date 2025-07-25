@@ -34,7 +34,7 @@ export default function ProcessFinishedPage() {
       <img
         src="./cobranza_nintendo.png"
         alt="Promoción Nintendo Switch"
-        className="w-full h-auto"
+        className="w-full h-auto mt-8"
       />
     </div>
   )
