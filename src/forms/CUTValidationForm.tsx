@@ -183,6 +183,9 @@ export const CUTValidationForm = ({ onSave, isLoading, stateCatalog }: Props) =>
           render={({ field }) => (
             <FormItem>
               <FormLabel>Confirmación de Código Único de Trámite*</FormLabel>
+              <FormDescription>
+                Es un código de 4 dígitos que recibirás por SMS para validar tu identidad.
+              </FormDescription>
               <FormControl>
                 <Input {...field} autoComplete="off" />
               </FormControl>
@@ -195,7 +198,7 @@ export const CUTValidationForm = ({ onSave, isLoading, stateCatalog }: Props) =>
         />
 
         <Button type="submit" className="w-full uppercase mt-2" disabled={isLoading}>
-          Siguiente
+          Continuar con mi actualización
           <ChevronRight />
         </Button>
       </form>

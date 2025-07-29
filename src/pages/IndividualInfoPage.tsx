@@ -44,12 +44,26 @@ export default function IndividualInfoPage() {
     <Card className="max-w-md md:mx-auto m-4 ">
       <CardHeader className="">
         <CardTitle className="text-center font-bold text-xl w-full">
-          Información personal
+          👤 Información personal
         </CardTitle>
-        <CardDescription>Verifica que tus datos sean correctos</CardDescription>
+        <CardDescription>
+          Verifica tus datos. Queremos asegurarnos de que tu información esté correcta y
+          actualizada
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <IndividualInfoForm formData={data as any} isLoading={false} onSave={saveStep1} />
+        <p className="mt-4 text-sm text-gray-600">
+          🔒 Tus datos están protegidos conforme a la Ley Federal de Protección de Datos
+          Personales.&nbsp;
+          <a
+            href="https://intermercado.mx/aviso-de-privacidad/"
+            target="_blank"
+            className="text-blue-500 font-medium"
+          >
+            Link de aviso de privacidad
+          </a>
+        </p>
       </CardContent>
     </Card>
   )

@@ -94,7 +94,7 @@ export default function ValidateClabePage() {
           Nueva cuenta bancaria
         </CardTitle>
         <CardDescription>
-          Registra la CLABE bancaria de BBVA a la que se domiciliará tu pago
+          Ingresa tu nueva cuenta CLABE BBVA para actualizar tu forma de pago
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -105,6 +105,10 @@ export default function ValidateClabePage() {
           rfc={rfc}
           geolocationDenied={geolocationDenied}
         />
+        <p className="mt-4 text-sm text-gray-600">
+          🔒 Esta información será usada únicamente para actualizar tu forma de pago con
+          Financiera Intermercado.
+        </p>
       </CardContent>
     </Card>
   )

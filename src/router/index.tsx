@@ -60,7 +60,7 @@ export const router = createBrowserRouter([
           <ProtectedRoute>
             <ErrorMessage
               title="Información incorrecta"
-              description="Ponte en contacto con nosotros para actualizar tu información"
+              description="Por favor, contáctanos al 800 500 9195 para corregir tus datos antes de continuar."
             />
           </ProtectedRoute>
         )

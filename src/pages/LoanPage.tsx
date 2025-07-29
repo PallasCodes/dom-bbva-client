@@ -62,7 +62,7 @@ export default function LoanPage() {
         </CardHeader>
         <CardContent>
           <div className="mb-4">
-            <p className="font-bold">Folio</p>
+            <p className="font-bold">💳 Folio</p>
             <Skeleton className="h-6 w-10/12" />
           </div>
           <div className="mb-4">
@@ -87,9 +87,15 @@ export default function LoanPage() {
 
   return (
     <>
-      <h1 className="text-center mt-4 font-semibold antialiased text-lg">
-        Valida que los datos de tus folios sean correctos
-      </h1>
+      <div className="my-4 px-4">
+        <h1 className="text-center font-bold antialiased text-lg">
+          Revisa y confirma tus créditos activos
+        </h1>
+        <h3 className="text-center">
+          Es importante validar esta información antes de continuar con la actulización de
+          datos
+        </h3>
+      </div>
 
       <div className="mb-4">
         {loans && loans.map((loan) => <LoanCard loan={loan} key={loan.idOrden} />)}

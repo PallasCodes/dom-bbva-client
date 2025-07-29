@@ -192,6 +192,9 @@ export const BankInfoForm = ({
           render={({ field }) => (
             <FormItem>
               <FormLabel>CLABE Bancaria*</FormLabel>
+              <FormDescription>
+                Son 18 dígitos que identifican tu cuenta bancaria BBVA
+              </FormDescription>
               <div className="flex gap-2">
                 <FormControl>
                   <div className="relative flex-grow">
@@ -245,6 +248,9 @@ export const BankInfoForm = ({
           render={() => (
             <FormItem>
               <FormLabel>Firma*</FormLabel>
+              <FormDescription>
+                Firma dentro del recuadro como lo harías en papel
+              </FormDescription>
               <FormControl>
                 <div>
                   <SignaturePad
@@ -281,7 +287,7 @@ export const BankInfoForm = ({
             className="w-full uppercase mt-2"
             disabled={geolocationDenied}
           >
-            Siguiente
+            Confirmar y continuar
             <ChevronRight />
           </Button>
         )}

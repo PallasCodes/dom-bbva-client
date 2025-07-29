@@ -1,7 +1,14 @@
 import { useGetCatalog } from '@/api/direct-debits.api'
 import { useValidateCut, type ValidateCutPayload } from '@/api/individuals.api'
 import { ErrorMessage } from '@/components/ErrorMessage'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle
+} from '@/components/ui/card'
 import { CUTValidationForm, type CUTValidationFormData } from '@/forms/CUTValidationForm'
 import { useValidateDirectDebit } from '@/hooks/useValidateDirectDebit'
 
@@ -48,6 +55,10 @@ export default function CUTValidationPage() {
         <CardTitle className="text-center font-bold text-xl w-full">
           Autentícate
         </CardTitle>
+        <CardDescription>
+          Tus datos están protegidos y se usarán únicamente para la actualización de tus
+          datos
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <CUTValidationForm
@@ -55,6 +66,12 @@ export default function CUTValidationPage() {
           onSave={handleForm}
           stateCatalog={stateCatalog}
         />
+        <div className="text-center mt-2 text-sm">
+          ¿No recibiste el código?&nbsp;
+          <Button type="button" variant="link" size="sm">
+            Reenviar SMS
+          </Button>
+        </div>
       </CardContent>
     </Card>
   )
