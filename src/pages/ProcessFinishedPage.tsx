@@ -20,7 +20,7 @@ export default function ProcessFinishedPage() {
   }
 
   return (
-    <div className="text-center max-w-5xl flex justify-center flex-col items-center mx-auto">
+    <div className="text-center max-w-5xl flex justify-center flex-col items-center mx-auto px-4">
       <h2 className="font-bold antialiased text-xl mt-4 mb-2">
         Proceso de actualización de datos completado
       </h2>
@@ -36,6 +36,11 @@ export default function ProcessFinishedPage() {
         alt="Promoción Nintendo Switch"
         className="w-full h-auto mt-8"
       />
+
+      <p className="mt-6">
+        🔒 Tu información ha sido actualizada de manera segura y protegida por
+        Intermercado.
+      </p>
     </div>
   )
 }

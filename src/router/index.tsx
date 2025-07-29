@@ -8,6 +8,7 @@ import { createBrowserRouter } from 'react-router-dom'
 import IndividualInfoPage from '../pages/IndividualInfoPage'
 import ValidateClabePage from '../pages/ValidateClabePage'
 import { ProtectedRoute } from './ProtectedRoute'
+import IntroductionPage from '@/pages/IntroductionPage'
 
 export const router = createBrowserRouter([
   {
@@ -16,6 +17,10 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
+        element: <IntroductionPage />
+      },
+      {
+        path: '/validacion-cut',
         element: <CUTValidationPage />
       },
       {

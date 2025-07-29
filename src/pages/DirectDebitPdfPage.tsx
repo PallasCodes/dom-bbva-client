@@ -1,6 +1,12 @@
 import { useSignDirectDebit } from '@/api/direct-debits.api'
 import { ErrorMessage } from '@/components/ErrorMessage'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle
+} from '@/components/ui/card'
 import { SignDocForm } from '@/forms/SingDocForm'
 import { useAuth } from '@/store/auth.store'
 import { useNavigate } from 'react-router-dom'
@@ -33,8 +39,11 @@ export default function DirectDebitPdfPage() {
     <Card className="max-w-md md:mx-auto m-4 gap-2">
       <CardHeader className="">
         <CardTitle className="text-center font-bold text-xl w-full">
-          Firma de documento
+          Confirma tu autorización
         </CardTitle>
+        <CardDescription className="mb-2 text-center">
+          Firma electrónicamente para concluir tu actualización.
+        </CardDescription>
       </CardHeader>
       <CardContent className="px-4">
         {solDom.publicUrls.map((publicUrl) => (
@@ -49,6 +58,10 @@ export default function DirectDebitPdfPage() {
             />
           </div>
         ))}
+        <p className="mb-4 text-sm text-gray-600">
+          Con esta firma confirmas tu actualización de cuenta BBVA para que tus pagos
+          continúen sin contratiempos.
+        </p>
         <SignDocForm onSave={onSubmit} loading={loading} />
       </CardContent>
     </Card>
