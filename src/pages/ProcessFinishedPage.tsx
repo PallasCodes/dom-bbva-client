@@ -13,10 +13,8 @@ export default function ProcessFinishedPage() {
     )
   }
 
-  const openPdfs = () => {
-    solDom.publicUrls.forEach((url) => {
-      window.open(url)
-    })
+  const openPdf = (url: string) => {
+    window.open(url)
   }
 
   return (
@@ -26,9 +24,15 @@ export default function ProcessFinishedPage() {
       </h2>
       <p>
         Visualiza tus documentos de domiciliación actualizados&nbsp;
-        <button className="font-medium text-blue-600" onClick={openPdfs}>
-          click aquí
-        </button>
+        {solDom.publicUrls.map((url, i) => (
+          <button
+            className="font-medium text-blue-600"
+            onClick={() => openPdf(url)}
+            key={url}
+          >
+            Página {i + 1}
+          </button>
+        ))}
       </p>
 
       <img
