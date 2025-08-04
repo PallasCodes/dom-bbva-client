@@ -22,8 +22,9 @@ export default function ProcessFinishedPage() {
       <h2 className="font-bold antialiased text-xl mt-4 mb-2">
         Proceso de actualización de datos completado
       </h2>
-      <p>
-        Visualiza tus documentos de domiciliación actualizados&nbsp;
+      <p>Visualiza tus documentos de domiciliación actualizados&nbsp;</p>
+
+      <div className="flex flex-col justify-center">
         {solDom.publicUrls.map((url, i) => (
           <button
             className="font-medium text-blue-600"
@@ -33,7 +34,7 @@ export default function ProcessFinishedPage() {
             Página {i + 1}
           </button>
         ))}
-      </p>
+      </div>
 
       <img
         src="./cobranza_nintendo.png"
