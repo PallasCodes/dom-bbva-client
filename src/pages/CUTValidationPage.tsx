@@ -81,7 +81,8 @@ export default function CUTValidationPage() {
           stateCatalog={stateCatalog}
         />
         <div className="text-center mt-2 text-sm">
-          ¿No recibiste el código?&nbsp;
+          <span>¿No recibiste el código?&nbsp;</span>
+
           {cutSmsIsLoading ? (
             <Button type="button" variant="link" size="sm" disabled>
               Enviando SMS

@@ -31,7 +31,7 @@ export default function IntroductionPage() {
 
   return (
     <div className="max-w-lg mx-auto p-8">
-      <h1 className="text-center font-bold text-xl mb-1">
+      <h1 className="text-center font-bold text-2xl mb-1">
         Actualiza tus datos en 4 pasos sencillos
       </h1>
       <h3 className="text-center text-md mb-8">
@@ -39,7 +39,7 @@ export default function IntroductionPage() {
       </h3>
 
       <div className="flex gap-4 mb-8">
-        <span className="text-2xl font-bold bg-orange-500 text-white min-w-9 min-h-9 max-h-9 max-w-9 rounded flex items-center justify-center shrink">
+        <span className="text-2xl font-bold bg-cyan-600 text-white min-w-9 min-h-9 max-h-9 max-w-9 rounded flex items-center justify-center shrink">
           1
         </span>
         <div>
@@ -51,7 +51,7 @@ export default function IntroductionPage() {
       </div>
 
       <div className="flex gap-4 mb-8">
-        <span className="text-2xl font-bold bg-orange-500 text-white min-w-9 min-h-9 max-h-9 max-w-9 rounded flex items-center justify-center shrink">
+        <span className="text-2xl font-bold bg-cyan-600 text-white min-w-9 min-h-9 max-h-9 max-w-9 rounded flex items-center justify-center shrink">
           2
         </span>
         <div>
@@ -61,7 +61,7 @@ export default function IntroductionPage() {
       </div>
 
       <div className="flex gap-4 mb-8">
-        <span className="text-2xl font-bold bg-orange-500 text-white min-w-9 min-h-9 max-h-9 max-w-9 rounded flex items-center justify-center shrink">
+        <span className="text-2xl font-bold bg-cyan-600 text-white min-w-9 min-h-9 max-h-9 max-w-9 rounded flex items-center justify-center shrink">
           3
         </span>
         <div>
@@ -71,7 +71,7 @@ export default function IntroductionPage() {
       </div>
 
       <div className="flex gap-4">
-        <span className="text-2xl font-bold bg-orange-500 text-white min-w-9 min-h-9 max-h-9 max-w-9 rounded flex items-center justify-center shrink">
+        <span className="text-2xl font-bold bg-cyan-600 text-white min-w-9 min-h-9 max-h-9 max-w-9 rounded flex items-center justify-center shrink">
           4
         </span>
         <div>
