@@ -1,5 +1,9 @@
 import { useGetCatalog } from '@/api/direct-debits.api'
-import { useValidateCut, type ValidateCutPayload } from '@/api/individuals.api'
+import {
+  useSendCutSms,
+  useValidateCut,
+  type ValidateCutPayload
+} from '@/api/individuals.api'
 import { ErrorMessage } from '@/components/ErrorMessage'
 import { Button } from '@/components/ui/button'
 import {
@@ -11,14 +15,16 @@ import {
 } from '@/components/ui/card'
 import { CUTValidationForm, type CUTValidationFormData } from '@/forms/CUTValidationForm'
 import { useValidateDirectDebit } from '@/hooks/useValidateDirectDebit'
+import { Loader2 } from 'lucide-react'
 
 import { useSearchParams } from 'react-router-dom'
+import { toast } from 'sonner'
 
 export default function CUTValidationPage() {
   const [params] = useSearchParams()
   const cliente = params.get('cliente')
 
-  if (!cliente) {
+  if (!cliente || isNaN(+cliente)) {
     return (
       <ErrorMessage
         title="URL mal formada"
@@ -30,6 +36,7 @@ export default function CUTValidationPage() {
   const { validateDirectDebit } = useValidateDirectDebit()
   const { data: stateCatalog, isLoading: catalogIsLoading } = useGetCatalog(1003)
   const { validateCut, isLoading: cutIsLoading } = useValidateCut()
+  const { sendCutSms, isLoading: cutSmsIsLoading } = useSendCutSms()
 
   const handleForm = async (payload: CUTValidationFormData) => {
     const { codigo, anioNacimiento, mesNacimiento, diaNacimiento, idEstadoNacimiento } =
@@ -47,6 +54,13 @@ export default function CUTValidationPage() {
     } catch (error) {
       console.error(error)
     }
+  }
+
+  const resendCutSms = async () => {
+    try {
+      await sendCutSms(+cliente)
+      toast.success('Se ha enviado un SMS con tu código CUT')
+    } catch (err) {}
   }
 
   return (
@@ -68,9 +82,16 @@ export default function CUTValidationPage() {
         />
         <div className="text-center mt-2 text-sm">
           ¿No recibiste el código?&nbsp;
-          <Button type="button" variant="link" size="sm">
-            Reenviar SMS
-          </Button>
+          {cutSmsIsLoading ? (
+            <Button type="button" variant="link" size="sm" disabled>
+              Enviando SMS
+              <Loader2 className="animate-spin" />
+            </Button>
+          ) : (
+            <Button type="button" variant="link" size="sm" onClick={resendCutSms}>
+              Reenviar SMS
+            </Button>
+          )}
         </div>
       </CardContent>
     </Card>
