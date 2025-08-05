@@ -100,3 +100,26 @@ export const getLoanInfo = (idPersonaFisica: number) => {
 
   return { data, error, isLoading }
 }
+
+export const useSendCutSms = () => {
+  const [isLoading, setIsLoading] = useState(false)
+
+  const sendCutSms = async (idPersonaFisica: number) => {
+    setIsLoading(true)
+
+    try {
+      const response = await api.post(`${PREFIX}/send-cut-sms`, { idPersonaFisica })
+      return response.data
+    } catch (err) {
+      toast.error('Ocurrió un error al enviar el código CUT, vuelve a intentarlo')
+      throw err
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  return {
+    sendCutSms,
+    isLoading
+  }
+}

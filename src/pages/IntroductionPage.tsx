@@ -1,13 +1,14 @@
+import { useSendCutSms } from '@/api/individuals.api'
 import { ErrorMessage } from '@/components/ErrorMessage'
 import { Button } from '@/components/ui/button'
-import { ChevronRight } from 'lucide-react'
+import { ChevronRight, Loader2 } from 'lucide-react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 
 export default function IntroductionPage() {
   const [params] = useSearchParams()
   const cliente = params.get('cliente')
 
-  if (!cliente) {
+  if (!cliente || isNaN(+cliente)) {
     return (
       <ErrorMessage
         title="URL mal formada"
@@ -17,6 +18,16 @@ export default function IntroductionPage() {
   }
 
   const navigate = useNavigate()
+  const { sendCutSms, isLoading: cutSmsIsLoading } = useSendCutSms()
+
+  const startProcess = async () => {
+    try {
+      await sendCutSms(+cliente)
+      navigate(`/validacion-cut?cliente=${cliente}`)
+    } catch (err) {
+      console.log(err)
+    }
+  }
 
   return (
     <div className="max-w-lg mx-auto p-8">
@@ -78,13 +89,17 @@ export default function IntroductionPage() {
         en el sorteo de dos Nintendo Switch 2
       </p>
 
-      <Button
-        className="mt-8 w-full"
-        onClick={() => navigate(`/validacion-cut?cliente=${cliente}`)}
-      >
-        Iniciar actualización de datos
-        <ChevronRight />
-      </Button>
+      {cutSmsIsLoading ? (
+        <Button className="mt-8 w-full" disabled>
+          Enviando SMS
+          <Loader2 className="animate-spin" />
+        </Button>
+      ) : (
+        <Button className="mt-8 w-full" onClick={startProcess}>
+          Iniciar actualización de datos
+          <ChevronRight />
+        </Button>
+      )}
     </div>
   )
 }
