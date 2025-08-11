@@ -31,7 +31,7 @@ export default function ProcessFinishedPage() {
             onClick={() => openPdf(url)}
             key={url}
           >
-            Página {i + 1}
+            Documento {i + 1}
           </button>
         ))}
       </div>
