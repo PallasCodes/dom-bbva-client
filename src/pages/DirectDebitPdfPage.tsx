@@ -53,7 +53,7 @@ export default function DirectDebitPdfPage() {
             key={publicUrl}
           >
             <iframe
-              src={`https://docs.google.com/gview?embedded=true&url=${publicUrl}`}
+              src={publicUrl}
               style={{ width: '100%', height: '100%', border: 'none' }}
             />
           </div>
